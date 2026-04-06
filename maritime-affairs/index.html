@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maritime Affairs — Navigating the Blue Century</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- COMPASS CURSOR -->
+<div id="compass-cursor">
+  <svg viewBox="0 0 56 56" fill="none">
+    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <g class="needle">
+      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
+    </g>
+    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
+  </svg>
+</div>
+<div id="cursor-dot"></div>
+
+<!-- PROGRESS BAR -->
+<div id="bar"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="l-half l-top">
+    <div class="l-mark">
+      <div class="l-compass-anim">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke-linecap="round"/></svg>
+      </div>
+      Maritime <em>Affairs</em>
+    </div>
+  </div>
+  <div class="l-half l-bot">
+    <div style="font-family:var(--ff-c);font-size:.62rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.28)" id="l-pct">0%</div>
+  </div>
+  <div class="l-bar-wrap"><div class="l-bar-fill" id="l-fill"></div></div>
+</div>
+
+<!-- INTRO VIDEO -->
+<div id="intro">
+  <video id="iv" autoplay muted playsinline>
+    <source src="http://87.106.240.127/wp-content/uploads/2026/03/Logo_Intro.mp4" type="video/mp4">
+  </video>
+  <button id="iskip">Skip intro</button>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="logo">
+    <div class="logo-pill">
+      <img src="http://87.106.240.127/wp-content/uploads/2026/03/Logo-maritimes.jpg" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+      <div class="logo-text">
+        <div class="logo-name">Maritime <em>Affairs</em></div>
+        <span class="logo-sub">EU Blue Economy Do-Tank</span>
+      </div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#units">Units</a></li>
+    <li><a href="#network">Network</a></li>
+    <li><a href="#contact">Join</a></li>
+  </ul>
+  <div class="nav-r">
+    <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
+    <a href="#contact" class="nav-btn">Join Us</a>
+  </div>
+</nav>
+
+<!-- COORDINATE HUD -->
+<div id="coords">
+  <span id="coord-lat">48°51′N</span>
+  <span id="coord-lon">002°21′E</span>
+  <span id="coord-sec">— Brussels</span>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-vid">
+    <video autoplay muted loop playsinline id="hvid">
+      <source src="http://87.106.240.127/wp-content/uploads/2026/03/container_ship.mp4" type="video/mp4">
+    </video>
+  </div>
+  <canvas id="chart-canvas"></canvas>
+
+  <div class="hero-inner wrap" style="max-width:100%;padding-bottom:10vh">
+    <div class="section-marker" id="hmark">EU Blue Economy Do-Tank</div>
+    <h1 id="htitle" aria-label="Maritime Affairs">
+      <div class="mega-title">
+        <span class="line"><span class="word">Maritime</span></span>
+        <span class="line ln2"><span class="word">Affairs</span></span>
+      </div>
+    </h1>
+    <p class="hero-sub" id="hsub">
+      Connecting <strong>policy, industry</strong> and society<br>
+      across Europe's seas — from shipping and<br>
+      logistics to blue security and offshore energy.
+    </p>
+    <div class="hero-actions" id="hact">
+      <a href="#mission" class="btn btn-gold" id="hb1">Discover our work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a href="#contact" class="btn btn-line">Join a consortium</a>
+    </div>
+  </div>
+
+  <div class="hero-stats" id="hstats">
+    <div class="h-stat"><span class="h-num">4</span><span class="h-lbl">Strategic Units</span></div>
+    <div class="h-stat"><span class="h-num">EU</span><span class="h-lbl">Transparency Register</span></div>
+    <div class="h-stat"><span class="h-num">2026</span><span class="h-lbl">Launch Year</span></div>
+  </div>
+
+  <div class="hero-scroll">
+    <div class="scroll-track"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-track" id="mq"></div>
+</div>
+
+<!-- MISSION -->
+<section class="sec sec-mission" id="mission">
+  <div class="wrap">
+    <div class="mission-grid">
+      <div>
+        <div class="eyebrow dark" data-r="left">Our Mission</div>
+        <h2 class="h2 on-light" data-r="up" data-rd="100">Not a think tank —<br><em>a do-tank</em></h2>
+        <p class="body-text on-light" style="margin-top:1.4rem" data-r="up" data-rd="200">
+          Europe's maritime ecosystem is fragmented. Policy, industry, defense and innovation operate in silos — while the risks and opportunities are system-wide. We bridge that gap.
+        </p>
+        <div class="pillar-list" data-r="up" data-rd="300">
+          <div class="pl">
+            <div class="pl-n">01</div>
+            <div><h4>Professional Maritime Organisation</h4><p>EU Transparency Register–registered, fully governed, editorially independent — a credible institutional voice for European maritime affairs.</p></div>
+          </div>
+          <div class="pl">
+            <div class="pl-n">02</div>
+            <div><h4>Blue Economy, Trade & Logistics</h4><p>Shipping, ports, supply chains, coastal tourism, fisheries and aquaculture at the economic heart of everything we do.</p></div>
+          </div>
+          <div class="pl">
+            <div class="pl-n">03</div>
+            <div><h4>European & International Reach</h4><p>Active in Brussels, at European Maritime Day and beyond — building a reusable network for EU proposals and high-level convening.</p></div>
+          </div>
+        </div>
+      </div>
+      <div data-r="right" data-rd="150">
+        <div class="mission-card">
+          <div class="card-compass"></div>
+          <div class="card-label">Cross-sectorial by design</div>
+          <h3>"Not just policy, not just shipping — the full Blue System."</h3>
+          <p>Blue Economy + Blue Diplomacy + Blue Security. We convene stakeholders, produce credible knowledge, and build EU-funded project consortia across the full maritime system.</p>
+          <div class="eu-badge">
+            <div class="eu-flag">🇪🇺</div>
+            <div>
+              <h5>EU Transparency Register</h5>
+              <p>Officially registered — full accountability and structured access to EU institutions.</p>
+              <div class="eu-id">REG 091578097296-40</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAVE DIVIDER -->
+<div class="wave-div" style="background:var(--chart);margin-top:-1px">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,40 C240,80 480,0 720,40 C960,80 1200,10 1440,50 L1440,80 L0,80Z" fill="#091524"/></svg>
+</div>
+
+<!-- UNITS -->
+<div class="units-outer" id="units">
+  <div class="units-sticky">
+    <div class="units-head wrap" style="max-width:100%">
+      <div>
+        <div class="eyebrow light" data-r="left">Strategic Units</div>
+        <h2 class="h2 on-dark" data-r="up" data-rd="100">Four units,<br><em>one full system</em></h2>
+      </div>
+      <div class="units-progress">
+        <div class="units-track-bar"><div class="units-track-fill" id="ufill"></div></div>
+        <div class="units-hint">Scroll →</div>
+      </div>
+    </div>
+    <div class="units-cards" id="ucards">
+      <div class="u-card" data-r="scale">
+        <div class="u-glow"></div>
+        <div class="u-n">01</div>
+        <svg class="u-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <h3>Blue Policy & Law</h3>
+        <p>EU regulation, maritime law, standards, advocacy and stakeholder alignment across European institutions and member states.</p>
+        <div class="u-tag">Policy · Law · Standards</div>
+      </div>
+      <div class="u-card" data-r="scale">
+        <div class="u-glow"></div>
+        <div class="u-n">02</div>
+        <svg class="u-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 17l2-7h14l2 7H3zM12 3v4M8 3l1 4M16 3l-1 4M3 17l-1 3h20l-1-3"/></svg>
+        <h3>Blue Economy & Logistics</h3>
+        <p>Shipping, ports, supply chains, coastal tourism, fisheries and aquaculture — the economic engine of the maritime sector.</p>
+        <div class="u-tag">Trade · Shipping · Ports</div>
+      </div>
+      <div class="u-card" data-r="scale">
+        <div class="u-glow"></div>
+        <div class="u-n">03</div>
+        <svg class="u-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 20h20M6 20V8l6-6 6 6v12M9 20v-5h6v5"/></svg>
+        <h3>Defense & Security</h3>
+        <p>Geopolitics, sea-lane security, seabed infrastructure protection, hybrid threats and maritime cyber resilience.</p>
+        <div class="u-tag">Security · Geopolitics · Cyber</div>
+      </div>
+      <div class="u-card" data-r="scale">
+        <div class="u-glow"></div>
+        <div class="u-n">04</div>
+        <svg class="u-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <h3>Tech, Energy & Resources</h3>
+        <p>Offshore renewables, alternative fuels, AI for maritime, monitoring systems and responsible ocean resource management.</p>
+        <div class="u-tag">Energy · AI · Offshore</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WAVE DIVIDER -->
+<div class="wave-div" style="background:var(--deep)">
+  <svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,50 C300,10 600,80 900,35 C1100,5 1300,65 1440,40 L1440,80 L0,80Z" fill="#050c15"/></svg>
+</div>
+
+<!-- HOW + NETWORK -->
+<section class="sec sec-how" id="network">
+  <div class="wrap">
+    <div class="how-grid">
+      <div data-r="left">
+        <div class="eyebrow light">How We Work</div>
+        <h2 class="h2 on-dark" style="margin-bottom:1rem">Three modes<br>of <em>action</em></h2>
+        <p class="body-text on-dark">From community-building to EU project catalysis — we operate across the full maritime innovation cycle.</p>
+        <div class="how-list">
+          <div class="how-item"><div class="how-sym">◎</div><div><h4>Community Platform</h4><p>Members, working groups, expert directory, newsletters and partner matchmaking across the maritime ecosystem.</p></div></div>
+          <div class="how-item"><div class="how-sym">◎</div><div><h4>Knowledge Production</h4><p>Briefs, explainers, interviews and event reports — fast, referenced and readable. 1–2 publications per unit before launch.</p></div></div>
+          <div class="how-item"><div class="how-sym">◎</div><div><h4>Project Catalysis</h4><p>Concept notes, consortium building, proposal writing and pilots for EU-funded projects (Horizon, Mission Ocean).</p></div></div>
+        </div>
+      </div>
+      <div data-r="right" data-rd="150">
+        <div class="eyebrow light">Our Network</div>
+        <h2 class="h2 on-dark" style="font-size:clamp(1.9rem,3.5vw,3.2rem);margin-bottom:1rem">A bridge across institutions, industry & <em>research</em></h2>
+        <p class="body-text on-dark" style="margin-bottom:1.8rem">Trust-building and repeatable collaboration formats across three spheres.</p>
+        <div class="net-grid">
+          <div class="net-card" data-r="up" data-rd="0">
+            <svg class="net-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
+            <h5>Institutions</h5>
+            <ul><li>EU bodies & agencies</li><li>National authorities</li><li>Port authorities</li><li>Defense ecosystem</li></ul>
+          </div>
+          <div class="net-card" data-r="up" data-rd="100">
+            <svg class="net-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 17l2-7h14l2 7H3zM12 3v4"/></svg>
+            <h5>Industry</h5>
+            <ul><li>Shipping & logistics</li><li>Port operators</li><li>Energy & offshore</li><li>Tech & cyber</li></ul>
+          </div>
+          <div class="net-card" data-r="up" data-rd="200">
+            <svg class="net-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <h5>Academia</h5>
+            <ul><li>Universities & labs</li><li>Think tanks</li><li>Independent experts</li><li>Young talent</li></ul>
+          </div>
+          <div class="net-card" data-r="up" data-rd="300">
+            <svg class="net-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <h5>International</h5>
+            <ul><li>Brussels presence</li><li>European Maritime Day</li><li>EU project networks</li><li>Global partnerships</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS -->
+<section class="sec-nums" id="numbers">
+  <div class="wrap" style="position:relative;z-index:1">
+    <div style="text-align:center" data-r="up">
+      <div class="eyebrow light" style="justify-content:center">The Scale</div>
+      <h2 class="h2 on-dark">Europe's maritime<br><em>challenge by numbers</em></h2>
+    </div>
+    <div class="nums-grid">
+      <div class="num-cell" data-r="up" data-rd="0"><span class="num-val" data-count="90" data-suffix="%">90%</span><span class="num-lbl">of EU external trade transported by sea</span></div>
+      <div class="num-cell" data-r="up" data-rd="100"><span class="num-val" data-count="700" data-suffix="k+">700k+</span><span class="num-lbl">EU maritime sector jobs at stake</span></div>
+      <div class="num-cell" data-r="up" data-rd="200"><span class="num-val" data-count="4">4</span><span class="num-lbl">Strategic units covering the full system</span></div>
+      <div class="num-cell" data-r="up" data-rd="300"><span class="num-val" data-count="2026">2026</span><span class="num-lbl">First EU funding applications</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="sec sec-cta" id="contact">
+  <div class="cta-rings">
+    <div class="c-ring"></div><div class="c-ring"></div>
+    <div class="c-ring"></div><div class="c-ring"></div>
+  </div>
+  <div class="wrap cta-inner">
+    <div class="eyebrow light" style="justify-content:center;margin-bottom:1.2rem" data-r="up">Let's Build Together</div>
+    <h2 class="h2 on-dark" style="margin-bottom:1rem" data-r="up" data-rd="100">Let's build Europe's<br>maritime strategy ecosystem</h2>
+    <p class="body-text on-dark" style="max-width:440px;margin:0 auto" data-r="up" data-rd="200">Join as member, partner or expert — help shape the future of the Blue Century.</p>
+    <div class="cta-grid">
+      <div class="cta-card" data-r="up" data-rd="0"><svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg><h5>Institutional or Corporate Member</h5><p>Join our community of organisations shaping EU maritime policy.</p></div>
+      <div class="cta-card" data-r="up" data-rd="100"><svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><h5>Expert Contributor</h5><p>Author, reviewer or speaker in your area of expertise.</p></div>
+      <div class="cta-card" data-r="up" data-rd="200"><svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><h5>Consortium Partner</h5><p>Co-design a project concept for EU funding calls.</p></div>
+      <div class="cta-card" data-r="up" data-rd="300"><svg class="cta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg><h5>Event Sponsor</h5><p>Support our flagship event with full transparency safeguards.</p></div>
+    </div>
+    <div class="cta-btns" data-r="up" data-rd="200">
+      <a href="mailto:info@maritime-affairs.eu" class="btn btn-gold">Contact Us <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+      <a href="https://maritime-affairs.eu" target="_blank" rel="noopener" class="btn btn-line">maritime-affairs.eu <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-grid">
+    <div class="ft-brand">
+      <a href="#hero" class="ft-logo">
+        <div class="ft-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18" stroke-linecap="round"/></svg></div>
+        <div><div class="ft-ln">Maritime <em>Affairs</em></div><div style="font-family:var(--ff-c);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,145,58,.42);margin-top:2px">European NGO</div></div>
+      </a>
+      <p>Hub, Community Platform & Project Incubator for the Blue Century. EU registered, Brussels-based, globally connected.</p>
+      <div class="ft-soc"><a href="#" class="ft-s">in</a><a href="#" class="ft-s">𝕏</a><a href="#" class="ft-s">🇪🇺</a></div>
+    </div>
+    <div class="ft-col"><h5>Units</h5><ul><li><a href="#">Blue Policy & Law</a></li><li><a href="#">Blue Economy & Logistics</a></li><li><a href="#">Defense & Security</a></li><li><a href="#">Tech, Energy & Resources</a></li></ul></div>
+    <div class="ft-col"><h5>Organisation</h5><ul><li><a href="#">About Us</a></li><li><a href="#">Expert Directory</a></li><li><a href="#">Publications</a></li><li><a href="#">Events</a></li><li><a href="#">Careers</a></li></ul></div>
+    <div class="ft-col">
+      <h5>Contact</h5>
+      <div class="ft-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>info@maritime-affairs.eu</div>
+      <div class="ft-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Brussels · Europe</div>
+      <div class="ft-row" style="color:rgba(200,145,58,.42);font-size:.67rem;font-family:monospace">REG 091578097296-40</div>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <span>© 2025 Maritime Affairs — European NGO</span>
+    <div class="ft-links"><a href="#">Privacy</a><a href="#">Cookies</a><a href="#">Legal</a></div>
+  </div>
+</footer>
+
+<script src="js/canvas.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
