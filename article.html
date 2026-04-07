@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article — Maritime Affairs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── ARTICLE PAGE ── */
+.art-loader {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--ink);
+}
+.art-spinner {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 1.5px solid rgba(200,145,58,.2); border-top-color: var(--gold);
+  animation: spin .9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Hero */
+.art-hero {
+  min-height: 70vh; position: relative;
+  display: flex; align-items: flex-end;
+  overflow: hidden;
+}
+.art-hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background: var(--deep);
+}
+.art-hero-bg img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  filter: brightness(.55);
+}
+.art-hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(5,12,21,.2) 0%, rgba(5,12,21,.98) 100%),
+    linear-gradient(to right, rgba(5,12,21,.7) 0%, transparent 60%);
+}
+.art-hero-body {
+  position: relative; z-index: 2;
+  max-width: 900px; margin: 0 auto; width: 100%;
+  padding: 100px 5vw 4rem;
+}
+.art-breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--ff-c); font-size: .62rem; font-weight: 600;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.35); margin-bottom: 1.8rem;
+}
+.art-breadcrumb a { color: var(--gold); transition: opacity .2s; }
+.art-breadcrumb a:hover { opacity: .75; }
+.art-breadcrumb span { opacity: .4; }
+.art-unit-badge {
+  display: inline-block; margin-bottom: 1.2rem;
+  font-family: var(--ff-c); font-size: .58rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: var(--gold); border: 1px solid rgba(200,145,58,.3);
+  padding: 5px 14px; border-radius: 100px;
+  background: rgba(200,145,58,.07);
+}
+.art-hero h1 {
+  font-family: var(--ff-d);
+  font-size: clamp(2.2rem, 5vw, 4.2rem);
+  font-weight: 700; line-height: 1.05; letter-spacing: -.02em;
+  color: var(--white); margin-bottom: 1.4rem;
+}
+.art-hero-meta {
+  display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  font-family: var(--ff-c); font-size: .65rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+}
+.art-meta-sep { opacity: .25; }
+.art-hero-meta strong { color: rgba(255,255,255,.75); }
+
+/* Progress */
+#read-progress {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px;
+  z-index: 9990; transform-origin: left; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--gold), var(--gold-l));
+}
+
+/* Article body */
+.art-body {
+  background: var(--ink); padding: 5rem 5vw 6rem;
+}
+.art-body-inner {
+  max-width: 760px; margin: 0 auto;
+}
+/* typography for article content */
+.art-content {
+  font-family: var(--ff-b); font-size: 1.06rem; font-weight: 300;
+  line-height: 1.95; color: rgba(255,255,255,.72);
+}
+.art-content p { margin-bottom: 1.6rem; }
+.art-content h2 {
+  font-family: var(--ff-d); font-size: 2rem; font-weight: 700;
+  color: var(--white); margin: 3rem 0 1rem; line-height: 1.1; letter-spacing: -.01em;
+}
+.art-content h3 {
+  font-family: var(--ff-d); font-size: 1.4rem; font-weight: 700;
+  color: var(--white); margin: 2.5rem 0 .8rem;
+}
+.art-content strong { font-weight: 500; color: rgba(255,255,255,.9); }
+.art-content em { font-style: italic; color: var(--gold-l); }
+.art-content blockquote {
+  border-left: 2px solid var(--gold); padding: 1rem 0 1rem 1.8rem;
+  margin: 2.5rem 0; background: rgba(200,145,58,.04);
+  border-radius: 0 8px 8px 0;
+}
+.art-content blockquote p {
+  font-family: var(--ff-d); font-size: 1.25rem; font-weight: 600;
+  font-style: italic; color: rgba(255,255,255,.8); margin: 0;
+}
+.art-content ul, .art-content ol {
+  padding-left: 1.5rem; margin-bottom: 1.6rem;
+}
+.art-content li { margin-bottom: .5rem; }
+.art-content a { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+.art-content hr {
+  border: none; border-top: 1px solid rgba(255,255,255,.1);
+  margin: 3rem 0;
+}
+
+/* Back nav */
+.art-back {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--ff-c); font-size: .7rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.4); margin-bottom: 3rem;
+  transition: color .3s;
+}
+.art-back:hover { color: var(--gold); }
+.art-back svg { width: 14px; height: 14px; }
+
+/* Related */
+.art-related {
+  background: var(--deep); padding: 5rem 5vw;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+.art-related-inner { max-width: 1200px; margin: 0 auto; }
+.art-related h3 {
+  font-family: var(--ff-d); font-size: 2rem; font-weight: 700;
+  color: var(--white); margin-bottom: 2rem;
+}
+.art-related h3 em { font-style: italic; color: var(--gold); }
+.related-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.2rem; }
+
+/* error state */
+.art-error {
+  min-height: 60vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  background: var(--ink); text-align: center; padding: 4rem;
+}
+.art-error h2 { font-family: var(--ff-d); font-size: 3rem; color: rgba(255,255,255,.2); margin-bottom: 1rem; }
+.art-error p  { font-family: var(--ff-b); font-size: .9rem; color: rgba(255,255,255,.3); margin-bottom: 2rem; }
+.art-error a  { font-family: var(--ff-c); font-size: .76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: var(--gold); padding: 12px 28px; border-radius: 100px; }
+
+@media(max-width:700px){
+  .related-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div id="compass-cursor">
+  <svg viewBox="0 0 56 56" fill="none">
+    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <g class="needle">
+      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
+    </g>
+    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
+  </svg>
+</div>
+<div id="cursor-dot"></div>
+<div id="read-progress"></div>
+
+<!-- NAV -->
+<nav id="nav" class="dark">
+  <a href="index.html" class="logo">
+    <div class="logo-pill">
+      <img src="http://87.106.240.127/wp-content/uploads/2026/03/Logo-maritimes.jpg" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+      <div class="logo-text">
+        <div class="logo-name">Maritime <em>Affairs</em></div>
+        <span class="logo-sub">EU Blue Economy Do-Tank</span>
+      </div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#mission">Mission</a></li>
+    <li><a href="index.html#units">Units</a></li>
+    <li><a href="index.html#network">Network</a></li>
+    <li><a href="publications.html" style="color:var(--gold)">Publications</a></li>
+    <li><a href="index.html#contact">Join</a></li>
+  </ul>
+  <div class="nav-r">
+    <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
+    <a href="index.html#contact" class="nav-btn">Join Us</a>
+  </div>
+</nav>
+
+<!-- CONTENT injected here by JS -->
+<div id="page-root">
+  <div class="art-loader"><div class="art-spinner"></div></div>
+</div>
+
+<footer style="padding:3rem 5vw;background:var(--ink);border-top:1px solid rgba(255,255,255,.06)">
+  <div class="ft-bottom" style="max-width:1200px;margin:0 auto">
+    <span>© 2025 Maritime Affairs — European NGO</span>
+    <div class="ft-links">
+      <a href="index.html">Home</a>
+      <a href="publications.html">Publications</a>
+      <a href="mailto:info@maritime-affairs.eu">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ═══════════════════════════════════════
+   CONFIGURATION
+   ═══════════════════════════════════════ */
+const SUPABASE_URL  = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY';
+
+/* ── SAME SAMPLE DATA (fallback) ── */
+const SAMPLE_ARTICLES = [
+  {
+    id: '1', slug: 'europes-seabed-at-risk',
+    title: "Europe's Seabed at Risk: Protecting Critical Underwater Infrastructure",
+    summary: "From Nord Stream to Baltic interconnectors, subsea infrastructure has moved to the centre of European security debates.",
+    content: `<p>The destruction of the Nord Stream pipelines in September 2022 sent shockwaves through European capitals — not just because of the immediate energy consequences, but because it revealed how exposed critical undersea infrastructure truly is.</p>
+
+<h2>The Scale of Exposure</h2>
+<p>Europe relies on a vast network of subsea assets: over <strong>1.2 million kilometres</strong> of submarine cables carry approximately 97% of intercontinental internet traffic, while dozens of gas and power interconnectors underpin energy supply across the continent. Add to this offshore wind farm cables, oil and gas pipelines, and military communication lines, and the picture of vulnerability becomes acute.</p>
+
+<blockquote><p>"The seabed has become the new contested domain — the one place where a hostile actor can inflict strategic damage with the lowest risk of attribution."</p></blockquote>
+
+<p>NATO's Maritime Centre for Security of Critical Underwater Infrastructure, established in 2023, was a direct response to this recognition. Yet the regulatory and operational framework around protection remains fragmented across member states.</p>
+
+<h2>What the Regulation Actually Covers</h2>
+<p>The EU's Critical Entities Resilience Directive (CER) came into force in January 2023 and applies to operators of critical infrastructure in eleven sectors — including energy, digital infrastructure, and maritime transport. However, <em>subsea infrastructure specifically</em> occupies a grey zone between the CER and the Network and Information Security (NIS2) Directive, with classification rules that vary by member state.</p>
+
+<p>This creates practical problems for port authorities and cable operators trying to understand their obligations. A gas pipeline operator in Dutch waters faces different notification requirements than a functionally identical one in Danish waters — complicating both investment decisions and incident response coordination.</p>
+
+<h2>A Framework Worth Building</h2>
+<p>Maritime Affairs proposes three structural reforms:</p>
+<ul>
+  <li>A unified EU registry of critical subsea assets, maintained by EMSA and accessible to relevant national authorities</li>
+  <li>Mandatory threat-sharing between NATO maritime command and civilian infrastructure operators</li>
+  <li>Dedicated patrol and monitoring protocols for the highest-risk corridors, funded through the European Defence Fund</li>
+</ul>
+
+<hr>
+
+<p>The political will exists — what is lacking is institutional coordination. The work of the next legislative cycle must close that gap before a more serious incident forces the issue.</p>`,
+    image_url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1200&q=85',
+    author: 'Maritime Affairs Editorial', unit: 'Defense & Security',
+    published_at: '2026-03-15', read_min: 8
+  },
+  {
+    id: '2', slug: 'blue-economy-report-2026',
+    title: "The Blue Economy Report 2026: Shipping Routes and the New Geopolitics",
+    summary: "Container throughput, port congestion and chokepoint risk — a data-driven overview of how Europe's external trade lanes are being reshaped.",
+    content: `<p>European external trade remains overwhelmingly seaborne. According to Eurostat, over 90% of the continent's goods imports and exports travel by ship — a dependency that has historically been taken for granted, but which now faces a confluence of structural pressures that policymakers can no longer ignore.</p>
+
+<h2>Three Fault Lines</h2>
+<p>The Blue Economy Report 2026 identifies three interlocking fault lines reshaping European shipping:</p>
+
+<h3>1. Chokepoint Concentration Risk</h3>
+<p>The Suez Canal disruption of 2024 — when Houthi attacks in the Red Sea forced rerouting around the Cape of Good Hope — added an average of <strong>twelve days and $1.3 million per voyage</strong> to Asia-Europe routes. This was not a novel risk but a long-telegraphed vulnerability that the industry had underinvested in managing.</p>
+
+<h3>2. Port Capacity Misallocation</h3>
+<p>Europe's major container ports — Rotterdam, Antwerp-Bruges, Hamburg — are operating near capacity, while mid-tier ports in the Mediterranean and Baltic sit underutilised. The bottleneck is not berths but hinterland rail and road connectivity, which falls outside the remit of port authorities and into the costly intersection of national infrastructure policy.</p>
+
+<h3>3. The Green Transition Cost Gap</h3>
+<p>The IMO's revised GHG strategy targets net-zero shipping by or around 2050. The fuel transition — from HSFO to LNG, methanol, ammonia or hydrogen — requires massive investment in both vessel technology and bunkering infrastructure. Current EU state-aid rules create uneven playing fields for operators trying to front-load that investment.</p>
+
+<blockquote><p>"The shipping industry cannot decarbonise without coordinated port infrastructure investment. The two are inseparable."</p></blockquote>
+
+<h2>What Comes Next</h2>
+<p>The forthcoming revision of the TEN-T regulation offers a structural opportunity to integrate maritime and inland connectivity planning. Maritime Affairs recommends that the next European Commission mandate a dedicated <em>Blue Corridors</em> chapter within TEN-T — one that links port masterplans to rail electrification timelines and hydrogen bunkering deployment schedules.</p>`,
+    image_url: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1200&q=85',
+    author: 'Blue Economy Unit', unit: 'Blue Economy & Logistics',
+    published_at: '2026-03-08', read_min: 12
+  },
+  {
+    id: '3', slug: 'ai-at-sea',
+    title: "AI at Sea: How Machine Learning is Reshaping Maritime Operations",
+    summary: "Autonomous vessels, predictive maintenance and AI-assisted traffic management are no longer hypothetical. We survey the deployments already operational in European waters.",
+    content: `<p>When the autonomous container vessel <em>Yara Birkeland</em> completed its first fully unmanned voyage in Norwegian waters in 2022, it was widely treated as a proof-of-concept curiosity. Four years later, AI-assisted operations are routine in European maritime trade — and the regulatory framework is struggling to keep up.</p>
+
+<h2>What is Already Deployed</h2>
+<p>Across European ports and shipping lanes, machine learning applications now operate in three broad categories:</p>
+
+<p><strong>Predictive maintenance</strong> — Sensors embedded in engines, hull sections and cargo systems feed data into models that predict failure events before they occur. Maersk reports a 25% reduction in unplanned dry-dock interventions since deploying fleet-wide predictive analytics in 2023.</p>
+
+<p><strong>Traffic management</strong> — The Port of Rotterdam's PortXchange platform uses AI to optimise berth allocation, tidal window scheduling and pilotage demand in real time. The system reduced average port call duration by 14% in its first full year of operation.</p>
+
+<p><strong>Autonomous navigation assistance</strong> — Fully autonomous vessels remain rare, but AI-assisted collision avoidance and route optimisation systems are now standard on most new-build vessels above 5,000 DWT.</p>
+
+<h2>The Regulatory Gap</h2>
+<p>The IMO's Maritime Autonomous Surface Ships (MASS) Code is expected to enter force in 2028. In the interim, national maritime authorities are applying existing SOLAS provisions by analogy — with inconsistent results. A vessel operating autonomously in Danish waters may face entirely different liability frameworks when it crosses into German or Swedish jurisdiction.</p>
+
+<blockquote><p>"The technology is ready. The legal architecture is not."</p></blockquote>
+
+<h2>Maritime Affairs Recommendation</h2>
+<p>The EU should establish a dedicated <em>Maritime AI Sandbox</em> — a regulatory pilot zone, potentially centred on the Baltic, where novel autonomous systems can be tested against a harmonised legal framework developed jointly by EMSA, member state flag state administrations, and the insurance sector.</p>`,
+    image_url: 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200&q=85',
+    author: 'Tech & Innovation Unit', unit: 'Tech, Energy & Resources',
+    published_at: '2026-02-28', read_min: 10
+  },
+  {
+    id: '4', slug: 'eu-maritime-law-reform', title: "EU Maritime Law Reform: What the New Regulation Means for Port Operators", summary: "The revised EU Port Services Regulation and the incoming Maritime Single Window requirements are creating compliance headlines across European terminals.",
+    content: `<p>Two significant regulatory instruments are reshaping the compliance landscape for European port operators in 2026: the revised Port Services Regulation (PSR II) and the full rollout of the European Maritime Single Window environment (EMSWe).</p><h2>Port Services Regulation II</h2><p>The revised PSR enters application in July 2026 and introduces mandatory transparency requirements for port dues, expanded rules on port service concessions, and new social provisions covering port workers engaged in digitalised operations. For mid-sized port authorities, the administrative burden is significant — particularly the obligation to publish detailed cost-benchmarking data that competitors can access.</p><h2>The Single Window Rollout</h2><p>EMSWe harmonises the reporting formalities for ships arriving in and departing from EU ports into a single digital entry point. In theory, this eliminates the patchwork of national reporting systems that has long frustrated operators running multi-port rotations. In practice, implementation has been uneven — with several member states still operating parallel national systems.</p><blockquote><p>"Harmonisation on paper is not harmonisation in practice. Until every port accepts EMSWe data, the operational friction remains."</p></blockquote><p>Maritime Affairs is monitoring EMSWe rollout across all 23 coastal member states and will publish a compliance tracker in Q3 2026.</p>`,
+    image_url: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=1200&q=85',
+    author: 'Blue Policy & Law Unit', unit: 'Blue Policy & Law', published_at: '2026-02-18', read_min: 7
+  },
+  {
+    id: '5', slug: 'offshore-wind-energy-security', title: "Offshore Wind and the Future of European Energy Security",
+    summary: "The North Sea is becoming the power station of Europe. With 300 GW of offshore wind targeted by 2050, we examine grid integration challenges and seabed-use conflicts.",
+    content: `<p>The North Sea Energy Cooperation — a political declaration signed by nine countries in 2016 — has evolved from an aspiration into an active investment programme. By 2030, the nine signatories have committed to 120 GW of offshore wind capacity. By 2050, projections suggest the North Sea alone could host over 300 GW.</p><h2>The Grid Integration Problem</h2><p>Offshore wind capacity is being built faster than the onshore grid can absorb it. In Germany, curtailment costs — payments to wind farms to switch off when the grid cannot accept their output — exceeded €1.2 billion in 2025. The solution is offshore grid interconnection: building DC transmission links directly between wind farms and multiple national grids, so excess generation in Danish waters can flow to French or German demand.</p><h2>Seabed-Use Conflicts</h2><p>The North Sea is already the most intensively used sea basin in the world — traversed by shipping lanes, dotted with oil and gas infrastructure, crossed by submarine cables, and now increasingly occupied by wind farm footprints. Spatial conflicts are multiplying.</p><blockquote><p>"Offshore wind developers and shipping operators are competing for the same seabed. Without coordinated maritime spatial planning, neither industry wins."</p></blockquote><p>Maritime Affairs supports the establishment of an EU-level North Sea Coordination Office with binding maritime spatial planning authority — analogous to the role played by national transmission system operators in onshore energy.</p>`,
+    image_url: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=1200&q=85',
+    author: 'Tech & Innovation Unit', unit: 'Tech, Energy & Resources', published_at: '2026-02-05', read_min: 9
+  },
+  {
+    id: '6', slug: 'mediterranean-fisheries', title: "Mediterranean Fisheries at a Crossroads: Policy Responses to Declining Stocks",
+    summary: "The Mediterranean is the world's most overfished sea. We review the latest STECF stock assessments and why enforcement remains the central problem.",
+    content: `<p>The Scientific, Technical and Economic Committee for Fisheries (STECF) published its 2025 Mediterranean stock assessment in December. The findings are bleak: 62% of assessed stocks remain fished above maximum sustainable yield (MSY), down only marginally from the 65% recorded in 2020.</p><h2>Why Multiannual Plans Are Not Enough</h2><p>The Western Mediterranean Multiannual Plan (WEMAP), in force since 2019, set binding fishing effort reductions for demersal species. Compliance has been partial at best. Days-at-sea limits have been applied inconsistently across Spain, France and Italy, with each country applying different derogations for small-scale fisheries.</p><h2>The Enforcement Gap</h2><p>EFCA, the European Fisheries Control Agency, has limited operational capacity relative to the size of the basin. Joint deployment plans cover priority fisheries but cannot provide continuous surveillance. AIS spoofing — manipulation of vessel tracking transponders — remains a documented and insufficiently penalised practice.</p><blockquote><p>"You cannot manage what you cannot monitor. The Mediterranean needs a surveillance architecture commensurate with its economic and ecological importance."</p></blockquote><h2>A Credible Path Forward</h2><p>Maritime Affairs recommends a dedicated Mediterranean Fisheries Monitoring Centre, drawing on Copernicus satellite data, drone surveillance capacity, and a harmonised vessel monitoring database accessible to all coastal member states in real time.</p>`,
+    image_url: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&q=85',
+    author: 'Blue Policy & Law Unit', unit: 'Blue Policy & Law', published_at: '2026-01-22', read_min: 11
+  }
+];
+
+/* ═══════════════════════════════════════ */
+const isConfigured = SUPABASE_URL !== 'YOUR_SUPABASE_URL';
+let supabase = null;
+if (isConfigured) supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+function getParam() {
+  return new URLSearchParams(window.location.search).get('id') || '';
+}
+
+async function loadArticle() {
+  const idOrSlug = getParam();
+  if (!idOrSlug) { showError(); return; }
+
+  let article = null;
+
+  if (isConfigured) {
+    // Try slug first, then id
+    let { data } = await supabase.from('articles').select('*').eq('slug', idOrSlug).eq('published', true).single();
+    if (!data) {
+      const r2 = await supabase.from('articles').select('*').eq('id', idOrSlug).eq('published', true).single();
+      data = r2.data;
+    }
+    article = data;
+  }
+
+  // Fallback to sample
+  if (!article) {
+    article = SAMPLE_ARTICLES.find(a => a.slug === idOrSlug || a.id === idOrSlug);
+  }
+
+  if (!article) { showError(); return; }
+
+  document.title = `${article.title} — Maritime Affairs`;
+  renderArticle(article);
+  initScroll();
+}
+
+function renderArticle(a) {
+  const root = document.getElementById('page-root');
+  root.innerHTML = `
+    <section class="art-hero">
+      <div class="art-hero-bg">
+        ${a.image_url ? `<img src="${a.image_url}" alt="">` : ''}
+      </div>
+      <div class="art-hero-body">
+        <div class="art-breadcrumb">
+          <a href="publications.html">Publications</a>
+          <span>›</span>
+          <span style="color:rgba(255,255,255,.45);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:300px">${escHtml(a.title)}</span>
+        </div>
+        <div class="art-unit-badge">${escHtml(a.unit || 'General')}</div>
+        <h1>${escHtml(a.title)}</h1>
+        <div class="art-hero-meta">
+          <strong>${escHtml(a.author || 'Maritime Affairs')}</strong>
+          <span class="art-meta-sep">·</span>
+          <span>${fmtDate(a.published_at)}</span>
+          <span class="art-meta-sep">·</span>
+          <span>${a.read_min || '—'} min read</span>
+        </div>
+      </div>
+    </section>
+
+    <article class="art-body">
+      <div class="art-body-inner">
+        <a href="publications.html" class="art-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back to publications
+        </a>
+        <div class="art-content">${a.content || '<p>' + escHtml(a.summary) + '</p>'}</div>
+      </div>
+    </article>
+
+    <section class="art-related">
+      <div class="art-related-inner">
+        <h3>More from <em>Maritime Affairs</em></h3>
+        <div class="related-grid" id="related-grid"></div>
+      </div>
+    </section>`;
+
+  loadRelated(a);
+}
+
+async function loadRelated(current) {
+  let articles = [];
+  if (isConfigured) {
+    const { data } = await supabase.from('articles').select('id,slug,title,image_url,unit,published_at').eq('published', true).neq('id', current.id).limit(3);
+    articles = data || [];
+  }
+  if (!articles.length) {
+    articles = SAMPLE_ARTICLES.filter(a => a.id !== current.id).slice(0, 3);
+  }
+  const grid = document.getElementById('related-grid');
+  if (!grid) return;
+  grid.innerHTML = articles.map(a => `
+    <div class="pub-card" onclick="location.href='article.html?id=${a.slug || a.id}'" style="cursor:pointer">
+      <div class="pub-card-img">
+        ${a.image_url ? `<img src="${a.image_url}" loading="lazy">` : `<div class="pub-card-img-placeholder"></div>`}
+        <div class="unit-badge">${escHtml(a.unit || '')}</div>
+      </div>
+      <div class="pub-card-body">
+        <h3>${escHtml(a.title)}</h3>
+        <div class="pub-card-footer">
+          <span class="pub-card-meta">${fmtDate(a.published_at)}</span>
+          <div class="pub-card-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function showError() {
+  document.getElementById('page-root').innerHTML = `
+    <div class="art-error">
+      <h2>Article not found</h2>
+      <p>This article may have been moved or removed.</p>
+      <a href="publications.html">← Back to publications</a>
+    </div>`;
+}
+
+function initScroll() {
+  const bar = document.getElementById('read-progress');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    bar.style.transform = `scaleX(${h.scrollTop / (h.scrollHeight - h.clientHeight)})`;
+  }, { passive: true });
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+loadArticle();
+</script>
+<script src="js/main.js"></script>
+</body>
+</html>
