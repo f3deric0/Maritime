@@ -45,19 +45,26 @@ body.hovering #compass-cursor { transform: translate(-50%,-50%) scale(1.5); }
 #bar { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 9990; transform-origin: left; transform: scaleX(0); background: linear-gradient(90deg, var(--gold), var(--gold-l)); box-shadow: 0 0 12px rgba(200,145,58,.7); }
 
 /* LOADER */
-#loader { position: fixed; inset: 0; z-index: 9998; overflow: hidden; }
-.l-half { position: absolute; left: 0; right: 0; height: 50%; background: var(--ink); display: flex; align-items: center; justify-content: center; transition: transform 1.1s var(--ease2); }
-.l-top { top: 0; align-items: flex-end; padding-bottom: 1.5rem; }
-.l-bot { bottom: 0; align-items: flex-start; padding-top: 1.5rem; }
+
+#loader { position: fixed; inset: 0; z-index: 9998; background: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
+.l-half { position: absolute; left: 0; right: 0; height: 50%; background: var(--ink); transition: transform 1.1s var(--ease2); }
+.l-top { top: 0; }
+.l-bot { bottom: 0; }
 .l-half.exit-top { transform: translateY(-100%); }
 .l-half.exit-bot { transform: translateY(100%); }
-.l-mark { font-family: var(--ff-d); font-size: 1.8rem; font-weight: 700; color: var(--white); letter-spacing: .06em; display: flex; align-items: center; gap: 14px; }
-.l-mark em { font-style: normal; color: var(--gold); }
-.l-compass-anim { width: 38px; height: 38px; border: 1.5px solid rgba(200,145,58,.4); border-radius: 50%; display: grid; place-items: center; animation: spinLoader 2s linear infinite; }
+
+.l-ring-wrap { position: relative; width: 130px; height: 130px; display: grid; place-items: center; z-index: 1; }
+.l-ring-spin { position: absolute; inset: 0; border-radius: 50%; border: 2px solid transparent; border-top-color: var(--gold); border-right-color: rgba(200,145,58,.35); animation: spinLoader 1.4s linear infinite; }
+.l-ring-slow { position: absolute; inset: 7px; border-radius: 50%; border: 1px solid transparent; border-bottom-color: rgba(200,145,58,.25); animation: spinLoader 2.6s linear infinite reverse; }
+.l-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+
+.l-pct-num { font-family: var(--ff-d); font-size: 2.4rem; font-weight: 700; color: var(--gold); line-height: 1; z-index: 1; }
+.l-name { font-family: var(--ff-c); font-size: .58rem; font-weight: 700; letter-spacing: .26em; text-transform: uppercase; color: rgba(255,255,255,.2); z-index: 1; }
+
 @keyframes spinLoader { to { transform: rotate(360deg); } }
-.l-compass-anim svg { width: 18px; height: 18px; stroke: var(--gold); fill: none; stroke-width: 2; }
 .l-bar-wrap { position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(255,255,255,.06); }
-.l-bar-fill { height: 100%; background: var(--gold); width: 0; transition: width .05s linear; box-shadow: 0 0 8px rgba(200,145,58,.6); }
+.l-bar-fill { height: 100%; background: var(--gold); width: 0; transition: width .05s linear; }
+
 
 /* INTRO */
 #intro { position: fixed; inset: 0; z-index: 9997; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity 1.2s var(--ease); }
