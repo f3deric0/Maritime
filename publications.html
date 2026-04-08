@@ -428,7 +428,8 @@ const SAMPLE_ARTICLES = [
 ];
 
 /* ─────────────────────────────── */
-const isConfigured = SUPABASE_URL !== 'https://xuinnqoftizczzvkmzjg.supabase.co';
+const SUPABASE_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
+const isConfigured = !!SUPABASE_URL && !!SUPABASE_ANON;
 let supabase = null;
 if (isConfigured) {
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
