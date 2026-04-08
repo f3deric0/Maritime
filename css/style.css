@@ -71,7 +71,16 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; height: 78px; pa
 nav.dark { height: 64px; background: rgba(5,12,21,.95); backdrop-filter: blur(24px); border-color: rgba(200,145,58,.1); }
 .logo { display: flex; align-items: center; cursor: none; transition: opacity .3s; }
 .logo:hover { opacity: .9; }
-.logo-pill { display: flex; align-items: center; gap: 12px; padding: 9px 22px 9px 11px; border: 1.5px solid rgba(200,145,58,.38); border-radius: 100px; background: rgba(200,145,58,.06); transition: all .4s var(--ease); }
+.logo-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 22px 9px 11px;
+  border: 1.8px solid rgba(200,145,58,.55);
+  border-radius: 100px;
+  background: rgba(200,145,58,.08);
+  box-shadow: 0 0 18px rgba(200,145,58,.10);
+  transition: all .4s var(--ease);}
 .logo:hover .logo-pill { background: rgba(200,145,58,.13); border-color: var(--gold); box-shadow: 0 0 32px rgba(200,145,58,.18); }
 .logo-name { font-family: var(--ff-d); font-size: 1.32rem; font-weight: 700; letter-spacing: .03em; color: var(--white); }
 .logo-name em { font-style: normal; color: var(--gold); }
