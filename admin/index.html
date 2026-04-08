@@ -601,8 +601,8 @@ select.form-input-admin { appearance: none; cursor: pointer; }
    3. Paste your Project URL and anon key below
    4. Add admin users via: Authentication > Users > Add user
    ═══════════════════════════════════════ */
-const SUPABASE_URL  = 'YOUR_SUPABASE_URL';     // e.g. https://xxxxxxxxxxxx.supabase.co
-const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY'; // starts with "eyJ..."
+const SUPABASE_URL  = 'https://xuinnqoftizczzvkmzjg.supabase.co';     // e.g. https://xxxxxxxxxxxx.supabase.co
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4'; // starts with "eyJ..."
 
 /* ─────────────────────────── */
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
@@ -612,7 +612,7 @@ let articles = [];
 
 /* ── INIT ── */
 async function init() {
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+  if (SUPABASE_URL === 'https://xuinnqoftizczzvkmzjg.supabase.co') {
     showConfigError();
     return;
   }
@@ -631,8 +631,8 @@ function showConfigError() {
       <h2 style="font-family:var(--ff-d);font-size:2rem;color:var(--gold);margin-bottom:1rem">Configure Supabase</h2>
       <p style="font-family:var(--ff-b);font-size:.9rem;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:1.5rem">
         Edit <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">admin/index.html</code>
-        and replace <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">YOUR_SUPABASE_URL</code>
-        and <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">YOUR_SUPABASE_ANON_KEY</code>
+        and replace <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">https://xuinnqoftizczzvkmzjg.supabase.co</code>
+        and <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4</code>
         with your project credentials.<br><br>
         Then run <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">supabase-setup.sql</code>
         in your Supabase SQL editor to create the required tables.
