@@ -612,7 +612,7 @@ let articles = [];
 
 /* ── INIT ── */
 async function init() {
-  if (SUPABASE_URL === 'https://xuinnqoftizczzvkmzjg.supabase.co') {
+  if (!SUPABASE_URL || SUPABASE_URL === 'https://xxxx.supabase.co') {
     showConfigError();
     return;
   }
