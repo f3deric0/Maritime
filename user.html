@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account — Maritime Affairs</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── PAGE SHELL ── */
+body { background: var(--ink); color: var(--white); min-height: 100vh; }
+
+/* ── USER DASHBOARD ── */
+.dashboard {
+  max-width: 1100px; margin: 0 auto;
+  padding: 7rem 5vw 6rem;
+  display: none;
+}
+.dash-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 3rem; padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.dash-user {
+  display: flex; align-items: center; gap: 1rem;
+}
+.dash-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--ocean), var(--steel));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ff-d); font-size: 1.4rem; color: var(--gold);
+  border: 1px solid rgba(200,145,58,.3);
+}
+.dash-info h2 {
+  font-family: var(--ff-d); font-size: 1.4rem; font-weight: 600;
+}
+.dash-info p {
+  font-family: var(--ff-b); font-size: .8rem; color: rgba(255,255,255,.4);
+  margin-top: 2px;
+}
+.btn-logout {
+  font-family: var(--ff-c); font-size: .62rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.4); border: 1px solid rgba(255,255,255,.12);
+  background: transparent; border-radius: 8px;
+  padding: 9px 18px; cursor: pointer;
+  transition: all .3s;
+}
+.btn-logout:hover { color: var(--white); border-color: rgba(255,255,255,.3); }
+
+/* ── ARTICLES EDITOR ── */
+.dash-section-title {
+  font-family: var(--ff-c); font-size: .65rem; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(200,145,58,.6); margin-bottom: 1.5rem;
+}
+.articles-list { display: flex; flex-direction: column; gap: 1rem; }
+
+.article-row {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px; padding: 1.5rem 1.8rem;
+  display: flex; align-items: flex-start; gap: 1.5rem;
+  transition: border-color .3s, background .3s;
+}
+.article-row:hover { border-color: rgba(200,145,58,.2); background: rgba(255,255,255,.04); }
+.article-row-img {
+  width: 80px; height: 64px; border-radius: 8px; overflow: hidden;
+  flex-shrink: 0; background: var(--ocean);
+}
+.article-row-img img { width: 100%; height: 100%; object-fit: cover; }
+.article-row-body { flex: 1; min-width: 0; }
+.article-row-unit {
+  font-family: var(--ff-c); font-size: .58rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: .4rem;
+}
+.article-row-title {
+  font-family: var(--ff-d); font-size: 1.05rem; font-weight: 600;
+  color: var(--white); margin-bottom: .4rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.article-row-summary {
+  font-family: var(--ff-b); font-size: .78rem; color: rgba(255,255,255,.4);
+  line-height: 1.6;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.article-row-actions {
+  display: flex; gap: .6rem; flex-shrink: 0; align-items: center;
+}
+.btn-edit {
+  font-family: var(--ff-c); font-size: .6rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink); background: var(--gold);
+  border: none; border-radius: 8px;
+  padding: 8px 16px; cursor: pointer;
+  transition: all .3s;
+  box-shadow: 0 3px 12px rgba(200,145,58,.3);
+}
+.btn-edit:hover { background: var(--gold-l); transform: translateY(-1px); }
+
+.article-row-status {
+  display: flex; align-items: center; gap: .4rem;
+  font-family: var(--ff-c); font-size: .58rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.status-dot.published { background: #2ecc71; }
+.status-dot.draft { background: rgba(255,255,255,.25); }
+.status-label.published { color: #2ecc71; }
+.status-label.draft { color: rgba(255,255,255,.3); }
+
+/* ── EDIT MODAL ── */
+#edit-modal {
+  display: none; position: fixed; inset: 0; z-index: 9000;
+  background: rgba(5,12,21,.85); backdrop-filter: blur(16px);
+  align-items: center; justify-content: center;
+  padding: 2rem;
+}
+#edit-modal.open { display: flex; }
+.edit-box {
+  background: var(--deep);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px; padding: 2.5rem;
+  width: 100%; max-width: 640px;
+  max-height: 90vh; overflow-y: auto;
+  position: relative;
+}
+.edit-box h3 {
+  font-family: var(--ff-d); font-size: 1.6rem; font-weight: 700;
+  color: var(--white); margin-bottom: 1.6rem;
+}
+.edit-box h3 em { font-style: italic; color: var(--gold); }
+.form-row { margin-bottom: 1.2rem; }
+.form-label {
+  display: block; font-family: var(--ff-c); font-size: .6rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(255,255,255,.4); margin-bottom: .5rem;
+}
+.form-control {
+  width: 100%; padding: 11px 14px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; color: var(--white); font-size: .88rem;
+  font-family: var(--ff-b);
+  outline: none; transition: border-color .3s, background .3s;
+  resize: vertical;
+}
+.form-control:focus { border-color: rgba(200,145,58,.5); background: rgba(255,255,255,.07); }
+.form-control::placeholder { color: rgba(255,255,255,.2); }
+textarea.form-control { min-height: 100px; }
+.edit-actions {
+  display: flex; gap: .8rem; margin-top: 1.8rem;
+  justify-content: flex-end;
+}
+.btn-save {
+  font-family: var(--ff-c); font-size: .7rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink); background: var(--gold);
+  border: none; border-radius: 10px;
+  padding: 11px 26px; cursor: pointer;
+  transition: all .3s;
+  box-shadow: 0 4px 18px rgba(200,145,58,.35);
+}
+.btn-save:hover { background: var(--gold-l); }
+.btn-save:disabled { opacity: .5; cursor: not-allowed; }
+.btn-cancel-edit {
+  font-family: var(--ff-c); font-size: .7rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  border: 1px solid rgba(255,255,255,.1);
+  background: transparent; border-radius: 10px;
+  padding: 11px 22px; cursor: pointer;
+  transition: all .3s;
+}
+.btn-cancel-edit:hover { color: var(--white); border-color: rgba(255,255,255,.25); }
+.edit-close {
+  position: absolute; top: 1.4rem; right: 1.4rem;
+  background: rgba(255,255,255,.07); border: none;
+  width: 32px; height: 32px; border-radius: 50%;
+  color: rgba(255,255,255,.5); cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s;
+}
+.edit-close:hover { background: rgba(255,255,255,.13); color: var(--white); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  background: var(--deep); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px; padding: .8rem 1.6rem;
+  font-family: var(--ff-c); font-size: .7rem; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--white); opacity: 0; pointer-events: none;
+  transition: opacity .3s; z-index: 9999;
+}
+.toast.show { opacity: 1; }
+.toast.ok { border-color: rgba(46,204,113,.4); color: #2ecc71; }
+.toast.err { border-color: rgba(231,76,60,.4); color: #e74c3c; }
+
+/* ── LOADING / EMPTY ── */
+.dash-loading, .dash-empty {
+  text-align: center; padding: 4rem 2rem;
+  color: rgba(255,255,255,.3);
+  font-family: var(--ff-b); font-size: .9rem;
+}
+.dash-loading { animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:.7} }
+
+/* ── AUTH MODAL (reuse from user avatar button on other pages) ── */
+#auth-modal {
+  display: none; position: fixed; inset: 0; z-index: 8000;
+  background: rgba(5,12,21,.88); backdrop-filter: blur(20px);
+  align-items: center; justify-content: center;
+  padding: 2rem;
+}
+#auth-modal.open { display: flex; }
+.auth-box {
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 22px; padding: 3rem 2.5rem;
+  width: 100%; max-width: 400px;
+  position: relative;
+  box-shadow: 0 40px 80px rgba(0,0,0,.5);
+}
+.auth-boat-logo {
+  text-align: center; margin-bottom: 2rem;
+}
+.auth-boat-circle {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--ocean) 0%, var(--steel) 100%);
+  border: 1px solid rgba(200,145,58,.3);
+  display: inline-flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  margin-bottom: 1rem;
+}
+.auth-box h2 {
+  font-family: var(--ff-d); font-size: 1.8rem; font-weight: 700;
+  text-align: center; color: var(--white); margin-bottom: .4rem;
+}
+.auth-box h2 em { font-style: italic; color: var(--gold); }
+.auth-subtitle {
+  text-align: center; font-family: var(--ff-c); font-size: .6rem;
+  font-weight: 600; letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(200,145,58,.5); margin-bottom: 2rem;
+}
+.auth-tabs {
+  display: flex; gap: 0; margin-bottom: 2rem;
+  background: rgba(255,255,255,.04);
+  border-radius: 10px; padding: 4px;
+}
+.auth-tab {
+  flex: 1; padding: 8px;
+  font-family: var(--ff-c); font-size: .65rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: rgba(255,255,255,.35); background: transparent;
+  border: none; border-radius: 8px; cursor: pointer;
+  transition: all .3s;
+}
+.auth-tab.active {
+  background: var(--gold); color: var(--ink);
+  box-shadow: 0 2px 10px rgba(200,145,58,.3);
+}
+.auth-form-group { margin-bottom: 1.1rem; }
+.auth-label {
+  display: block; font-family: var(--ff-c); font-size: .6rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.4); margin-bottom: .45rem;
+}
+.auth-input {
+  width: 100%; padding: 11px 14px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; color: var(--white); font-size: .88rem;
+  outline: none; transition: border-color .3s, background .3s;
+}
+.auth-input:focus { border-color: rgba(200,145,58,.5); background: rgba(255,255,255,.07); }
+.auth-input::placeholder { color: rgba(255,255,255,.2); }
+.auth-btn {
+  width: 100%; padding: 12px; border-radius: 10px;
+  background: var(--gold); color: var(--ink);
+  font-family: var(--ff-c); font-size: .78rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  border: none; cursor: pointer;
+  transition: all .3s var(--ease);
+  box-shadow: 0 4px 18px rgba(200,145,58,.35);
+  margin-top: .6rem;
+}
+.auth-btn:hover { background: var(--gold-l); transform: translateY(-1px); }
+.auth-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.auth-err {
+  font-family: var(--ff-b); font-size: .78rem;
+  color: #e74c3c; text-align: center;
+  margin-top: .8rem; display: none;
+}
+.auth-success {
+  font-family: var(--ff-b); font-size: .82rem;
+  color: #2ecc71; text-align: center;
+  margin-top: .8rem; display: none; line-height: 1.6;
+}
+.auth-close {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: rgba(255,255,255,.07); border: none;
+  width: 30px; height: 30px; border-radius: 50%;
+  color: rgba(255,255,255,.45); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .3s; font-size: .9rem;
+}
+.auth-close:hover { background: rgba(255,255,255,.13); color: var(--white); }
+
+/* ── FLOATING BOAT BUTTON ── */
+.boat-btn {
+  position: fixed; bottom: 2.2rem; right: 2.2rem; z-index: 700;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--ocean) 0%, var(--steel) 100%);
+  border: 1px solid rgba(200,145,58,.35);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all .35s var(--ease);
+  box-shadow: 0 8px 30px rgba(0,0,0,.4), 0 0 0 0 rgba(200,145,58,.3);
+  text-decoration: none;
+}
+.boat-btn:hover {
+  transform: translateY(-3px) scale(1.06);
+  border-color: rgba(200,145,58,.7);
+  box-shadow: 0 14px 40px rgba(0,0,0,.5), 0 0 0 6px rgba(200,145,58,.12);
+}
+.boat-btn.logged-in { background: linear-gradient(135deg, var(--ocean), #1d7a5e); }
+.boat-btn-tooltip {
+  position: absolute; bottom: 100%; right: 0; margin-bottom: .6rem;
+  background: var(--deep); border: 1px solid rgba(255,255,255,.1);
+  color: var(--white); font-family: var(--ff-c); font-size: .6rem;
+  font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 6px 12px; border-radius: 6px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transform: translateY(4px);
+  transition: all .25s;
+}
+.boat-btn:hover .boat-btn-tooltip {
+  opacity: 1; transform: translateY(0);
+}
+
+/* Notch badge for logged-in state */
+.boat-btn .badge {
+  position: absolute; top: 2px; right: 2px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #2ecc71; border: 2px solid var(--ink);
+  display: none;
+}
+.boat-btn.logged-in .badge { display: block; }
+
+/* ── USER PAGE HERO (shown when not logged in) ── */
+.user-hero {
+  min-height: 100vh; display: flex;
+  align-items: center; justify-content: center;
+  flex-direction: column;
+  background: radial-gradient(ellipse at 30% 80%, rgba(200,145,58,.08) 0%, transparent 55%),
+              radial-gradient(ellipse at 80% 20%, rgba(13,58,84,.4) 0%, transparent 50%);
+  padding: 4rem 2rem;
+  text-align: center;
+}
+.user-hero-boat {
+  width: 100px; height: 100px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--ocean), var(--steel));
+  border: 1px solid rgba(200,145,58,.3);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 2.5rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+  cursor: pointer; transition: all .4s var(--ease);
+}
+.user-hero-boat:hover {
+  transform: scale(1.07) translateY(-4px);
+  border-color: rgba(200,145,58,.7);
+  box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 0 8px rgba(200,145,58,.1);
+}
+.user-hero h1 {
+  font-family: var(--ff-d); font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700; line-height: .95;
+  color: var(--white); margin-bottom: 1.2rem;
+}
+.user-hero h1 em { font-style: italic; color: var(--gold); }
+.user-hero p {
+  font-family: var(--ff-b); font-size: .9rem; font-weight: 300;
+  color: rgba(255,255,255,.45); max-width: 360px; line-height: 1.8;
+  margin: 0 auto 2.5rem;
+}
+.hero-signin-btn {
+  font-family: var(--ff-c); font-size: .75rem; font-weight: 700;
+  letter-spacing: .16em; text-transform: uppercase;
+  color: var(--ink); background: var(--gold);
+  border: none; border-radius: 12px;
+  padding: 14px 32px; cursor: pointer;
+  transition: all .3s; box-shadow: 0 6px 24px rgba(200,145,58,.4);
+}
+.hero-signin-btn:hover { background: var(--gold-l); transform: translateY(-2px); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Maritime <em>Affairs</em></a>
+    <ul class="nav-links">
+      <li><a href="publications.html">Publications</a></li>
+      <li><a href="index.html#research">Research</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- USER HERO (shown when not logged in) -->
+<div class="user-hero" id="user-hero">
+  <div class="user-hero-boat" onclick="openAuthModal('login')">
+    <!-- Boat SVG -->
+    <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- mast -->
+      <line x1="26" y1="8" x2="26" y2="32" stroke="rgba(200,145,58,.9)" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- sail -->
+      <path d="M26 10 L38 28 L26 28 Z" fill="rgba(200,145,58,.25)" stroke="rgba(200,145,58,.6)" stroke-width="1" stroke-linejoin="round"/>
+      <!-- hull -->
+      <path d="M12 32 Q14 40 26 42 Q38 40 40 32 Z" fill="rgba(255,255,255,.15)" stroke="rgba(200,145,58,.7)" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- water line -->
+      <path d="M9 42 Q16 39 26 42 Q36 45 43 42" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+    </svg>
+  </div>
+  <h1>Your <em>Account</em></h1>
+  <p>Sign in to access your dashboard and edit publication texts on the Maritime Affairs platform.</p>
+  <button class="hero-signin-btn" onclick="openAuthModal('login')">Sign in or Create account</button>
+</div>
+
+<!-- DASHBOARD (shown when logged in) -->
+<div class="dashboard" id="dashboard">
+  <div class="dash-header">
+    <div class="dash-user">
+      <div class="dash-avatar" id="dash-avatar">M</div>
+      <div class="dash-info">
+        <h2 id="dash-name">User</h2>
+        <p id="dash-email">—</p>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Sign out</button>
+  </div>
+
+  <p class="dash-section-title">Publications — Edit Texts</p>
+
+  <div id="articles-container">
+    <div class="dash-loading">Loading publications…</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     AUTH MODAL
+════════════════════════════════ -->
+<div id="auth-modal">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuthModal()">✕</button>
+    <div class="auth-boat-logo">
+      <div class="auth-boat-circle">
+        <svg width="38" height="38" viewBox="0 0 52 52" fill="none">
+          <line x1="26" y1="8" x2="26" y2="32" stroke="rgba(200,145,58,.9)" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M26 10 L38 28 L26 28 Z" fill="rgba(200,145,58,.25)" stroke="rgba(200,145,58,.6)" stroke-width="1" stroke-linejoin="round"/>
+          <path d="M12 32 Q14 40 26 42 Q38 40 40 32 Z" fill="rgba(255,255,255,.15)" stroke="rgba(200,145,58,.7)" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M9 42 Q16 39 26 42 Q36 45 43 42" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+    </div>
+    <h2>Maritime <em>Affairs</em></h2>
+    <p class="auth-subtitle">Member area</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Sign in</button>
+      <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <div class="auth-form-group">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" type="email" id="login-email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="auth-form-group">
+        <label class="auth-label">Password</label>
+        <input class="auth-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn" id="login-btn" onclick="doLogin()">Sign in</button>
+      <p class="auth-err" id="login-err"></p>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="form-signup" style="display:none">
+      <div class="auth-form-group">
+        <label class="auth-label">Email</label>
+        <input class="auth-input" type="email" id="signup-email" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="auth-form-group">
+        <label class="auth-label">Password</label>
+        <input class="auth-input" type="password" id="signup-password" placeholder="Minimum 6 characters" autocomplete="new-password">
+      </div>
+      <button class="auth-btn" id="signup-btn" onclick="doSignup()">Create account</button>
+      <p class="auth-err" id="signup-err"></p>
+      <p class="auth-success" id="signup-ok">
+        ✓ Account created! Check your email to confirm your address, then sign in.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     EDIT ARTICLE MODAL
+════════════════════════════════ -->
+<div id="edit-modal">
+  <div class="edit-box">
+    <button class="edit-close" onclick="closeEditModal()">✕</button>
+    <h3>Edit <em>Publication</em></h3>
+
+    <input type="hidden" id="edit-id">
+
+    <div class="form-row">
+      <label class="form-label">Title</label>
+      <input class="form-control" type="text" id="edit-title" placeholder="Article title">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Summary / Teaser</label>
+      <textarea class="form-control" id="edit-summary" rows="4" placeholder="Short description shown on the publications page…"></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Author</label>
+      <input class="form-control" type="text" id="edit-author" placeholder="e.g. Maritime Affairs Editorial">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Unit / Category</label>
+      <select class="form-control" id="edit-unit">
+        <option value="">— Select unit —</option>
+        <option value="Blue Policy & Law">Blue Policy &amp; Law</option>
+        <option value="Blue Economy & Logistics">Blue Economy &amp; Logistics</option>
+        <option value="Defense & Security">Defense &amp; Security</option>
+        <option value="Tech, Energy & Resources">Tech, Energy &amp; Resources</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Image URL</label>
+      <input class="form-control" type="url" id="edit-image" placeholder="https://…">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Read time (minutes)</label>
+      <input class="form-control" type="number" id="edit-readmin" min="1" max="60" placeholder="e.g. 8">
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn-cancel-edit" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-save" id="save-btn" onclick="saveArticle()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     FLOATING BOAT BUTTON
+     (visible on all pages when you include this snippet)
+════════════════════════════════ -->
+<a href="user.html" class="boat-btn" id="boat-fab" title="Account">
+  <div class="badge"></div>
+  <span class="boat-btn-tooltip">My account</span>
+  <svg width="26" height="26" viewBox="0 0 52 52" fill="none">
+    <line x1="26" y1="8" x2="26" y2="32" stroke="rgba(200,145,58,.9)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M26 10 L38 28 L26 28 Z" fill="rgba(200,145,58,.25)" stroke="rgba(200,145,58,.7)" stroke-width="1" stroke-linejoin="round"/>
+    <path d="M12 32 Q14 40 26 42 Q38 40 40 32 Z" fill="rgba(255,255,255,.15)" stroke="rgba(200,145,58,.7)" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M9 42 Q16 39 26 42 Q36 45 43 42" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  </svg>
+</a>
+
+<div class="toast" id="toast"></div>
+
+<!-- ════════════════════════════════
+     SCRIPTS
+════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ═══════════════════════════════════════
+   CONFIGURATION — paste your Supabase credentials here
+   Get them from: Supabase Dashboard → Settings → API
+   ═══════════════════════════════════════ */
+const SUPABASE_URL  = 'YOUR_SUPABASE_URL';      // e.g. https://xxxxxxxxxxxx.supabase.co
+const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY'; // starts with "eyJ..."
+
+/* ─────────────────────────── */
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+let currentArticle = null;
+
+/* ── INIT ── */
+async function init() {
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    showToast('Configure Supabase credentials first', 'err');
+    return;
+  }
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    showDashboard(session.user);
+  }
+  // Update boat FAB badge
+  updateBoatBadge(!!session);
+}
+
+function updateBoatBadge(loggedIn) {
+  const fab = document.getElementById('boat-fab');
+  if (loggedIn) fab.classList.add('logged-in');
+  else fab.classList.remove('logged-in');
+}
+
+/* ── DASHBOARD ── */
+async function showDashboard(user) {
+  document.getElementById('user-hero').style.display = 'none';
+  const dash = document.getElementById('dashboard');
+  dash.style.display = 'block';
+
+  const email = user.email || '';
+  const initial = email.charAt(0).toUpperCase();
+  document.getElementById('dash-avatar').textContent = initial;
+  document.getElementById('dash-name').textContent = email.split('@')[0];
+  document.getElementById('dash-email').textContent = email;
+
+  await loadArticles();
+}
+
+async function loadArticles() {
+  const container = document.getElementById('articles-container');
+  container.innerHTML = '<div class="dash-loading">Loading publications…</div>';
+
+  const { data, error } = await sb
+    .from('articles')
+    .select('id,title,summary,unit,author,image_url,read_min,published,published_at,slug')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    container.innerHTML = '<div class="dash-empty">Could not load articles. Check your Supabase connection.</div>';
+    return;
+  }
+  if (!data || !data.length) {
+    container.innerHTML = '<div class="dash-empty">No publications yet. Add them from the Admin panel.</div>';
+    return;
+  }
+
+  container.innerHTML = `<div class="articles-list">${data.map(articleRow).join('')}</div>`;
+}
+
+function articleRow(a) {
+  const pub = a.published;
+  const img = a.image_url
+    ? `<img src="${escHtml(a.image_url)}" alt="" loading="lazy">`
+    : '';
+  return `
+    <div class="article-row">
+      <div class="article-row-img">${img}</div>
+      <div class="article-row-body">
+        <div class="article-row-unit">${escHtml(a.unit || 'General')}</div>
+        <div class="article-row-title">${escHtml(a.title)}</div>
+        <div class="article-row-summary">${escHtml(a.summary)}</div>
+      </div>
+      <div class="article-row-actions">
+        <div class="article-row-status">
+          <div class="status-dot ${pub ? 'published' : 'draft'}"></div>
+          <span class="status-label ${pub ? 'published' : 'draft'}">${pub ? 'Published' : 'Draft'}</span>
+        </div>
+        <button class="btn-edit" onclick='openEditModal(${JSON.stringify(a)})'>Edit</button>
+      </div>
+    </div>`;
+}
+
+/* ── AUTH ── */
+function openAuthModal(tab) {
+  switchTab(tab || 'login');
+  document.getElementById('auth-modal').classList.add('open');
+}
+function closeAuthModal() {
+  document.getElementById('auth-modal').classList.remove('open');
+}
+
+function switchTab(tab) {
+  document.getElementById('form-login').style.display  = tab === 'login'  ? 'block' : 'none';
+  document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
+  document.getElementById('tab-login').classList.toggle('active',  tab === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  document.getElementById('login-err').style.display  = 'none';
+  document.getElementById('signup-err').style.display = 'none';
+  document.getElementById('signup-ok').style.display  = 'none';
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-password').value;
+  const btn   = document.getElementById('login-btn');
+  const err   = document.getElementById('login-err');
+  err.style.display = 'none';
+  if (!email || !pass) { showAuthErr('login', 'Enter email and password.'); return; }
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Sign in';
+  if (error) { showAuthErr('login', error.message); return; }
+  closeAuthModal();
+  showToast('Welcome back!', 'ok');
+  showDashboard(data.user);
+  updateBoatBadge(true);
+}
+
+async function doSignup() {
+  const email = document.getElementById('signup-email').value.trim();
+  const pass  = document.getElementById('signup-password').value;
+  const btn   = document.getElementById('signup-btn');
+  document.getElementById('signup-err').style.display = 'none';
+  document.getElementById('signup-ok').style.display  = 'none';
+  if (!email || !pass) { showAuthErr('signup', 'Enter email and password.'); return; }
+  if (pass.length < 6) { showAuthErr('signup', 'Password must be at least 6 characters.'); return; }
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  const { error } = await sb.auth.signUp({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Create account';
+  if (error) { showAuthErr('signup', error.message); return; }
+  document.getElementById('signup-ok').style.display = 'block';
+}
+
+function showAuthErr(form, msg) {
+  const el = document.getElementById(`${form}-err`);
+  el.textContent = msg; el.style.display = 'block';
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  showToast('Signed out', 'ok');
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('user-hero').style.display = 'flex';
+  updateBoatBadge(false);
+}
+
+/* ── EDIT MODAL ── */
+function openEditModal(article) {
+  currentArticle = article;
+  document.getElementById('edit-id').value       = article.id;
+  document.getElementById('edit-title').value    = article.title || '';
+  document.getElementById('edit-summary').value  = article.summary || '';
+  document.getElementById('edit-author').value   = article.author || '';
+  document.getElementById('edit-unit').value     = article.unit || '';
+  document.getElementById('edit-image').value    = article.image_url || '';
+  document.getElementById('edit-readmin').value  = article.read_min || '';
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  currentArticle = null;
+}
+
+async function saveArticle() {
+  const id      = document.getElementById('edit-id').value;
+  const title   = document.getElementById('edit-title').value.trim();
+  const summary = document.getElementById('edit-summary').value.trim();
+  const author  = document.getElementById('edit-author').value.trim();
+  const unit    = document.getElementById('edit-unit').value;
+  const image   = document.getElementById('edit-image').value.trim();
+  const readmin = parseInt(document.getElementById('edit-readmin').value) || null;
+  const btn     = document.getElementById('save-btn');
+
+  if (!title || !summary) { showToast('Title and summary are required', 'err'); return; }
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  const { error } = await sb
+    .from('articles')
+    .update({ title, summary, author, unit, image_url: image || null, read_min: readmin })
+    .eq('id', id);
+
+  btn.disabled = false; btn.textContent = 'Save changes';
+
+  if (error) { showToast('Error saving: ' + error.message, 'err'); return; }
+
+  showToast('Publication updated ✓', 'ok');
+  closeEditModal();
+  await loadArticles();
+}
+
+/* ── UTILS ── */
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type || ''} show`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 3200);
+}
+
+/* ── KEYBOARD ── */
+document.getElementById('login-password')?.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('signup-password')?.addEventListener('keydown', e => { if (e.key === 'Enter') doSignup(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeAuthModal(); closeEditModal(); }
+});
+
+/* ── CLICK OUTSIDE ── */
+document.getElementById('auth-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('auth-modal')) closeAuthModal();
+});
+document.getElementById('edit-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('edit-modal')) closeEditModal();
+});
+
+/* ── START ── */
+init();
+</script>
+<script src="js/main.js"></script>
+</body>
+</html>
