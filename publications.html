@@ -11,123 +11,106 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        body { background: var(--ink); cursor: none; margin: 0; overflow-x: hidden; color: white; }
+        /* Sincronizzazione variabili con Index */
+        :root {
+            --gold: #c8913a;
+            --ink: #050c15;
+            --white: #ffffff;
+            --ff-d: 'Cormorant Garamond', serif;
+            --ff-c: 'Barlow Condensed', sans-serif;
+            --ff-b: 'Barlow', sans-serif;
+        }
+
+        body { background: var(--ink); cursor: none; margin: 0; overflow-x: hidden; color: var(--white); font-family: var(--ff-b); }
         
-        /* ── CURSORE ── */
-        #compass-cursor { position: fixed; top: 0; left: 0; width: 56px; height: 56px; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); }
+        /* ── COMPASS CURSOR (Identico a Index) ── */
+        #compass-cursor { position: fixed; top: 0; left: 0; width: 56px; height: 56px; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: transform 0.1s ease-out; }
         #cursor-dot { position: fixed; width: 4px; height: 4px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 10001; transform: translate(-50%, -50%); }
 
-        /* ── NAV ── */
-        #nav { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 80px; z-index: 1000; 
-            background: rgba(5, 12, 21, 0.9); backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: center; justify-content: space-between; padding: 0 5vw;
-            box-sizing: border-box;
-        }
-        .nav-links { 
-            display: flex; gap: 2.2rem; list-style: none; margin: 0; padding: 0;
-            position: absolute; left: 50%; transform: translateX(-50%);
-        }
-        .nav-links li a { 
-            font-family: var(--ff-c); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; 
-            text-transform: uppercase; text-decoration: none; color: var(--white); transition: 0.3s;
-        }
-        .nav-links li a:hover { color: var(--gold); }
-
-        /* ── HERO ── */
+        /* ── HERO STYLING ── */
         .pub-hero {
-            min-height: 50vh; background: var(--deep); display: flex; align-items: flex-end;
-            position: relative; overflow: hidden; padding: 0 5vw 6rem;
+            min-height: 60vh; background: var(--ink); display: flex; align-items: flex-end;
+            position: relative; padding: 0 5vw 8rem;
         }
+        .mega-title-pub {
+            font-family: var(--ff-d);
+            font-size: clamp(3.5rem, 10vw, 8rem);
+            line-height: 0.9;
+            margin: 0;
+        }
+        .mega-title-pub span.gold-text { color: var(--gold); font-style: italic; display: block; }
+        .mega-title-pub span.white-text { color: var(--white); display: block; }
 
-        /* ── FILTRI ── */
+        /* ── FILTERS ── */
         .pub-filters {
-            background: var(--ink); padding: 1.5rem 0; position: sticky; top: 80px; z-index: 100;
+            background: rgba(5, 12, 21, 0.8); padding: 1.5rem 0; position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(20px);
         }
-        .pub-filters-inner { 
-            max-width: 1200px; margin: 0 auto; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
-        }
+        .pub-filters-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
         .filter-btn {
-            font-family: var(--ff-c); font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+            font-family: var(--ff-c); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
             letter-spacing: 0.1em; color: rgba(255,255,255,0.5); background: transparent;
-            border: 1px solid rgba(255,255,255,0.1); padding: 10px 22px; border-radius: 100px;
-            cursor: pointer; transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 100px;
+            cursor: none; transition: 0.3s;
         }
-        .filter-btn:hover { border-color: var(--gold); color: white; }
         .filter-btn.active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
 
-        /* ── FEATURED ARTICLE ── */
-        .pub-featured {
-            display: grid; grid-template-columns: 1.2fr 1fr; gap: 4rem; margin-bottom: 6rem;
-            cursor: pointer; align-items: center; padding-top: 4rem;
-        }
-        .pub-featured-img { aspect-ratio: 16/9; background: #111; overflow: hidden; }
-        .pub-featured-img img { width: 100%; height: 100%; object-fit: cover; transition: 1s; }
-        .pub-featured:hover img { transform: scale(1.05); }
-        .pub-featured-label { color: var(--gold); font-family: var(--ff-c); text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.7rem; margin-bottom: 1rem; }
-        .pub-featured h2 { font-family: var(--ff-d); font-size: 3.5rem; margin: 1rem 0; line-height: 1.1; color: white; }
-        .pub-featured p { opacity: 0.6; line-height: 1.8; margin-bottom: 2rem; }
-
-        /* ── GRID CARDS ── */
+        /* ── GRID ── */
         .pub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; padding: 4rem 0; }
         .pub-card {
             background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
-            padding: 0; transition: 0.4s ease; display: flex; flex-direction: column;
-            cursor: pointer; position: relative;
+            transition: 0.4s ease; cursor: none;
         }
         .pub-card:hover { border-color: var(--gold); transform: translateY(-5px); }
-        .pub-card-img { width: 100%; aspect-ratio: 16/10; background: #111; position: relative; overflow: hidden; }
+        .pub-card-img { width: 100%; aspect-ratio: 16/10; background: #111; overflow: hidden; }
         .pub-card-img img { width: 100%; height: 100%; object-fit: cover; }
         .pub-card-body { padding: 2rem; }
-        .pub-card h3 { font-family: var(--ff-d); font-size: 1.5rem; margin: 0 0 1rem; color: white; }
-        .pub-card p { font-size: 0.9rem; opacity: 0.6; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-        
-        .wrap { max-width: 1400px; margin: 0 auto; padding: 0 5vw; box-sizing: border-box; }
+        .pub-card h3 { font-family: var(--ff-d); font-size: 1.6rem; margin: 0 0 1rem; line-height: 1.2; }
+        .pub-card p { font-size: 0.95rem; opacity: 0.6; line-height: 1.6; }
 
-        @media (max-width: 992px) {
-            .pub-grid { grid-template-columns: repeat(2, 1fr); }
-            .pub-featured { grid-template-columns: 1fr; gap: 2rem; }
-        }
-        @media (max-width: 600px) {
-            .pub-grid { grid-template-columns: 1fr; }
-        }
+        .wrap { max-width: 1400px; margin: 0 auto; padding: 0 5vw; }
+
+        @media (max-width: 992px) { .pub-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .pub-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div id="compass-cursor">
-    <svg viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/><g class="needle"><polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/><polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/></g></svg>
+  <svg viewBox="0 0 56 56" fill="none">
+    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+    <g class="needle">
+      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
+    </g>
+    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
+  </svg>
 </div>
 <div id="cursor-dot"></div>
 
-<nav id="nav">
-    <a href="index.html" class="logo" style="text-decoration: none;">
-        <div class="logo-pill" style="display: flex; align-items: center; gap: 15px;">
-            <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
-            <div class="logo-text">
-                <div class="logo-name" style="color:white; font-weight:700; font-family:var(--ff-d);">Maritime <em style="color:var(--gold); font-style:italic;">Affairs</em></div>
-                <span class="logo-sub" style="color:rgba(255,255,255,0.5); font-size:0.6rem; text-transform:uppercase; letter-spacing:1px;">EU Blue Economy Do-Tank</span>
-            </div>
+<nav id="nav" style="position: fixed; width: 100%; top:0; z-index: 1000; background: rgba(5,12,21,0.9); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; box-sizing: border-box; border-bottom: 1px solid rgba(255,255,255,0.05);">
+    <a href="index.html" class="logo" style="text-decoration:none">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <img src="./assets/images/Logo-maritimes.png" alt="" style="height:40px;">
+            <div style="color:white; font-family:var(--ff-d); font-size:1.2rem; font-weight:700;">Maritime <em style="color:var(--gold)">Affairs</em></div>
         </div>
     </a>
-    <ul class="nav-links">
-        <li><a href="index.html#mission">Mission</a></li>
-        <li><a href="index.html#units">Units</a></li>
-        <li><a href="index.html#network">Network</a></li>
-        <li><a href="publications.html" style="color:var(--gold)">Publications</a></li>
-        <li><a href="index.html#contact">Join</a></li>
-    </ul>
+    <div style="font-family:var(--ff-c); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase;">
+        <a href="index.html" style="color:white; text-decoration:none; margin-left:20px">Home</a>
+        <a href="publications.html" style="color:var(--gold); text-decoration:none; margin-left:20px">Publications</a>
+    </div>
 </nav>
 
 <section class="pub-hero">
-    <div class="wrap" style="width: 100%;">
-        <div class="section-marker" style="color:var(--gold); font-family:var(--ff-c); text-transform:uppercase; letter-spacing:0.2em; font-size:0.7rem; margin-bottom:1rem;">Expert Knowledge</div>
-        <h1 style="color:white; font-family:var(--ff-d); font-size:clamp(3rem, 8vw, 7rem); margin: 0; font-style: normal;">Our <em style="font-style: italic;">Publications</em></h1>
-        <p style="max-width: 460px; opacity: 0.6; margin-top:1.5rem; font-family:var(--ff-b); line-height:1.8;">Strategic briefs, policy explainers and in-depth reports from the European maritime expert network.</p>
+    <div class="wrap">
+        <div style="color:var(--gold); font-family:var(--ff-c); text-transform:uppercase; letter-spacing:0.2em; font-size:0.75rem; margin-bottom:1.5rem;">Expert Knowledge</div>
+        <h1 class="mega-title-pub">
+            <span class="gold-text">Our</span>
+            <span class="white-text">Publications</span>
+        </h1>
+        <p style="max-width: 500px; opacity: 0.6; margin-top:2rem; line-height:1.8;">Strategic briefs, policy explainers and in-depth reports from the European maritime expert network.</p>
     </div>
-    <div class="pub-hero-count" id="hero-count" style="position:absolute; bottom:4rem; right:5vw; font-family:var(--ff-d); font-size:6rem; color:rgba(200,145,58,0.08);">0</div>
+    <div id="hero-count" style="position:absolute; bottom:4rem; right:5vw; font-family:var(--ff-d); font-size:7rem; color:rgba(200,145,58,0.08);">0</div>
 </section>
 
 <div class="pub-filters">
@@ -142,15 +125,10 @@
     </div>
 </div>
 
-<main class="pub-main">
-    <div class="wrap">
-        <div id="featured-slot"></div>
-        
-        <div id="articles-grid" class="pub-grid"></div>
-        
-        <div id="empty-state" style="display:none; text-align: center; padding: 10rem 0;">
-             <p style="opacity: 0.5; font-family: var(--ff-b);">No publications found in this category.</p>
-        </div>
+<main class="wrap">
+    <div id="articles-grid" class="pub-grid"></div>
+    <div id="empty-state" style="display:none; text-align: center; padding: 10rem 0; opacity: 0.3;">
+         No articles found in this category.
     </div>
 </main>
 
@@ -165,7 +143,6 @@ let allArticles = [];
 let currentFilter = 'all';
 
 async function loadArticles() {
-    console.log("Fetching articles...");
     const { data, error } = await supabase
         .from('articles')
         .select('*')
@@ -173,95 +150,58 @@ async function loadArticles() {
         .order('published_at', { ascending: false });
 
     if (error) {
-        console.error('Supabase Error:', error);
+        console.error('Error fetching:', error);
         return;
     }
 
     allArticles = data || [];
-    renderAll();
+    console.log("Articles loaded:", allArticles); // Controlla la console del browser F12
+    renderGrid();
 }
 
-function renderAll() {
-    const list = currentFilter === 'all' 
-        ? allArticles 
-        : allArticles.filter(a => a.unit === currentFilter);
-
-    // Update Counter
-    const heroCountEl = document.getElementById('hero-count');
-    if(heroCountEl) heroCountEl.textContent = list.length;
-
-    const featuredSlot = document.getElementById('featured-slot');
-    const gridSlot = document.getElementById('articles-grid');
-    const emptyState = document.getElementById('empty-state');
-
-    if (!list.length) {
-        featuredSlot.innerHTML = '';
-        gridSlot.innerHTML = '';
-        emptyState.style.display = 'block';
-        return;
-    }
+function renderGrid() {
+    const grid = document.getElementById('articles-grid');
+    const list = currentFilter === 'all' ? allArticles : allArticles.filter(a => a.unit === currentFilter);
     
-    emptyState.style.display = 'none';
+    document.getElementById('hero-count').textContent = list.length;
+    document.getElementById('empty-state').style.display = list.length ? 'none' : 'block';
 
-    // Logica: Il primo della lista è Featured, gli altri in Grid
-    const [featured, ...rest] = list;
-
-    // Render Featured
-    featuredSlot.innerHTML = `
-        <div class="pub-featured" onclick="window.location.href='article.html?id=${featured.slug || featured.id}'">
-            <div class="pub-featured-img">
-                ${featured.image_url ? `<img src="${featured.image_url}" alt="">` : `<div style="width:100%;height:100%;background:rgba(255,255,255,0.05)"></div>`}
-            </div>
-            <div class="pub-featured-body">
-                <div class="pub-featured-label">${featured.unit || 'Maritime News'}</div>
-                <h2>${featured.title}</h2>
-                <p>${featured.summary || ''}</p>
-                <div style="display:flex; align-items:center; gap:20px;">
-                    <span style="font-size:0.8rem; opacity:0.5;">${new Date(featured.published_at).toLocaleDateString('en-GB')}</span>
-                    <span style="color:var(--gold); font-family:var(--ff-c); font-weight:700; font-size:0.7rem; text-transform:uppercase;">Read Article —</span>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Render Grid
-    gridSlot.innerHTML = rest.map(a => `
-        <div class="pub-card" onclick="window.location.href='article.html?id=${a.slug || a.id}'">
+    grid.innerHTML = list.map(a => `
+        <article class="pub-card" onclick="window.location.href='article.html?id=${a.slug || a.id}'">
             <div class="pub-card-img">
-                ${a.image_url ? `<img src="${a.image_url}" alt="" loading="lazy">` : `<div style="width:100%;height:100%;background:rgba(255,255,255,0.05)"></div>`}
+                ${a.image_url ? `<img src="${a.image_url}" alt="${a.title}">` : `<div style="padding:40px; opacity:0.2">No Image</div>`}
             </div>
             <div class="pub-card-body">
-                <div style="color:var(--gold); font-family:var(--ff-c); font-size:0.6rem; text-transform:uppercase; margin-bottom:10px;">${a.unit}</div>
+                <div style="color:var(--gold); font-family:var(--ff-c); font-size:0.65rem; text-transform:uppercase; margin-bottom:1rem;">${a.unit || 'Unit'}</div>
                 <h3>${a.title}</h3>
                 <p>${a.summary || ''}</p>
-                <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.05); font-size:0.7rem; opacity:0.4;">
+                <div style="margin-top:2rem; font-size:0.7rem; opacity:0.4; font-family:var(--ff-c)">
                     ${new Date(a.published_at).toLocaleDateString('en-GB')}
                 </div>
             </div>
-        </div>
+        </article>
     `).join('');
 }
 
-// Event Listeners Filtri
+// Filtri
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         currentFilter = btn.dataset.unit;
-        renderAll();
+        renderGrid();
     });
 });
 
-// Cursor logic
+// Cursor Logic (Identico alla tua Index)
+const cursor = document.getElementById('compass-cursor');
+const dot = document.getElementById('cursor-dot');
+
 document.addEventListener('mousemove', (e) => {
-    const cursor = document.getElementById('compass-cursor');
-    const dot = document.getElementById('cursor-dot');
-    if(cursor && dot) {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-        dot.style.left = e.clientX + 'px';
-        dot.style.top = e.clientY + 'px';
-    }
+    const x = e.clientX;
+    const y = e.clientY;
+    cursor.style.transform = `translate(${x}px, ${y}px)`;
+    dot.style.transform = `translate(${x}px, ${y}px)`;
 });
 
 loadArticles();
