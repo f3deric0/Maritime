@@ -129,7 +129,123 @@
         </div>
     </div>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ═══════════════════════════════════════
+   CONFIGURAZIONE UNICA (NIENTE DOPPIONI)
+   ═══════════════════════════════════════ */
+const SUPABASE_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4';
 
+// Inizializza il client una sola volta
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let allArticles = [];
+let currentFilter = 'all';
+const PAGE_SIZE = 9;
+let displayCount = PAGE_SIZE;
+
+async function loadArticles() {
+  // Rimuoviamo i sample statici per vedere se il database risponde
+  const { data, error } = await supabase
+    .from('articles')
+    .select('*')
+    .eq('published', true)
+    .order('published_at', { ascending: false });
+
+  if (error) {
+    console.error('Errore caricamento:', error);
+    return;
+  }
+
+  allArticles = data || [];
+  renderAll();
+}
+
+function filtered() {
+  if (currentFilter === 'all') return allArticles;
+  return allArticles.filter(a => a.unit === currentFilter);
+}
+
+function renderAll() {
+  document.getElementById('loading-state').style.display = 'none';
+  const list = filtered();
+  
+  const heroCountEl = document.getElementById('hero-count');
+  if(heroCountEl) heroCountEl.textContent = list.length;
+
+  if (!list.length) {
+    document.getElementById('featured-slot').innerHTML = '';
+    document.getElementById('articles-grid').innerHTML = '';
+    document.getElementById('empty-state').style.display = 'block';
+    return;
+  }
+  
+  document.getElementById('empty-state').style.display = 'none';
+
+  const [first, ...rest] = list;
+  renderFeatured(first);
+  renderGrid(rest.slice(0, displayCount - 1));
+}
+
+function renderFeatured(a) {
+  const el = document.getElementById('featured-slot');
+  el.innerHTML = `
+    <div class="pub-featured" onclick="openArticle('${a.slug || a.id}')">
+      <div class="pub-featured-img">
+        ${a.image_url ? `<img src="${a.image_url}" alt="" loading="lazy">` : `<div class="pub-featured-img-placeholder"></div>`}
+      </div>
+      <div class="pub-featured-body">
+        <div>
+          <div class="pub-featured-label">${a.unit || ''}</div>
+          <h2>${a.title}</h2>
+          <p>${a.summary || ''}</p>
+        </div>
+        <div class="pub-featured-meta">
+          <div class="pub-meta-left">
+            <span class="pub-author">${a.author || 'Maritime Affairs'}</span>
+            <span class="pub-date">${new Date(a.published_at).toLocaleDateString('en-GB')}</span>
+          </div>
+          <div class="pub-read-btn">Read article</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderGrid(articles) {
+  const grid = document.getElementById('articles-grid');
+  grid.innerHTML = articles.map(a => `
+    <div class="pub-card" onclick="openArticle('${a.slug || a.id}')">
+      <div class="pub-card-img">
+        ${a.image_url ? `<img src="${a.image_url}" alt="" loading="lazy">` : `<div class="pub-card-img-placeholder"></div>`}
+        <div class="unit-badge">${a.unit || 'General'}</div>
+      </div>
+      <div class="pub-card-body">
+        <h3>${a.title}</h3>
+        <p>${a.summary || ''}</p>
+        <div class="pub-card-footer">
+          <span class="pub-card-meta">${new Date(a.published_at).toLocaleDateString('en-GB')}</span>
+          <div class="pub-card-arrow">→</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openArticle(id) { window.location.href = `article.html?id=${id}`; }
+
+// Filtri
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.unit;
+    renderAll();
+  });
+});
+
+// Avvio
+loadArticles();
+</script>
 <script src="js/main.js"></script>
 </body>
 </html>
