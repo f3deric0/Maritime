@@ -3,98 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./assets/images/Logo-maritimes.png">
     <title>Publications — Maritime Affairs</title>
-    <meta name="description" content="Briefs, explainers and reports from the Maritime Affairs expert network.">
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="css/style.css">
 
     <style>
+        /* Allineamento con lo stile Index */
+        body { background: var(--ink); color: var(--white); cursor: none; }
+        
+        /* FIX NAV POSITIONING */
+        #nav { 
+            position: fixed; 
+            top: 0; left: 0; width: 100%; 
+            z-index: 1000; 
+            background: rgba(5, 12, 21, 0.85); 
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
 
-<div id="compass-cursor">
-  <svg viewBox="0 0 56 56" fill="none">
-    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
-    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <g class="needle">
-      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
-      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
-    </g>
-    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
-  </svg>
-</div>
-<div id="cursor-dot"></div>
-
-        /* ── PUBLICATIONS HERO ── */
+        /* PUB HERO (Stile coordinato) */
         .pub-hero {
-            min-height: 45vh;
+            min-height: 50vh;
             background: var(--deep);
             display: flex; align-items: flex-end;
             position: relative; overflow: hidden;
-            padding: 0 5vw 5rem;
-            margin-top: 64px; /* Lascia spazio alla nav fissa */
+            padding: 0 5vw 6rem;
+            margin-top: 0;
         }
-        .pub-hero::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: 
-                radial-gradient(ellipse at 20% 100%, rgba(200,145,58,.12) 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 0%, rgba(13,58,84,.5) 0%, transparent 50%);
+        .pub-hero-bg {
+            position: absolute; inset: 0; z-index: 0;
+            background: radial-gradient(circle at 20% 100%, rgba(200,145,58,0.1) 0%, transparent 40%);
         }
-        .pub-hero-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .pub-hero h1 {
-            font-family: var(--ff-d);
-            font-size: clamp(3.5rem, 8vw, 8.5rem);
-            font-weight: 700; line-height: 0.95; letter-spacing: -0.02em;
-            color: var(--white); margin-bottom: 1.5rem;
-        }
-        .pub-hero h1 em { font-style: italic; color: var(--gold); }
-        .pub-hero p {
-            font-family: var(--ff-b); font-size: 1.1rem; font-weight: 300;
-            color: rgba(255,255,255,0.6); max-width: 480px; line-height: 1.8;
-        }
-        .pub-hero-count {
-            position: absolute; bottom: 4rem; right: 5vw;
-            font-family: var(--ff-d); font-size: clamp(4rem, 10vw, 7rem); font-weight: 700;
-            color: rgba(200,145,58,0.08); line-height: 1; pointer-events: none;
-        }
-
-        /* ── FILTERS ── */
+        .pub-hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+        
+        /* FILTERS (Sticky coordinato) */
         .pub-filters {
             background: var(--ink);
-            padding: 1.5rem 5vw;
+            padding: 2rem 5vw;
             border-bottom: 1px solid rgba(255,255,255,0.06);
-            position: sticky; top: 64px; z-index: 90;
+            position: sticky; top: 72px; z-index: 100;
             backdrop-filter: blur(20px);
         }
-        .pub-filters-inner {
-            max-width: 1200px; margin: 0 auto;
-            display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;
+
+        /* CARD STYLE (Coordinato con Mission/Net cards) */
+        .pub-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px; /* Angoli netti come l'Index */
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .filter-btn {
-            font-family: var(--ff-c); font-size: 0.65rem; font-weight: 700;
-            letter-spacing: 0.12em; text-transform: uppercase;
-            color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1);
-            background: transparent; border-radius: 100px;
-            padding: 10px 20px; cursor: none;
-            transition: all 0.3s var(--ease);
-        }
-        .filter-btn:hover { color: var(--white); border-color: var(--gold); }
-        .filter-btn.active {
-            color: var(--ink); background: var(--gold);
+        .pub-card:hover {
             border-color: var(--gold);
-            box-shadow: 0 4px 20px rgba(200,145,58,0.3);
-        }
-        
-        /* Navbar fissa per evitare salti di layout */
-        #nav {
-            position: fixed; top: 0; left: 0; width: 100%;
-            z-index: 1000; background: rgba(5, 12, 21, 0.95);
-            backdrop-filter: blur(10px);
+            background: rgba(200,145,58,0.03);
+            transform: translateY(-5px);
         }
     </style>
 </head>
@@ -102,24 +67,26 @@
 
 <div id="compass-cursor">
     <svg viewBox="0 0 56 56" fill="none">
-        <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,0.35)" stroke-width="1"/>
-        <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,0.5)" stroke-width="1.5"/>
-        <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,0.5)" stroke-width="1.5"/>
-        <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,0.5)" stroke-width="1.5"/>
-        <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,0.5)" stroke-width="1.5"/>
+        <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+        <line x1="28" y1="2" x2="28" y2="8" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+        <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+        <line x1="2" y1="28" x2="8" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+        <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
         <g class="needle">
-            <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,0.9)"/>
-            <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,0.25)"/>
+            <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+            <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
         </g>
-        <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,0.8)"/>
+        <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
     </svg>
 </div>
 <div id="cursor-dot"></div>
 
-<nav id="nav" class="dark">
+<div id="bar"></div>
+
+<nav id="nav">
     <a href="index.html" class="logo">
         <div class="logo-pill">
-            <img src="https://maritime-affairs.eu/wp-content/uploads/2026/03/Logo-maritimes.jpg" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+            <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
             <div class="logo-text">
                 <div class="logo-name">Maritime <em>Affairs</em></div>
                 <span class="logo-sub">EU Blue Economy Do-Tank</span>
@@ -140,25 +107,59 @@
 </nav>
 
 <section class="pub-hero">
+    <div class="pub-hero-bg"></div>
     <div class="pub-hero-inner">
-        <div class="section-marker show" style="margin-bottom:1.5rem; opacity: 1; transform: translateY(0);">Expert Knowledge</div>
+        <div class="section-marker">Expert Knowledge</div>
         <h1>Our <em>Publications</em></h1>
-        <p>Strategic briefs, policy explainers and in-depth reports from the European maritime expert network.</p>
+        <p class="hero-sub">
+            Strategic briefs, policy explainers and in-depth reports<br>
+            written by practitioners for Europe's maritime decision-makers.
+        </p>
     </div>
-    <div class="pub-hero-count" id="hero-count">0</div>
+    <div class="pub-hero-count" id="hero-count">—</div>
 </section>
 
 <div class="pub-filters">
     <div class="pub-filters-inner">
-        <button class="filter-btn active" data-unit="all">All Units</button>
+        <button class="filter-btn active" data-unit="all">All</button>
         <button class="filter-btn" data-unit="Blue Policy & Law">Blue Policy & Law</button>
         <button class="filter-btn" data-unit="Blue Economy & Logistics">Blue Economy & Logistics</button>
         <button class="filter-btn" data-unit="Defense & Security">Defense & Security</button>
         <button class="filter-btn" data-unit="Tech, Energy & Resources">Tech, Energy & Resources</button>
     </div>
 </div>
-    
+
+<main class="pub-main">
+    <div class="wrap">
+        <div id="featured-slot"></div>
+        <div class="pub-grid" id="articles-grid"></div>
+        
+        <div class="pub-loading" id="loading-state">
+            <div class="pub-spinner"></div>
+            <p>Syncing with Maritime Database...</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="ft-grid">
+        <div class="ft-brand">
+            <a href="index.html" class="ft-logo">
+                <div class="ft-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18" stroke-linecap="round"/></svg></div>
+                <div><div class="ft-ln">Maritime <em>Affairs</em></div><div style="font-family:var(--ff-c);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,145,58,.42);margin-top:2px">European NGO</div></div>
+            </a>
+            <p>Hub, Community Platform & Project Incubator for the Blue Century.</p>
+        </div>
+        <div class="ft-col"><h5>Units</h5><ul><li>Blue Policy & Law</li><li>Blue Economy</li></ul></div>
+        <div class="ft-col"><h5>Contact</h5><div class="ft-row">info@maritime-affairs.eu</div></div>
+    </div>
+    <div class="ft-bottom">
+        <span>© 2025 Maritime Affairs — European NGO</span>
+    </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
 <script>
     // 1. Usa nomi diversi o assicurati che non ci siano duplicati
     const SB_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
@@ -263,6 +264,8 @@
     // Avvio
     loadArticles();
 </script>
+</script>
+<script src="js/main.js"></script>
 
 </body>
 </html>
