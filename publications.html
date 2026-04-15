@@ -3,67 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./assets/images/Logo-maritimes.png">
     <title>Publications — Maritime Affairs</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* ── PUBLICATIONS UI ALIGNMENT ── */
-        body { background: var(--ink); color: var(--white); cursor: none; }
+        /* FIX SPECIFICI PER PUBBLICATIONS */
+        body { background: var(--ink); cursor: none; }
         
         .pub-hero {
-            min-height: 45vh;
+            min-height: 50vh;
             background: var(--deep);
-            display: flex; align-items: flex-end;
-            position: relative; overflow: hidden;
-            padding: 0 5vw 5rem;
+            display: flex;
+            align-items: flex-end;
+            position: relative;
+            padding-bottom: 6rem;
         }
-        .pub-hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .pub-hero h1 { font-family: var(--ff-d); font-size: clamp(3.5rem, 8vw, 7rem); margin-bottom: 1.5rem; line-height: 0.9; }
-        .pub-hero h1 em { font-style: italic; color: var(--gold); }
-        
+
+        /* Allineamento filtri con Navbar Index */
         .pub-filters {
-            background: var(--ink); padding: 1.5rem 5vw;
-            position: sticky; top: 72px; z-index: 100;
+            background: var(--ink);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 72px; /* Altezza precisa della nav Index */
+            z-index: 100;
             border-bottom: 1px solid rgba(255,255,255,0.06);
             backdrop-filter: blur(20px);
         }
-        .pub-filters-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; }
-        
-        /* Griglia e Card stile Index */
-        .pub-main { padding: 4rem 5vw; }
-        .pub-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 2rem; 
-            max-width: 1200px; margin: 0 auto; 
+
+        .pub-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            padding: 4rem 0;
         }
 
+        /* Stile Card per matchare l'Index */
         .pub-card {
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.07);
             padding: 2.5rem;
             transition: all 0.4s var(--ease);
-            display: flex; flex-direction: column;
-            cursor: none;
+            display: flex;
+            flex-direction: column;
         }
+
         .pub-card:hover {
             border-color: var(--gold);
             background: rgba(200,145,58,0.03);
             transform: translateY(-5px);
         }
 
-        .pub-card-img { width: 100%; height: 200px; background: var(--ocean); margin-bottom: 1.5rem; overflow: hidden; }
-        .pub-card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s var(--ease); }
-        .pub-card:hover .pub-card-img img { transform: scale(1.05); }
+        .pub-loading {
+            text-align: center;
+            padding: 5rem 0;
+        }
 
-        .pub-loading { text-align: center; padding: 5rem; }
-        .pub-spinner { 
-            width: 40px; height: 40px; border: 2px solid rgba(200,145,58,0.2); 
-            border-top-color: var(--gold); border-radius: 50%; 
-            animation: spin 1s linear infinite; margin: 0 auto 20px; 
+        .pub-spinner {
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(200,145,58,0.2);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
@@ -87,7 +94,7 @@
 <div id="cursor-dot"></div>
 <div id="bar"></div>
 
-<nav id="nav" class="dark">
+<nav id="nav">
     <a href="index.html" class="logo">
         <div class="logo-pill">
             <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
@@ -104,95 +111,88 @@
         <li><a href="publications.html" style="color:var(--gold)">Publications</a></li>
         <li><a href="index.html#contact">Join</a></li>
     </ul>
+    <div class="nav-r">
+        <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
+        <a href="index.html#contact" class="nav-btn">Join Us</a>
+    </div>
 </nav>
 
 <section class="pub-hero">
-    <div class="pub-hero-inner">
-        <div class="section-marker show">Expert Knowledge</div>
-        <h1>Our <em>Publications</em></h1>
-        <p class="body-text on-dark" style="max-width: 480px; opacity: 0.7;">
-            Strategic briefs, explainers and in-depth analysis from across the Blue Economy.
-        </p>
+    <div class="wrap" style="width: 100%;">
+        <div class="section-marker">Expert Knowledge</div>
+        <h1 style="font-family: var(--ff-d); font-size: clamp(3rem, 8vw, 7rem); color: white;">Our <em>Publications</em></h1>
+        <p class="body-text on-dark" style="max-width: 500px; opacity: 0.7;">Strategic briefs and reports from across the Blue Economy — written for practitioners and decision-makers.</p>
     </div>
     <div class="pub-hero-count" id="hero-count">—</div>
 </section>
 
 <div class="pub-filters">
-    <div class="pub-filters-inner">
-        <button class="filter-btn active" data-unit="all">All Units</button>
-        <button class="filter-btn" data-unit="Blue Policy & Law">Blue Policy & Law</button>
-        <button class="filter-btn" data-unit="Blue Economy & Logistics">Blue Economy & Logistics</button>
-        <button class="filter-btn" data-unit="Defense & Security">Defense & Security</button>
-        <button class="filter-btn" data-unit="Tech, Energy & Resources">Tech, Energy & Resources</button>
+    <div class="wrap">
+        <div class="pub-filters-inner">
+            <button class="filter-btn active" data-unit="all">All Units</button>
+            <button class="filter-btn" data-unit="Blue Policy & Law">Blue Policy & Law</button>
+            <button class="filter-btn" data-unit="Blue Economy & Logistics">Blue Economy & Logistics</button>
+            <button class="filter-btn" data-unit="Defense & Security">Defense & Security</button>
+            <button class="filter-btn" data-unit="Tech, Energy & Resources">Tech, Energy & Resources</button>
+        </div>
     </div>
 </div>
 
 <main class="pub-main">
-    <div id="articles-grid" class="pub-grid"></div>
-    <div id="loading-state" class="pub-loading">
-        <div class="pub-spinner"></div>
-        <p class="eyebrow light">Syncing Maritime Database</p>
+    <div class="wrap">
+        <div id="articles-grid" class="pub-grid"></div>
+        
+        <div id="loading-state" class="pub-loading">
+            <div class="pub-spinner"></div>
+            <p class="eyebrow light">Syncing Knowledge Base</p>
+        </div>
     </div>
 </main>
 
+<footer>
+    <div class="ft-grid">
+        <div class="ft-brand">
+            <a href="index.html" class="ft-logo">
+                <div class="ft-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18" stroke-linecap="round"/></svg></div>
+                <div><div class="ft-ln">Maritime <em>Affairs</em></div><div style="font-family:var(--ff-c);font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(200,145,58,.42);margin-top:2px">European NGO</div></div>
+            </a>
+            <p>Hub, Community Platform & Project Incubator for the Blue Century.</p>
+        </div>
+        <div class="ft-col"><h5>Units</h5><ul><li>Blue Policy & Law</li><li>Defense & Security</li></ul></div>
+        <div class="ft-col"><h5>Contact</h5><div class="ft-row">info@maritime-affairs.eu</div></div>
+    </div>
+    <div class="ft-bottom">
+        <span>© 2025 Maritime Affairs — European NGO</span>
+    </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4';
+    const SB_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4';
+    const supabaseClient = window.supabase.createClient(SB_URL, SB_KEY);
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-
-let allArticles = [];
-let currentFilter = 'all';
-
-async function loadArticles() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('articles')
-            .select('*')
-            .eq('published', true)
-            .order('published_at', { ascending: false });
-
-        if (error) throw error;
-        allArticles = data || [];
-        renderAll();
-    } catch (err) {
-        console.error('Fetch error:', err);
+    async function loadArticles() {
+        const { data, error } = await supabaseClient.from('articles').select('*').eq('published', true).order('published_at', { ascending: false });
+        if (error) return;
+        
+        document.getElementById('loading-state').style.display = 'none';
+        document.getElementById('hero-count').textContent = data.length;
+        
+        document.getElementById('articles-grid').innerHTML = data.map(a => `
+            <div class="pub-card" onclick="location.href='article.html?id=${a.slug || a.id}'">
+                <div class="eyebrow" style="color:var(--gold); margin-bottom: 1rem;">${a.unit}</div>
+                <h3 class="h3 on-dark" style="margin-bottom: 1.5rem;">${a.title}</h3>
+                <p class="body-text on-dark" style="opacity: 0.6; font-size: 0.9rem; flex: 1;">${a.summary}</p>
+                <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-family: var(--ff-c); font-size: 0.6rem; opacity: 0.4;">
+                    ${new Date(a.published_at).toLocaleDateString('en-GB')} · ${a.read_min || 5} MIN READ
+                </div>
+            </div>
+        `).join('');
     }
-}
 
-function renderAll() {
-    document.getElementById('loading-state').style.display = 'none';
-    const filtered = currentFilter === 'all' ? allArticles : allArticles.filter(a => a.unit === currentFilter);
-    document.getElementById('hero-count').textContent = filtered.length;
-    
-    document.getElementById('articles-grid').innerHTML = filtered.map(a => `
-        <div class="pub-card" onclick="window.location.href='article.html?id=${a.slug || a.id}'">
-            <div class="pub-card-img">
-                ${a.image_url ? `<img src="${a.image_url}" alt="">` : ''}
-            </div>
-            <div class="eyebrow" style="color:var(--gold); margin-bottom: 1rem;">${a.unit}</div>
-            <h3 class="h3 on-dark" style="margin-bottom: 1rem;">${a.title}</h3>
-            <p class="body-text on-dark" style="opacity: 0.6; font-size: 0.9rem; flex: 1;">${a.summary}</p>
-            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-family: var(--ff-c); font-size: 0.6rem; opacity: 0.4;">
-                ${new Date(a.published_at).toLocaleDateString('en-GB')} · ${a.read_min || 5} MIN READ
-            </div>
-        </div>
-    `).join('');
-}
-
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.unit;
-        renderAll();
-    });
-});
-
-loadArticles();
+    loadArticles();
 </script>
-
 <script src="js/main.js"></script>
 </body>
 </html>
