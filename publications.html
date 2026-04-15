@@ -115,43 +115,46 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // 1. CONFIG
-    const SUPABASE_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4';
+    // 1. Usa nomi diversi o assicurati che non ci siano duplicati
+    const SB_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4';
     
-    // UNA SOLA DICHIARAZIONE DI SUPABASE
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    // Inizializziamo il client con un nome univoco per evitare errori di "already declared"
+    const supabaseClient = window.supabase.createClient(SB_URL, SB_KEY);
     
     let allArticles = [];
     let currentFilter = 'all';
 
-    // 2. LOAD DATA
     async function loadArticles() {
         try {
-            const { data, error } = await supabase
+            // Usiamo il nuovo nome della variabile supabaseClient
+            const { data, error } = await supabaseClient
                 .from('articles')
                 .select('*')
                 .eq('published', true)
                 .order('published_at', { ascending: false });
 
             if (error) throw error;
+            
             allArticles = data || [];
+            console.log("Articoli caricati con successo:", allArticles.length);
             renderAll();
         } catch (err) {
-            console.error('Error loading articles:', err);
-            document.getElementById('loading-state').innerHTML = '<p style="color:red">Error connection to database</p>';
+            console.error('Errore durante il fetch:', err);
+            document.getElementById('loading-state').innerHTML = '<p style="color:red">Connection Error</p>';
         }
     }
 
-    // 3. RENDER LOGIC
     function renderAll() {
-        document.getElementById('loading-state').style.display = 'none';
+        const loadingState = document.getElementById('loading-state');
+        if (loadingState) loadingState.style.display = 'none';
         
         const filtered = currentFilter === 'all' 
             ? allArticles 
             : allArticles.filter(a => a.unit === currentFilter);
 
-        document.getElementById('hero-count').textContent = filtered.length;
+        const heroCount = document.getElementById('hero-count');
+        if (heroCount) heroCount.textContent = filtered.length;
 
         if (filtered.length === 0) {
             document.getElementById('empty-state').style.display = 'block';
@@ -162,12 +165,12 @@
 
         document.getElementById('empty-state').style.display = 'none';
         
-        // Featured
+        // Primo articolo (Featured)
         const featured = filtered[0];
         document.getElementById('featured-slot').innerHTML = `
             <div class="pub-featured" onclick="window.location.href='article.html?id=${featured.slug || featured.id}'">
                 <div class="pub-featured-img">
-                    <img src="${featured.image_url || ''}" alt="" onerror="this.style.display='none'">
+                    <img src="${featured.image_url || ''}" alt="" onerror="this.parentElement.innerHTML='<div class=\'pub-featured-img-placeholder\'></div>'">
                 </div>
                 <div class="pub-featured-body">
                     <div class="pub-featured-label">${featured.unit || 'General'}</div>
@@ -183,7 +186,7 @@
                 </div>
             </div>`;
 
-        // Grid
+        // Altri articoli (Grid)
         const rest = filtered.slice(1);
         document.getElementById('articles-grid').innerHTML = rest.map(a => `
             <div class="pub-card" onclick="window.location.href='article.html?id=${a.slug || a.id}'">
@@ -202,7 +205,7 @@
             </div>`).join('');
     }
 
-    // 4. FILTERS
+    // Filtri
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -212,7 +215,7 @@
         });
     });
 
-    // INIT
+    // Avvio
     loadArticles();
 </script>
 
