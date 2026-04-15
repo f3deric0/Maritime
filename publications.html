@@ -61,7 +61,53 @@
     </style>
 </head>
 <body>
+<div id="compass-cursor">
+  <svg viewBox="0 0 56 56" fill="none">
+    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <g class="needle">
+      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
+    </g>
+    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
+  </svg>
+</div>
+<div id="cursor-dot"></div>
 
+<!-- PROGRESS BAR -->
+<div id="bar"></div>
+
+<!-- LOADER -->
+<!-- LOADER -->
+<div id="loader">
+  <div class="l-half l-top"></div>
+  <div class="l-half l-bot"></div>
+  <div class="l-ring-wrap">
+    <div class="l-ring-spin"></div>
+    <div class="l-ring-slow"></div>
+    <img class="l-logo" src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs">
+  </div>
+  <span class="l-pct-num" id="l-pct">0%</span>
+  <span class="l-name">Maritime Affairs</span>
+  <div class="l-bar-wrap"><div class="l-bar-fill" id="l-fill"></div></div>
+</div>
+
+
+  <ul class="nav-links">
+    <li><a href="#mission">Mission</a></li>
+    <li><a href="#units">Units</a></li>
+    <li><a href="#network">Network</a></li>
+    <li><a href="publications.html">Publications</a></li>
+    <li><a href="#contact">Join</a></li>
+  </ul>
+  <div class="nav-r">
+    <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
+    <a href="#contact" class="nav-btn">Join Us</a>
+  </div>
+</nav>
 <nav id="nav" class="dark">
     <a href="index.html" class="logo">
         <div class="logo-pill">
