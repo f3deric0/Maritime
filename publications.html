@@ -12,27 +12,22 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* ── CURSOR SYSTEM (Bussola) ── */
-        body { cursor: none; } /* Nascondiamo il cursore standard */
-        
-        #compass-cursor {
-            position: fixed;
-            top: 0; left: 0;
-            width: 56px; height: 56px;
-            pointer-events: none; /* Cruciale per cliccare gli elementi sottostanti */
-            z-index: 10000;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s, opacity 0.3s;
-        }
-        #cursor-dot {
-            position: fixed;
-            width: 4px; height: 4px;
-            background: var(--gold);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10001;
-            transform: translate(-50%, -50%);
-        }
+
+<div id="compass-cursor">
+  <svg viewBox="0 0 56 56" fill="none">
+    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <g class="needle">
+      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
+    </g>
+    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
+  </svg>
+</div>
+<div id="cursor-dot"></div>
 
         /* ── PUBLICATIONS HERO ── */
         .pub-hero {
