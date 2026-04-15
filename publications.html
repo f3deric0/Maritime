@@ -1,487 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Publications — Maritime Affairs</title>
-<meta name="description" content="Briefs, explainers and reports from the Maritime Affairs expert network.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<style>
-/* ── PUBLICATIONS PAGE ── */
-.pub-hero {
-  min-height: 40vh;
-  background: var(--deep);
-  display: flex; align-items: flex-end;
-  position: relative; overflow: hidden;
-  padding: 0 5vw 5rem;
-}
-.pub-hero::before {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(ellipse at 20% 100%, rgba(200,145,58,.12) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 0%, rgba(13,58,84,.5) 0%, transparent 50%);
-}
-.pub-hero-inner { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; width: 100%; }
-.pub-hero h1 {
-  font-family: var(--ff-d);
-  font-size: clamp(4rem, 9vw, 9rem);
-  font-weight: 700; line-height: .92; letter-spacing: -.02em;
-  color: var(--white); margin-bottom: 1.5rem;
-}
-.pub-hero h1 em { font-style: italic; color: var(--gold); }
-.pub-hero p {
-  font-family: var(--ff-b); font-size: 1rem; font-weight: 300;
-  color: rgba(255,255,255,.55); max-width: 460px; line-height: 1.9;
-}
-.pub-hero-count {
-  position: absolute; bottom: 5rem; right: 5vw;
-  font-family: var(--ff-d); font-size: 6rem; font-weight: 700;
-  color: rgba(200,145,58,.07); line-height: 1; pointer-events: none;
-  letter-spacing: -.04em;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publications — Maritime Affairs</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 
-/* ── FILTERS ── */
-.pub-filters {
-  background: var(--ink);
-  padding: 2rem 5vw;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  position: sticky; top: 64px; z-index: 100;
-  backdrop-filter: blur(20px);
-}
-.pub-filters-inner {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; gap: .6rem; flex-wrap: wrap; align-items: center;
-}
-.filter-btn {
-  font-family: var(--ff-c); font-size: .64rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: rgba(255,255,255,.45); border: 1px solid rgba(255,255,255,.1);
-  background: transparent; border-radius: 100px;
-  padding: 8px 18px; cursor: pointer;
-  transition: all .3s var(--ease);
-}
-.filter-btn:hover { color: var(--white); border-color: rgba(255,255,255,.3); }
-.filter-btn.active {
-  color: var(--ink); background: var(--gold);
-  border-color: var(--gold);
-  box-shadow: 0 4px 18px rgba(200,145,58,.35);
-}
+    <style>
+        /* ── PUBLICATIONS UI ALIGNMENT ── */
+        body { background: var(--ink); color: var(--white); cursor: none; }
+        
+        .pub-hero {
+            min-height: 45vh;
+            background: var(--deep);
+            display: flex; align-items: flex-end;
+            position: relative; overflow: hidden;
+            padding: 0 5vw 5rem;
+        }
+        .pub-hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .pub-hero h1 { font-family: var(--ff-d); font-size: clamp(3.5rem, 8vw, 7rem); margin-bottom: 1.5rem; line-height: 0.9; }
+        .pub-hero h1 em { font-style: italic; color: var(--gold); }
+        
+        .pub-filters {
+            background: var(--ink); padding: 1.5rem 5vw;
+            position: sticky; top: 72px; z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(20px);
+        }
+        .pub-filters-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; }
+        
+        /* Griglia e Card stile Index */
+        .pub-main { padding: 4rem 5vw; }
+        .pub-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 2rem; 
+            max-width: 1200px; margin: 0 auto; 
+        }
 
-/* ── PUBLICATIONS GRID ── */
-.pub-main {
-  background: var(--ink); padding: 4rem 5vw 6rem;
-  min-height: 60vh;
-}
-.pub-inner { max-width: 1200px; margin: 0 auto; }
+        .pub-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            padding: 2.5rem;
+            transition: all 0.4s var(--ease);
+            display: flex; flex-direction: column;
+            cursor: none;
+        }
+        .pub-card:hover {
+            border-color: var(--gold);
+            background: rgba(200,145,58,0.03);
+            transform: translateY(-5px);
+        }
 
-/* Featured article */
-.pub-featured {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 0; border-radius: 22px; overflow: hidden;
-  margin-bottom: 3rem;
-  border: 1px solid rgba(255,255,255,.07);
-  transition: border-color .4s, box-shadow .4s;
-  cursor: pointer;
-}
-.pub-featured:hover {
-  border-color: rgba(200,145,58,.25);
-  box-shadow: 0 30px 80px rgba(0,0,0,.4);
-}
-.pub-featured-img {
-  position: relative; overflow: hidden; min-height: 420px;
-  background: var(--ocean);
-}
-.pub-featured-img img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform .8s var(--ease);
-}
-.pub-featured:hover .pub-featured-img img { transform: scale(1.04); }
-.pub-featured-img-placeholder {
-  width: 100%; height: 100%; min-height: 420px;
-  background: linear-gradient(135deg, var(--ocean) 0%, var(--deep) 100%);
-  display: flex; align-items: center; justify-content: center;
-}
-.pub-featured-img::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent 60%, rgba(5,12,21,.6) 100%);
-}
-.pub-featured-body {
-  background: rgba(255,255,255,.03); padding: 3.5rem;
-  display: flex; flex-direction: column; justify-content: space-between;
-}
-.pub-featured-label {
-  font-family: var(--ff-c); font-size: .58rem; font-weight: 700;
-  letter-spacing: .2em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: .5rem;
-  display: flex; align-items: center; gap: 8px;
-}
-.pub-featured-label::before { content: ''; width: 18px; height: 1px; background: var(--gold); }
-.pub-featured h2 {
-  font-family: var(--ff-d); font-size: clamp(1.8rem, 2.8vw, 2.8rem);
-  font-weight: 700; line-height: 1.1; color: var(--white);
-  margin-bottom: 1.2rem; letter-spacing: -.01em;
-}
-.pub-featured p {
-  font-family: var(--ff-b); font-size: .9rem; font-weight: 300;
-  color: rgba(255,255,255,.55); line-height: 1.85;
-  flex: 1; margin-bottom: 2rem;
-}
-.pub-featured-meta {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,.07);
-}
-.pub-meta-left {
-  display: flex; flex-direction: column; gap: 3px;
-}
-.pub-author { font-family: var(--ff-c); font-size: .7rem; font-weight: 600; letter-spacing: .1em; color: var(--white); }
-.pub-date   { font-family: var(--ff-c); font-size: .62rem; font-weight: 400; letter-spacing: .06em; color: rgba(255,255,255,.35); }
-.pub-read-btn {
-  font-family: var(--ff-c); font-size: .66rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--ink); background: var(--gold);
-  padding: 10px 22px; border-radius: 100px;
-  transition: all .3s var(--ease); display: flex; align-items: center; gap: 8px;
-}
-.pub-read-btn svg { width: 14px; height: 14px; transition: transform .3s var(--ease); }
-.pub-featured:hover .pub-read-btn { background: var(--gold-l); }
-.pub-featured:hover .pub-read-btn svg { transform: translateX(4px); }
+        .pub-card-img { width: 100%; height: 200px; background: var(--ocean); margin-bottom: 1.5rem; overflow: hidden; }
+        .pub-card-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s var(--ease); }
+        .pub-card:hover .pub-card-img img { transform: scale(1.05); }
 
-/* Article cards grid */
-.pub-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-}
-.pub-card {
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.07);
-  border-radius: 18px; overflow: hidden; cursor: pointer;
-  transition: all .45s var(--ease);
-  display: flex; flex-direction: column;
-}
-.pub-card:hover {
-  background: rgba(26,95,122,.2);
-  border-color: rgba(200,145,58,.22);
-  transform: translateY(-6px);
-  box-shadow: 0 24px 60px rgba(0,0,0,.35);
-}
-.pub-card-img {
-  position: relative; height: 200px; overflow: hidden;
-  background: var(--ocean);
-  flex-shrink: 0;
-}
-.pub-card-img img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
-  transition: transform .7s var(--ease);
-}
-.pub-card:hover .pub-card-img img { transform: scale(1.06); }
-.pub-card-img-placeholder {
-  width: 100%; height: 100%;
-  background: linear-gradient(135deg, var(--ocean), var(--deep));
-  display: flex; align-items: center; justify-content: center;
-}
-.unit-badge {
-  position: absolute; top: 1rem; left: 1rem; z-index: 2;
-  font-family: var(--ff-c); font-size: .52rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  background: rgba(5,12,21,.85); color: var(--gold);
-  border: 1px solid rgba(200,145,58,.3);
-  padding: 5px 12px; border-radius: 100px;
-  backdrop-filter: blur(8px);
-}
-.pub-card-body { padding: 1.8rem 1.8rem 1.6rem; flex: 1; display: flex; flex-direction: column; }
-.pub-card h3 {
-  font-family: var(--ff-d); font-size: 1.32rem; font-weight: 700;
-  color: var(--white); line-height: 1.2; margin-bottom: .8rem;
-  letter-spacing: -.008em;
-  transition: color .3s;
-}
-.pub-card:hover h3 { color: var(--gold-l); }
-.pub-card p {
-  font-family: var(--ff-b); font-size: .8rem; font-weight: 300;
-  color: rgba(255,255,255,.5); line-height: 1.8;
-  flex: 1; margin-bottom: 1.4rem;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-}
-.pub-card-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding-top: 1rem; border-top: 1px solid rgba(255,255,255,.06);
-}
-.pub-card-meta { font-family: var(--ff-c); font-size: .6rem; font-weight: 400; letter-spacing: .06em; color: rgba(255,255,255,.3); }
-.pub-card-arrow {
-  width: 30px; height: 30px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.12);
-  display: flex; align-items: center; justify-content: center;
-  color: rgba(255,255,255,.35);
-  transition: all .3s var(--ease);
-}
-.pub-card-arrow svg { width: 12px; height: 12px; }
-.pub-card:hover .pub-card-arrow { border-color: var(--gold); color: var(--gold); background: rgba(200,145,58,.08); transform: rotate(45deg); }
-
-/* Loading / empty states */
-.pub-loading {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 6rem 0; gap: 1.5rem;
-}
-.pub-spinner {
-  width: 48px; height: 48px; border-radius: 50%;
-  border: 1.5px solid rgba(200,145,58,.2);
-  border-top-color: var(--gold);
-  animation: spin .9s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.pub-loading p { font-family: var(--ff-c); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.3); }
-
-.pub-empty {
-  text-align: center; padding: 6rem 0;
-}
-.pub-empty h3 { font-family: var(--ff-d); font-size: 2rem; font-weight: 700; color: rgba(255,255,255,.2); margin-bottom: 1rem; }
-.pub-empty p { font-family: var(--ff-b); font-size: .85rem; font-weight: 300; color: rgba(255,255,255,.25); }
-
-/* Load more */
-.pub-loadmore {
-  text-align: center; padding-top: 3.5rem;
-}
-.btn-loadmore {
-  font-family: var(--ff-c); font-size: .76rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  color: var(--white); border: 1px solid rgba(255,255,255,.18);
-  background: transparent; border-radius: 100px;
-  padding: 14px 36px; cursor: pointer;
-  transition: all .35s var(--ease);
-}
-.btn-loadmore:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,145,58,.07); }
-
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  .pub-featured { grid-template-columns: 1fr; }
-  .pub-featured-img { min-height: 280px; }
-  .pub-grid { grid-template-columns: repeat(2,1fr); }
-}
-@media(max-width:600px){
-  .pub-grid { grid-template-columns: 1fr; }
-  .pub-filters { top: 78px; }
-}
-</style>
+        .pub-loading { text-align: center; padding: 5rem; }
+        .pub-spinner { 
+            width: 40px; height: 40px; border: 2px solid rgba(200,145,58,0.2); 
+            border-top-color: var(--gold); border-radius: 50%; 
+            animation: spin 1s linear infinite; margin: 0 auto 20px; 
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
 
-<!-- COMPASS CURSOR -->
 <div id="compass-cursor">
-  <svg viewBox="0 0 56 56" fill="none">
-    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
-    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
-    <g class="needle">
-      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
-      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
-    </g>
-    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
-  </svg>
+    <svg viewBox="0 0 56 56" fill="none">
+        <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+        <line x1="28" y1="2" x2="28" y2="8" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+        <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+        <line x1="2" y1="28" x2="8" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+        <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+        <g class="needle">
+            <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+            <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
+        </g>
+        <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
+    </svg>
 </div>
 <div id="cursor-dot"></div>
 <div id="bar"></div>
 
-<!-- NAV -->
 <nav id="nav" class="dark">
-  <a href="index.html" class="logo">
-    <div class="logo-pill">
-      <img src="http://87.106.240.127/wp-content/uploads/2026/03/Logo-maritimes.jpg" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
-      <div class="logo-text">
-        <div class="logo-name">Maritime <em>Affairs</em></div>
-        <span class="logo-sub">EU Blue Economy Do-Tank</span>
-      </div>
-    </div>
-  </a>
-  <ul class="nav-links">
-    <li><a href="index.html#mission">Mission</a></li>
-    <li><a href="index.html#units">Units</a></li>
-    <li><a href="index.html#network">Network</a></li>
-    <li><a href="publications.html" style="color:var(--gold)">Publications</a></li>
-    <li><a href="index.html#contact">Join</a></li>
-  </ul>
-  <div class="nav-r">
-    <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
-    <a href="index.html#contact" class="nav-btn">Join Us</a>
-  </div>
+    <a href="index.html" class="logo">
+        <div class="logo-pill">
+            <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+            <div class="logo-text">
+                <div class="logo-name">Maritime <em>Affairs</em></div>
+                <span class="logo-sub">EU Blue Economy Do-Tank</span>
+            </div>
+        </div>
+    </a>
+    <ul class="nav-links">
+        <li><a href="index.html#mission">Mission</a></li>
+        <li><a href="index.html#units">Units</a></li>
+        <li><a href="index.html#network">Network</a></li>
+        <li><a href="publications.html" style="color:var(--gold)">Publications</a></li>
+        <li><a href="index.html#contact">Join</a></li>
+    </ul>
 </nav>
 
-<!-- HERO -->
 <section class="pub-hero">
-  <div class="pub-hero-inner">
-    <div class="section-marker show" style="margin-bottom:1.5rem">Expert Knowledge</div>
-    <h1>Our <em>Publications</em></h1>
-    <p>Briefs, explainers and in-depth analysis from across the Blue Economy — written by practitioners, for decision-makers.</p>
-  </div>
-  <div class="pub-hero-count" id="hero-count">—</div>
+    <div class="pub-hero-inner">
+        <div class="section-marker show">Expert Knowledge</div>
+        <h1>Our <em>Publications</em></h1>
+        <p class="body-text on-dark" style="max-width: 480px; opacity: 0.7;">
+            Strategic briefs, explainers and in-depth analysis from across the Blue Economy.
+        </p>
+    </div>
+    <div class="pub-hero-count" id="hero-count">—</div>
 </section>
 
-<!-- FILTERS -->
 <div class="pub-filters">
-  <div class="pub-filters-inner">
-    <button class="filter-btn active" data-unit="all">All</button>
-    <button class="filter-btn" data-unit="Blue Policy &amp; Law">Blue Policy & Law</button>
-    <button class="filter-btn" data-unit="Blue Economy &amp; Logistics">Blue Economy & Logistics</button>
-    <button class="filter-btn" data-unit="Defense &amp; Security">Defense & Security</button>
-    <button class="filter-btn" data-unit="Tech, Energy &amp; Resources">Tech, Energy & Resources</button>
-  </div>
+    <div class="pub-filters-inner">
+        <button class="filter-btn active" data-unit="all">All Units</button>
+        <button class="filter-btn" data-unit="Blue Policy & Law">Blue Policy & Law</button>
+        <button class="filter-btn" data-unit="Blue Economy & Logistics">Blue Economy & Logistics</button>
+        <button class="filter-btn" data-unit="Defense & Security">Defense & Security</button>
+        <button class="filter-btn" data-unit="Tech, Energy & Resources">Tech, Energy & Resources</button>
+    </div>
 </div>
 
-<!-- MAIN GRID -->
 <main class="pub-main">
-  <div class="pub-inner">
-    <div id="featured-slot"></div>
-    <div class="pub-grid" id="articles-grid"></div>
-    <div class="pub-loadmore" id="loadmore-wrap" style="display:none">
-      <button class="btn-loadmore" id="loadmore-btn">Load more articles</button>
-    </div>
-    <div class="pub-loading" id="loading-state">
-      <div class="pub-spinner"></div>
-      <p>Loading publications</p>
-    </div>
-    <div class="pub-empty" id="empty-state" style="display:none">
-      <h3>No articles yet</h3>
-      <p>Check back soon — publications are on their way.</p>
-    </div>
-  </div>
+    <div id="articles-grid" class="pub-grid"></div>
+    <div id="loading-state" class="pub-loading">
+        <div class="pub-spinner"></div>
+        <p class="eyebrow light">Syncing Maritime Database</p>
+    </div>
 </main>
 
-<!-- FOOTER (compact) -->
-<footer style="padding:3rem 5vw">
-  <div class="ft-bottom" style="max-width:1200px;margin:0 auto">
-    <span>© 2025 Maritime Affairs — European NGO</span>
-    <div class="ft-links">
-      <a href="index.html">Home</a>
-      <a href="#">Privacy</a>
-      <a href="mailto:info@maritime-affairs.eu">Contact</a>
-    </div>
-  </div>
-</footer>
-
-<!-- ━━━ SUPABASE ━━━ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/* ═══════════════════════════════════════
-   CONFIGURAZIONE UNICA (NIENTE DOPPIONI)
-   ═══════════════════════════════════════ */
 const SUPABASE_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4';
 
-// Inizializza il client una sola volta
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 let allArticles = [];
 let currentFilter = 'all';
-const PAGE_SIZE = 9;
-let displayCount = PAGE_SIZE;
 
 async function loadArticles() {
-  // Rimuoviamo i sample statici per vedere se il database risponde
-  const { data, error } = await supabase
-    .from('articles')
-    .select('*')
-    .eq('published', true)
-    .order('published_at', { ascending: false });
+    try {
+        const { data, error } = await supabaseClient
+            .from('articles')
+            .select('*')
+            .eq('published', true)
+            .order('published_at', { ascending: false });
 
-  if (error) {
-    console.error('Errore caricamento:', error);
-    return;
-  }
-
-  allArticles = data || [];
-  renderAll();
-}
-
-function filtered() {
-  if (currentFilter === 'all') return allArticles;
-  return allArticles.filter(a => a.unit === currentFilter);
+        if (error) throw error;
+        allArticles = data || [];
+        renderAll();
+    } catch (err) {
+        console.error('Fetch error:', err);
+    }
 }
 
 function renderAll() {
-  document.getElementById('loading-state').style.display = 'none';
-  const list = filtered();
-  
-  const heroCountEl = document.getElementById('hero-count');
-  if(heroCountEl) heroCountEl.textContent = list.length;
-
-  if (!list.length) {
-    document.getElementById('featured-slot').innerHTML = '';
-    document.getElementById('articles-grid').innerHTML = '';
-    document.getElementById('empty-state').style.display = 'block';
-    return;
-  }
-  
-  document.getElementById('empty-state').style.display = 'none';
-
-  const [first, ...rest] = list;
-  renderFeatured(first);
-  renderGrid(rest.slice(0, displayCount - 1));
+    document.getElementById('loading-state').style.display = 'none';
+    const filtered = currentFilter === 'all' ? allArticles : allArticles.filter(a => a.unit === currentFilter);
+    document.getElementById('hero-count').textContent = filtered.length;
+    
+    document.getElementById('articles-grid').innerHTML = filtered.map(a => `
+        <div class="pub-card" onclick="window.location.href='article.html?id=${a.slug || a.id}'">
+            <div class="pub-card-img">
+                ${a.image_url ? `<img src="${a.image_url}" alt="">` : ''}
+            </div>
+            <div class="eyebrow" style="color:var(--gold); margin-bottom: 1rem;">${a.unit}</div>
+            <h3 class="h3 on-dark" style="margin-bottom: 1rem;">${a.title}</h3>
+            <p class="body-text on-dark" style="opacity: 0.6; font-size: 0.9rem; flex: 1;">${a.summary}</p>
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); font-family: var(--ff-c); font-size: 0.6rem; opacity: 0.4;">
+                ${new Date(a.published_at).toLocaleDateString('en-GB')} · ${a.read_min || 5} MIN READ
+            </div>
+        </div>
+    `).join('');
 }
 
-function renderFeatured(a) {
-  const el = document.getElementById('featured-slot');
-  el.innerHTML = `
-    <div class="pub-featured" onclick="openArticle('${a.slug || a.id}')">
-      <div class="pub-featured-img">
-        ${a.image_url ? `<img src="${a.image_url}" alt="" loading="lazy">` : `<div class="pub-featured-img-placeholder"></div>`}
-      </div>
-      <div class="pub-featured-body">
-        <div>
-          <div class="pub-featured-label">${a.unit || ''}</div>
-          <h2>${a.title}</h2>
-          <p>${a.summary || ''}</p>
-        </div>
-        <div class="pub-featured-meta">
-          <div class="pub-meta-left">
-            <span class="pub-author">${a.author || 'Maritime Affairs'}</span>
-            <span class="pub-date">${new Date(a.published_at).toLocaleDateString('en-GB')}</span>
-          </div>
-          <div class="pub-read-btn">Read article</div>
-        </div>
-      </div>
-    </div>`;
-}
-
-function renderGrid(articles) {
-  const grid = document.getElementById('articles-grid');
-  grid.innerHTML = articles.map(a => `
-    <div class="pub-card" onclick="openArticle('${a.slug || a.id}')">
-      <div class="pub-card-img">
-        ${a.image_url ? `<img src="${a.image_url}" alt="" loading="lazy">` : `<div class="pub-card-img-placeholder"></div>`}
-        <div class="unit-badge">${a.unit || 'General'}</div>
-      </div>
-      <div class="pub-card-body">
-        <h3>${a.title}</h3>
-        <p>${a.summary || ''}</p>
-        <div class="pub-card-footer">
-          <span class="pub-card-meta">${new Date(a.published_at).toLocaleDateString('en-GB')}</span>
-          <div class="pub-card-arrow">→</div>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-function openArticle(id) { window.location.href = `article.html?id=${id}`; }
-
-// Filtri
 document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.unit;
-    renderAll();
-  });
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.unit;
+        renderAll();
+    });
 });
 
-// Avvio
 loadArticles();
 </script>
 
 <script src="js/main.js"></script>
 </body>
 </html>
-
