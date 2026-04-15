@@ -122,8 +122,13 @@
 
 <main class="pub-main">
     <div class="wrap">
+        <div id="featured-slot"></div>
+        
         <div id="articles-grid" class="pub-grid"></div>
-    
+        
+        <div id="empty-state" style="display:none; text-align: center; padding: 5rem 0;">
+             <p class="body-text on-dark">No articles found.</p>
+        </div>
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
