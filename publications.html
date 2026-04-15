@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="./assets/images/Logo-maritimes.png">
     <title>Publications — Maritime Affairs</title>
+    <meta name="description" content="Briefs, explainers and reports from the Maritime Affairs expert network.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* ── RESET & CURSOR ── */
-        body { background: var(--ink); cursor: none; margin: 0; }
+        /* ── PUBLICATIONS UI INTEGRATION ── */
+        body { background: var(--ink); color: var(--white); cursor: none; margin: 0; }
         
+        /* Cursore Bussola (necessario per CSS, ma richiede JS per muoversi) */
         #compass-cursor {
             position: fixed;
             top: 0; left: 0;
@@ -22,7 +25,6 @@
             z-index: 10000;
             transform: translate(-50%, -50%);
         }
-
         #cursor-dot {
             position: fixed;
             width: 4px; height: 4px;
@@ -33,74 +35,54 @@
             transform: translate(-50%, -50%);
         }
 
-        /* ── NAV ALIGNMENT (Centratura come Index) ── */
-        #nav {
-            position: fixed; top: 0; left: 0; width: 100%;
-            height: 80px; z-index: 1000;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 5vw; background: rgba(5, 12, 21, 0.9);
+        /* Allineamento Nav e Sticky Header */
+        #nav { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            z-index: 1000; 
+            background: rgba(5, 12, 21, 0.85); /* Leggera trasparenza come Index */
             backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-            margin: 0; padding: 0;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%); /* Forza la centratura perfetta dei link */
+        .pub-hero {
+            min-height: 50vh;
+            background: var(--deep);
+            display: flex; align-items: flex-end;
+            position: relative; overflow: hidden;
+            padding: 0 5vw 6rem;
+            margin-top: 0; /* Rimuoviamo il margine per Nav fissa */
         }
-
-        .nav-links li a {
-            font-family: var(--ff-c);
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-decoration: none;
-            color: var(--white);
-            transition: color 0.3s ease;
+        .pub-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 20% 100%, rgba(200,145,58,0.1) 0%, transparent 40%);
         }
+        .pub-hero-inner { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; width: 100%; }
+        .pub-hero h1 { font-family: var(--ff-d); font-size: clamp(3.5rem, 8vw, 8.5rem); margin: 0 0 1.5rem; line-height: 0.95; }
+        .pub-hero h1 em { font-style: italic; color: var(--gold); }
+        .pub-hero p { font-family: var(--ff-b); color: rgba(255,255,255,0.6); max-width: 480px; }
 
-        .nav-links li a:hover { color: var(--gold); }
-
-        /* ── PUBLICATIONS SPECIFIC ── */
-        .pub-hero { 
-            min-height: 50vh; 
-            background: var(--deep); 
-            display: flex; align-items: flex-end; 
-            position: relative; overflow: hidden; 
-            padding: 0 5vw 5rem;
-            margin-top: 0; 
+        .pub-filters {
+            background: var(--ink);
+            padding: 2rem 5vw;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            position: sticky; top: 72px; /* Si aggancia sotto la Nav fissa da 72px */
+            z-index: 100;
+            backdrop-filter: blur(20px);
         }
-
-        .pub-filters { 
-            background: var(--ink); 
-            padding: 1.5rem 5vw; 
-            border-bottom: 1px solid rgba(255,255,255,.06); 
-            position: sticky; 
-            top: 80px; /* Si aggancia sotto la nav da 80px */
-            z-index: 100; 
-            backdrop-filter: blur(20px); 
-        }
-
         .pub-filters-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
 
-        .filter-btn { 
-            font-family: var(--ff-c); font-size: .64rem; font-weight: 700; 
-            letter-spacing: .14em; text-transform: uppercase; 
-            color: rgba(255,255,255,.45); border: 1px solid rgba(255,255,255,.1); 
-            background: transparent; border-radius: 100px; 
-            padding: 8px 18px; cursor: none; transition: all .3s var(--ease); 
+        /* Stile Card (Coordinato con Mission/Net cards Index) */
+        .pub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding: 4rem 0; }
+        .pub-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 2.5rem;
+            transition: all 0.4s var(--ease);
+            display: flex; flex-direction: column;
+            cursor: none;
         }
-
-        .filter-btn.active { color: var(--ink); background: var(--gold); border-color: var(--gold); }
-
-        .pub-main { background: var(--ink); padding: 4rem 5vw 6rem; min-height: 60vh; }
-        .pub-inner { max-width: 1200px; margin: 0 auto; }
-        .pub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+        .pub-card:hover { border-color: var(--gold); background: rgba(200,145,58,0.03); transform: translateY(-5px); }
     </style>
 </head>
 <body>
@@ -120,31 +102,29 @@
     </svg>
 </div>
 <div id="cursor-dot"></div>
+<div id="bar"></div>
 
 <nav id="nav">
     <a href="index.html" class="logo">
         <div class="logo-pill">
             <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
             <div class="logo-text">
-                <div class="logo-name" style="color:white; font-family:var(--ff-d);">Maritime <em style="color:var(--gold); font-style:italic;">Affairs</em></div>
-                <span class="logo-sub" style="font-family:var(--ff-c); color:rgba(255,255,255,0.5); font-size:0.6rem; text-transform:uppercase;">EU Blue Economy Do-Tank</span>
+                <div class="logo-name">Maritime <em>Affairs</em></div>
+                <span class="logo-sub">EU Blue Economy Do-Tank</span>
             </div>
         </div>
     </a>
-
     <ul class="nav-links">
         <li><a href="index.html#mission">Mission</a></li>
         <li><a href="index.html#units">Units</a></li>
         <li><a href="index.html#network">Network</a></li>
         <li><a href="publications.html" style="color:var(--gold)">Publications</a></li>
         <li><a href="index.html#contact">Join</a></li>
+        <div class="ft-col"><h5>Organisation</h5><ul><li>About Us</li><li>Expert Directory</li><li>Events</li><li>Careers</li></ul></div>
     </ul>
-
-    <div class="nav-r" style="display:flex; align-items:center; gap:20px;">
-        <div class="nav-pulse" style="font-family:var(--ff-c); color:white; font-size:0.7rem; display:flex; align-items:center; gap:8px;">
-            <div class="pulse-dot" style="width:6px; height:6px; background:#4CAF50; border-radius:50%;"></div>EU NGO
-        </div>
-        <a href="index.html#contact" class="nav-btn" style="background:var(--gold); color:var(--ink); padding:10px 20px; border-radius:100px; text-decoration:none; font-family:var(--ff-c); font-size:0.75rem; font-weight:800;">Join Us</a>
+    <div class="nav-r">
+        <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
+        <a href="index.html#contact" class="nav-btn">Join Us</a>
     </div>
 </nav>
 
@@ -152,34 +132,68 @@
     <div class="pub-hero-inner">
         <div class="section-marker show" style="margin-bottom:1.5rem">Expert Knowledge</div>
         <h1>Our <em>Publications</em></h1>
-        <p>Briefs, explainers and in-depth analysis from across the Blue Economy.</p>
+        <p class="hero-sub body-text on-dark" style="max-width:440px">
+            Strategic briefs, explainers and reports from the European maritime expert network.
+        </p>
     </div>
     <div class="pub-hero-count" id="hero-count">—</div>
 </section>
 
 <div class="pub-filters">
-    <div class="pub-filters-inner">
-        <button class="filter-btn active" data-unit="all">All</button>
-        <button class="filter-btn" data-unit="Blue Policy & Law">Blue Policy & Law</button>
-        <button class="filter-btn" data-unit="Blue Economy & Logistics">Blue Economy & Logistics</button>
-        <button class="filter-btn" data-unit="Defense & Security">Defense & Security</button>
-        <button class="filter-btn" data-unit="Tech, Energy & Resources">Tech, Energy & Resources</button>
+    <div class="wrap">
+        <div class="pub-filters-inner">
+            <button class="filter-btn active" data-unit="all">All</button>
+            <button class="filter-btn" data-unit="Blue Policy & Law">Blue Policy & Law</button>
+            <button class="filter-btn" data-unit="Blue Economy & Logistics">Blue Economy & Logistics</button>
+            <button class="filter-btn" data-unit="Defense & Security">Defense & Security</button>
+            <button class="filter-btn" data-unit="Tech, Energy & Resources">Tech, Energy & Resources</button>
+        </div>
     </div>
 </div>
 
 <main class="pub-main">
-    <div class="pub-inner">
+    <div class="wrap">
         <div id="featured-slot"></div>
         <div class="pub-grid" id="articles-grid"></div>
+        
         <div class="pub-loading" id="loading-state">
             <div class="pub-spinner"></div>
-            <p>Loading publications</p>
+            <p class="eyebrow light">Syncing Knowledge Base...</p>
         </div>
-        <div class="pub-empty" id="empty-state" style="display:none; text-align:center; padding:5rem;">
-            <h3 style="color:white; opacity:0.5;">No articles found</h3>
+        
+        <div class="pub-empty" id="empty-state" style="display:none">
+            <h3 class="h2 on-dark">No articles found</h3>
+            <p class="body-text on-dark">Check back soon — publications are on their way.</p>
         </div>
     </div>
 </main>
+
+<footer>
+    <div class="ft-grid wrap">
+        <div class="ft-brand">
+            <a href="index.html" class="ft-logo logo">
+                <div class="ft-li"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18" stroke-linecap="round"/></svg></div>
+                <div class="logo-text"><div class="logo-name">Maritime <em>Affairs</em></div><span class="logo-sub">EU NGO</span></div>
+            </a>
+            <p class="body-text on-dark">Hub, Community Platform & Project Incubator for the Blue Century.</p>
+        </div>
+        <div class="ft-col"><h5>Units</h5><ul><li>Blue Policy & Law</li><li>Blue Economy</li><li>Defense & Security</li></ul></div>
+        <div class="ft-col"><h5>Contact</h5><div class="ft-row">info@maritime-affairs.eu</div><div class="ft-row">Brussels · Europe</div></div>
+    </div>
+    <div class="ft-bottom wrap">
+        <span>© 2025 Maritime Affairs — European NGO</span>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // Inserisci qui la logica Supabase che hai postato sopra.
+    // Assicurati che quando generi le card nel grid (renderGrid), 
+    // usi le classi CSS corrette (h3 on-dark, eyebrow, body-text on-dark) 
+    // per matchare l'Index.
+</script>
+
+<script src="js/main.js"></script>
 
 </body>
 </html>
