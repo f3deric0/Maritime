@@ -204,7 +204,28 @@ document.addEventListener('mousemove', (e) => {
     dot.style.transform = `translate(${x}px, ${y}px)`;
 });
 
-loadArticles();
+async function loadArticles() {
+    console.log("Fetching articles...");
+    const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('published', true)
+        .order('published_at', { ascending: false });
+
+    if (error) {
+        console.error('Supabase Error:', error.message);
+        alert("Errore Database: " + error.message); // Ti avvisa subito se c'è un problema di permessi
+        return;
+    }
+
+    if (data.length === 0) {
+        console.warn("Connesso a Supabase, ma la tabella è vuota o gli articoli non sono 'published: true'");
+    }
+
+    allArticles = data || [];
+    renderAll();
+}
+    
 </script>
 </body>
 </html>
