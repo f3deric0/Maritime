@@ -72,6 +72,40 @@
 
         @media (max-width: 992px) { .pub-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { .pub-grid { grid-template-columns: 1fr; } }
+        /* ── FLOATING BOAT BUTTON ── */
+        .boat-btn {
+            position: fixed; bottom: 2.2rem; right: 2.2rem; z-index: 700;
+            width: 58px; height: 58px; border-radius: 50%;
+            background: linear-gradient(135deg, #0d3a54 0%, #1a2a40 100%);
+            border: 1px solid rgba(200,145,58,.35);
+            display: flex; align-items: center; justify-content: center;
+            cursor: none; transition: all .35s ease;
+            box-shadow: 0 8px 30px rgba(0,0,0,.4), 0 0 0 0 rgba(200,145,58,.3);
+            text-decoration: none;
+        }
+        .boat-btn:hover {
+            transform: translateY(-3px) scale(1.06);
+            border-color: rgba(200,145,58,.7);
+            box-shadow: 0 14px 40px rgba(0,0,0,.5), 0 0 0 6px rgba(200,145,58,.12);
+        }
+        .boat-btn.logged-in { background: linear-gradient(135deg, #0d3a54, #1d7a5e); }
+        .boat-btn-tooltip {
+            position: absolute; bottom: 100%; right: 0; margin-bottom: .6rem;
+            background: #0a1628; border: 1px solid rgba(255,255,255,.1);
+            color: var(--white); font-family: var(--ff-c); font-size: .6rem;
+            font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+            padding: 6px 12px; border-radius: 6px; white-space: nowrap;
+            opacity: 0; pointer-events: none; transform: translateY(4px);
+            transition: all .25s;
+        }
+        .boat-btn:hover .boat-btn-tooltip { opacity: 1; transform: translateY(0); }
+        .boat-btn .badge {
+            position: absolute; top: 2px; right: 2px;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #2ecc71; border: 2px solid var(--ink);
+            display: none;
+        }
+        .boat-btn.logged-in .badge { display: block; }
     </style>
 </head>
 <body>
@@ -131,6 +165,17 @@
          No articles found in this category.
     </div>
 </main>
+
+<a href="user.html" class="boat-btn" id="boat-fab" title="Account">
+  <div class="badge"></div>
+  <span class="boat-btn-tooltip">My account</span>
+  <svg width="26" height="26" viewBox="0 0 52 52" fill="none">
+    <line x1="26" y1="8" x2="26" y2="32" stroke="rgba(200,145,58,.9)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M26 10 L38 28 L26 28 Z" fill="rgba(200,145,58,.25)" stroke="rgba(200,145,58,.7)" stroke-width="1" stroke-linejoin="round"/>
+    <path d="M12 32 Q14 40 26 42 Q38 40 40 32 Z" fill="rgba(255,255,255,.15)" stroke="rgba(200,145,58,.7)" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M9 42 Q16 39 26 42 Q36 45 43 42" stroke="rgba(255,255,255,.25)" stroke-width="1.2" stroke-linecap="round" fill="none"/>
+  </svg>
+</a>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -204,28 +249,16 @@ document.addEventListener('mousemove', (e) => {
     dot.style.transform = `translate(${x}px, ${y}px)`;
 });
 
-async function loadArticles() {
-    console.log("Fetching articles...");
-    const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('published', true)
-        .order('published_at', { ascending: false });
-
-    if (error) {
-        console.error('Supabase Error:', error.message);
-        alert("Errore Database: " + error.message); // Ti avvisa subito se c'è un problema di permessi
-        return;
-    }
-
-    if (data.length === 0) {
-        console.warn("Connesso a Supabase, ma la tabella è vuota o gli articoli non sono 'published: true'");
-    }
-
-    allArticles = data || [];
-    renderAll();
+// Aggiorna badge nave se utente è loggato
+async function initBoatBadge() {
+    const { data: { session } } = await supabase.auth.getSession();
+    const fab = document.getElementById('boat-fab');
+    if (session && fab) fab.classList.add('logged-in');
 }
-    
+
+loadArticles();
+initBoatBadge();
+
 </script>
 </body>
 </html>
