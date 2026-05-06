@@ -2,7 +2,7 @@
 
 > Connecting policy, industry and society across Europe's seas.
 
-EU Transparency Register · REG 091578097296-40
+
 
 ---
 
