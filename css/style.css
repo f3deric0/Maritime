@@ -268,7 +268,7 @@ nav.dark { height: 64px; background: rgba(5,12,21,.95); backdrop-filter: blur(24
 .net-card h5 { font-family: var(--ff-c); font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--white); margin-bottom: .6rem; }
 .net-card ul { list-style: none; }
 .net-card li { font-size: .76rem; font-weight: 300; color: rgba(255,255,255,.44); padding: 3px 0; display: flex; align-items: center; gap: 7px; }
-.net-card li::before { content: ''; width: 5px; height: 1px; background: var(--gold); flex-shrink: 0; }
+.net-card li::before { content: ','; color: var(--gold); flex-shrink: 0; }
 
 /* NUMBERS */
 .sec-nums { background: var(--ocean); position: relative; overflow: hidden; padding: 100px 0; }

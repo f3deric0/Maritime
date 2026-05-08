@@ -23,14 +23,14 @@
 
         body { background: var(--ink); cursor: none; margin: 0; overflow-x: hidden; color: var(--white); font-family: var(--ff-b); }
         
-        /* ── COMPASS CURSOR (Identico a Index) ── */
-        #compass-cursor { position: fixed; top: 0; left: 0; width: 56px; height: 56px; pointer-events: none; z-index: 10000; transform: translate(-50%, -50%); transition: transform 0.1s ease-out; }
-        #cursor-dot { position: fixed; width: 4px; height: 4px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 10001; transform: translate(-50%, -50%); }
+        /* ── NAV ACTIVE LINK ── */
+        nav .nav-links a.active { color: var(--gold); }
+        nav .nav-links a.active::after { left: 0; right: 0; }
 
         /* ── HERO STYLING ── */
         .pub-hero {
             min-height: 60vh; background: var(--ink); display: flex; align-items: flex-end;
-            position: relative; padding: 0 5vw 8rem;
+            position: relative; padding: 80px 5vw 8rem;
         }
         .mega-title-pub {
             font-family: var(--ff-d);
@@ -79,6 +79,10 @@
 <div id="compass-cursor">
   <svg viewBox="0 0 56 56" fill="none">
     <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
     <g class="needle">
       <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
       <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
@@ -88,16 +92,26 @@
 </div>
 <div id="cursor-dot"></div>
 
-<nav id="nav" style="position: fixed; width: 100%; top:0; z-index: 1000; background: rgba(5,12,21,0.9); height: 80px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; box-sizing: border-box; border-bottom: 1px solid rgba(255,255,255,0.05);">
-    <a href="index.html" class="logo" style="text-decoration:none">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <img src="./assets/images/Logo-maritimes.png" alt="" style="height:40px;">
-            <div style="color:white; font-family:var(--ff-d); font-size:1.2rem; font-weight:700;">Maritime <em style="color:var(--gold)">Affairs</em></div>
+<nav id="nav" class="dark">
+    <a href="index.html" class="logo">
+        <div class="logo-pill">
+            <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+            <div class="logo-text">
+                <div class="logo-name">Maritime <em>Affairs</em></div>
+                <span class="logo-sub">EU Blue Economy Do-Tank</span>
+            </div>
         </div>
     </a>
-    <div style="font-family:var(--ff-c); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase;">
-        <a href="index.html" style="color:white; text-decoration:none; margin-left:20px">Home</a>
-        <a href="publications.html" style="color:var(--gold); text-decoration:none; margin-left:20px">Publications</a>
+    <ul class="nav-links">
+        <li><a href="index.html#mission">Mission</a></li>
+        <li><a href="index.html#units">Units</a></li>
+        <li><a href="index.html#network">Network</a></li>
+        <li><a href="publications.html" class="active">Publications</a></li>
+        <li><a href="index.html#contact">Join</a></li>
+    </ul>
+    <div class="nav-r">
+        <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
+        <a href="index.html#contact" class="nav-btn">Join Us</a>
     </div>
 </nav>
 
@@ -142,23 +156,6 @@ const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 let allArticles = [];
 let currentFilter = 'all';
 
-async function loadArticles() {
-    const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('published', true)
-        .order('published_at', { ascending: false });
-
-    if (error) {
-        console.error('Error fetching:', error);
-        return;
-    }
-
-    allArticles = data || [];
-    console.log("Articles loaded:", allArticles); // Controlla la console del browser F12
-    renderGrid();
-}
-
 function renderGrid() {
     const grid = document.getElementById('articles-grid');
     const list = currentFilter === 'all' ? allArticles : allArticles.filter(a => a.unit === currentFilter);
@@ -193,19 +190,32 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// Cursor Logic (Identico alla tua Index)
-const cursor = document.getElementById('compass-cursor');
-const dot = document.getElementById('cursor-dot');
-
-document.addEventListener('mousemove', (e) => {
-    const x = e.clientX;
-    const y = e.clientY;
-    cursor.style.transform = `translate(${x}px, ${y}px)`;
-    dot.style.transform = `translate(${x}px, ${y}px)`;
-});
+// Cursor — identico a main.js
+const cursorEl = document.getElementById('compass-cursor');
+const dotEl    = document.getElementById('cursor-dot');
+if (cursorEl && dotEl) {
+    const needle = cursorEl.querySelector('.needle');
+    let mx = 0, my = 0, cx = 0, cy = 0, angle = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function tick() {
+        cx += (mx - cx) * .12;
+        cy += (my - cy) * .12;
+        const dx = mx - cx, dy = my - cy;
+        if (Math.abs(dx) + Math.abs(dy) > .5) angle = Math.atan2(dx, dy) * (180 / Math.PI);
+        cursorEl.style.left = cx + 'px';
+        cursorEl.style.top  = cy + 'px';
+        dotEl.style.left    = mx + 'px';
+        dotEl.style.top     = my + 'px';
+        needle.style.transform = `rotate(${angle}deg)`;
+        requestAnimationFrame(tick);
+    })();
+    document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+    });
+}
 
 async function loadArticles() {
-    console.log("Fetching articles...");
     const { data, error } = await supabase
         .from('articles')
         .select('*')
@@ -214,18 +224,14 @@ async function loadArticles() {
 
     if (error) {
         console.error('Supabase Error:', error.message);
-        alert("Errore Database: " + error.message); // Ti avvisa subito se c'è un problema di permessi
         return;
     }
 
-    if (data.length === 0) {
-        console.warn("Connesso a Supabase, ma la tabella è vuota o gli articoli non sono 'published: true'");
-    }
-
     allArticles = data || [];
-    renderAll();
+    renderGrid();
 }
-    
+
+loadArticles();
 </script>
 </body>
 </html>
