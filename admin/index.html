@@ -2,864 +2,373 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Maritime Affairs</title>
+<title>Maritime Affairs — Editorial</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Barlow+Condensed:wght@300;400;500;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━
-   TOKENS (same as site)
-━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-:root {
-  --ink:    #050c15;
-  --deep:   #091524;
-  --ocean:  #0d3a54;
-  --steel:  #1a5f7a;
-  --gold:   #c8913a;
-  --gold-l: #e8b870;
-  --white:  #ffffff;
-  --ff-d:   'Cormorant Garamond', Georgia, serif;
-  --ff-c:   'Barlow Condensed', sans-serif;
-  --ff-b:   'Barlow', sans-serif;
-  --ease:   cubic-bezier(.16,1,.3,1);
-  --sidebar: 260px;
+  :root {
+    --ink:#050c15; --deep:#0a1620; --gold:#c8913a; --white:#f4ede0;
+    --ff-d: 'Fraunces', Georgia, serif;
+    --ff-c: 'JetBrains Mono', monospace;
+    --ff-b: 'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--ff-b);background:var(--ink);color:var(--white);min-height:100vh}
+  .topbar{display:flex;justify-content:space-between;align-items:center;padding:1.4rem 2rem;border-bottom:1px solid rgba(255,255,255,.08);background:var(--deep)}
+  .topbar h1{font-family:var(--ff-d);font-size:1.35rem;font-weight:600;letter-spacing:-.01em}
+  .topbar h1 em{color:var(--gold);font-style:italic}
+  .topbar .right{display:flex;gap:1rem;align-items:center}
+  .pill{font-family:var(--ff-c);font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;padding:.4rem .8rem;border:1px solid rgba(200,145,58,.35);color:var(--gold);border-radius:100px}
+  .btn{font-family:var(--ff-c);font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;padding:.7rem 1.2rem;background:var(--gold);color:var(--ink);border:none;cursor:pointer;transition:.2s}
+  .btn:hover{background:#e0a544}
+  .btn.ghost{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,.2)}
+  .btn.ghost:hover{border-color:var(--gold);color:var(--gold)}
+  .btn.danger{background:transparent;color:#e0735a;border:1px solid rgba(224,115,90,.35)}
+  .btn.danger:hover{background:rgba(224,115,90,.1)}
+  main{max-width:1280px;margin:0 auto;padding:2.5rem 2rem}
 
-  /* status */
-  --ok:   #2ecc71;
-  --warn: #e67e22;
-  --err:  #e74c3c;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body { font-family: var(--ff-b); background: var(--ink); color: var(--white); overflow-x: hidden; }
-a { text-decoration: none; color: inherit; }
-button, input, textarea, select { font-family: inherit; }
-::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-thumb { background: rgba(200,145,58,.3); border-radius: 2px; }
+  /* LOGIN */
+  .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:radial-gradient(ellipse at 50% 30%, rgba(200,145,58,.08), transparent 60%)}
+  .login-card{width:100%;max-width:420px;background:var(--deep);border:1px solid rgba(255,255,255,.08);padding:3rem 2.5rem}
+  .login-card h2{font-family:var(--ff-d);font-size:1.8rem;font-weight:600;margin-bottom:.5rem}
+  .login-card .sub{font-family:var(--ff-c);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem}
+  .field{margin-bottom:1.2rem}
+  .field label{display:block;font-family:var(--ff-c);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;opacity:.6;margin-bottom:.5rem}
+  .field input,.field textarea,.field select{width:100%;padding:.85rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:var(--white);font-family:var(--ff-b);font-size:.95rem;transition:border .2s}
+  .field textarea{resize:vertical;min-height:120px;font-family:var(--ff-b);line-height:1.5}
+  .field textarea.code{font-family:var(--ff-c);font-size:.85rem;min-height:300px}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--gold)}
+  .login-card .btn{width:100%;margin-top:.5rem;padding:.95rem}
+  .login-error{font-family:var(--ff-c);font-size:.7rem;color:#e0735a;margin-top:1rem;display:none}
+  .login-error.show{display:block}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━
-   LOGIN SCREEN
-━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-#login-screen {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--deep);
-  position: relative; overflow: hidden;
-}
-#login-screen::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 30% 80%, rgba(200,145,58,.1) 0%, transparent 55%);
-}
-.login-box {
-  background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 22px; padding: 3.5rem;
-  width: 100%; max-width: 420px;
-  position: relative; z-index: 1;
-  box-shadow: 0 40px 80px rgba(0,0,0,.4);
-}
-.login-logo {
-  text-align: center; margin-bottom: 2.5rem;
-}
-.login-logo h1 {
-  font-family: var(--ff-d); font-size: 2rem; font-weight: 700;
-  color: var(--white);
-}
-.login-logo h1 em { font-style: italic; color: var(--gold); }
-.login-logo p {
-  font-family: var(--ff-c); font-size: .6rem; font-weight: 600;
-  letter-spacing: .2em; text-transform: uppercase;
-  color: rgba(200,145,58,.5); margin-top: 6px;
-}
-.form-group { margin-bottom: 1.2rem; }
-.form-label {
-  display: block; font-family: var(--ff-c); font-size: .62rem; font-weight: 700;
-  letter-spacing: .16em; text-transform: uppercase;
-  color: rgba(255,255,255,.45); margin-bottom: .5rem;
-}
-.form-input {
-  width: 100%; padding: 12px 16px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 10px; color: var(--white); font-size: .9rem;
-  transition: border-color .3s, background .3s;
-  outline: none;
-}
-.form-input:focus { border-color: rgba(200,145,58,.5); background: rgba(255,255,255,.07); }
-.form-input::placeholder { color: rgba(255,255,255,.2); }
-.btn-primary {
-  width: 100%; padding: 13px; border-radius: 10px;
-  background: var(--gold); color: var(--ink);
-  font-family: var(--ff-c); font-size: .82rem; font-weight: 700;
-  letter-spacing: .14em; text-transform: uppercase;
-  border: none; cursor: pointer;
-  transition: all .3s var(--ease);
-  box-shadow: 0 4px 20px rgba(200,145,58,.3);
-  margin-top: .5rem;
-}
-.btn-primary:hover { background: var(--gold-l); transform: translateY(-1px); }
-.btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.login-err {
-  font-family: var(--ff-c); font-size: .7rem; font-weight: 600;
-  letter-spacing: .06em; color: var(--err);
-  text-align: center; margin-top: 1rem; display: none;
-}
+  /* LIST */
+  .list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}
+  .list-head h2{font-family:var(--ff-d);font-size:2rem;font-weight:600}
+  .list-head h2 em{color:var(--gold);font-style:italic}
+  .list-head .meta{font-family:var(--ff-c);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;opacity:.5}
+  table{width:100%;border-collapse:collapse}
+  thead{background:rgba(255,255,255,.03)}
+  th{text-align:left;padding:1rem;font-family:var(--ff-c);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;opacity:.55;font-weight:600;border-bottom:1px solid rgba(255,255,255,.1)}
+  td{padding:1rem;border-bottom:1px solid rgba(255,255,255,.06);font-size:.92rem;vertical-align:middle}
+  tr.row{cursor:pointer;transition:background .15s}
+  tr.row:hover{background:rgba(200,145,58,.04)}
+  td.title{font-weight:600;color:var(--white)}
+  td .unit-tag{font-family:var(--ff-c);font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);opacity:.85}
+  td .draft-tag{font-family:var(--ff-c);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid rgba(255,180,90,.4);color:#e0a544;border-radius:100px;display:inline-block}
+  td .pub-tag{font-family:var(--ff-c);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid rgba(120,200,140,.35);color:#7fc88c;border-radius:100px;display:inline-block}
+  .empty{text-align:center;padding:5rem 0;opacity:.4}
+  .empty h3{font-family:var(--ff-d);font-size:1.4rem;margin-bottom:.5rem}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━
-   APP SHELL
-━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-#app { display: none; height: 100vh; overflow: hidden; }
+  /* EDITOR */
+  .editor{display:grid;grid-template-columns:1fr 320px;gap:2rem}
+  .editor .main{background:var(--deep);padding:2rem;border:1px solid rgba(255,255,255,.06)}
+  .editor .side{display:flex;flex-direction:column;gap:1.2rem}
+  .editor .side .panel{background:var(--deep);padding:1.5rem;border:1px solid rgba(255,255,255,.06)}
+  .editor .side .panel h4{font-family:var(--ff-c);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+  .editor-actions{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.08)}
+  .toggle{display:flex;align-items:center;gap:.8rem;padding:.7rem;background:rgba(255,255,255,.03);cursor:pointer}
+  .toggle input{width:18px;height:18px;cursor:pointer;accent-color:var(--gold)}
+  .toggle span{font-family:var(--ff-c);font-size:.75rem;letter-spacing:.1em}
+  @media(max-width:900px){.editor{grid-template-columns:1fr}}
 
-/* SIDEBAR */
-.sidebar {
-  position: fixed; left: 0; top: 0; bottom: 0;
-  width: var(--sidebar);
-  background: var(--deep);
-  border-right: 1px solid rgba(255,255,255,.06);
-  display: flex; flex-direction: column;
-  overflow-y: auto; z-index: 100;
-}
-.sidebar-logo {
-  padding: 1.8rem 1.5rem 1.5rem;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.sidebar-logo h2 {
-  font-family: var(--ff-d); font-size: 1.3rem; font-weight: 700;
-  color: var(--white); margin-bottom: 2px;
-}
-.sidebar-logo h2 em { font-style: italic; color: var(--gold); }
-.sidebar-logo span {
-  font-family: var(--ff-c); font-size: .52rem; font-weight: 600;
-  letter-spacing: .2em; text-transform: uppercase; color: rgba(200,145,58,.4);
-}
-.sidebar-nav { padding: 1rem 0; flex: 1; }
-.sidebar-section-label {
-  font-family: var(--ff-c); font-size: .52rem; font-weight: 700;
-  letter-spacing: .22em; text-transform: uppercase;
-  color: rgba(255,255,255,.2); padding: 1rem 1.5rem .5rem;
-}
-.sidebar-btn {
-  display: flex; align-items: center; gap: 10px;
-  width: 100%; padding: 11px 1.5rem;
-  background: transparent; border: none; cursor: pointer;
-  font-family: var(--ff-c); font-size: .78rem; font-weight: 600;
-  letter-spacing: .06em; color: rgba(255,255,255,.45);
-  transition: all .25s; text-align: left;
-}
-.sidebar-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
-.sidebar-btn:hover { color: var(--white); background: rgba(255,255,255,.04); }
-.sidebar-btn.active { color: var(--gold); background: rgba(200,145,58,.08); }
-.sidebar-btn.active svg { color: var(--gold); }
-.sidebar-bottom {
-  padding: 1.2rem 1.5rem;
-  border-top: 1px solid rgba(255,255,255,.06);
-}
-.user-info {
-  font-family: var(--ff-c); font-size: .66rem; font-weight: 600;
-  color: rgba(255,255,255,.3); letter-spacing: .06em; margin-bottom: .8rem;
-  display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.btn-logout {
-  width: 100%; padding: 9px; border-radius: 8px;
-  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
-  color: rgba(255,255,255,.4); font-family: var(--ff-c); font-size: .66rem;
-  font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-  cursor: pointer; transition: all .25s;
-}
-.btn-logout:hover { background: rgba(231,76,60,.12); border-color: rgba(231,76,60,.3); color: var(--err); }
-
-/* MAIN AREA */
-.main-area {
-  margin-left: var(--sidebar);
-  height: 100vh; overflow-y: auto;
-  background: var(--ink);
-}
-.main-header {
-  padding: 1.8rem 2.5rem 1.4rem;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  position: sticky; top: 0; z-index: 50;
-  background: rgba(5,12,21,.95); backdrop-filter: blur(20px);
-  display: flex; align-items: center; justify-content: space-between;
-}
-.main-header h2 {
-  font-family: var(--ff-d); font-size: 1.6rem; font-weight: 700; color: var(--white);
-}
-.main-header h2 em { font-style: italic; color: var(--gold); }
-.header-actions { display: flex; gap: .8rem; }
-.btn-new {
-  display: flex; align-items: center; gap: 8px;
-  padding: 9px 20px; border-radius: 8px;
-  background: var(--gold); color: var(--ink);
-  font-family: var(--ff-c); font-size: .72rem; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  border: none; cursor: pointer; transition: all .25s;
-}
-.btn-new:hover { background: var(--gold-l); }
-.btn-new svg { width: 14px; height: 14px; }
-.main-content { padding: 2.5rem; }
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ARTICLES TABLE
-━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-.stats-row {
-  display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 2rem;
-}
-.stat-card {
-  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
-  border-radius: 14px; padding: 1.4rem 1.6rem;
-}
-.stat-card .sv {
-  font-family: var(--ff-d); font-size: 2.2rem; font-weight: 700; color: var(--gold); line-height: 1;
-}
-.stat-card .sl {
-  font-family: var(--ff-c); font-size: .58rem; font-weight: 700; letter-spacing: .16em;
-  text-transform: uppercase; color: rgba(255,255,255,.35); margin-top: 4px;
-}
-.articles-table-wrap {
-  background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.07);
-  border-radius: 16px; overflow: hidden;
-}
-.table-header {
-  display: grid; grid-template-columns: 1fr 140px 110px 120px 90px;
-  padding: .9rem 1.4rem;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-  font-family: var(--ff-c); font-size: .58rem; font-weight: 700;
-  letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.3);
-}
-.table-row {
-  display: grid; grid-template-columns: 1fr 140px 110px 120px 90px;
-  padding: 1rem 1.4rem; align-items: center;
-  border-bottom: 1px solid rgba(255,255,255,.04);
-  transition: background .2s;
-}
-.table-row:last-child { border-bottom: none; }
-.table-row:hover { background: rgba(255,255,255,.03); }
-.row-title { font-family: var(--ff-b); font-size: .85rem; font-weight: 400; color: var(--white); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 1rem; }
-.row-unit {
-  font-family: var(--ff-c); font-size: .56rem; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--gold);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.row-date { font-family: var(--ff-c); font-size: .65rem; color: rgba(255,255,255,.35); }
-.row-status {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: var(--ff-c); font-size: .6rem; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase;
-}
-.status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.status-pub  { color: var(--ok);   }
-.status-pub  .status-dot  { background: var(--ok); }
-.status-draft { color: rgba(255,255,255,.3); }
-.status-draft .status-dot { background: rgba(255,255,255,.2); }
-.row-actions { display: flex; gap: .5rem; justify-content: flex-end; }
-.btn-edit, .btn-del {
-  padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer;
-  font-family: var(--ff-c); font-size: .6rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  transition: all .2s;
-}
-.btn-edit { background: rgba(255,255,255,.06); color: rgba(255,255,255,.6); }
-.btn-edit:hover { background: rgba(200,145,58,.15); color: var(--gold); }
-.btn-del  { background: transparent; color: rgba(255,255,255,.2); }
-.btn-del:hover { background: rgba(231,76,60,.12); color: var(--err); }
-.table-empty {
-  padding: 4rem; text-align: center;
-  font-family: var(--ff-c); font-size: .7rem; letter-spacing: .14em;
-  text-transform: uppercase; color: rgba(255,255,255,.2);
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ARTICLE FORM
-━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-#form-view { display: none; }
-.form-card {
-  background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.07);
-  border-radius: 16px; padding: 2rem;
-}
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
-.form-row.one { grid-template-columns: 1fr; }
-.form-group-admin { display: flex; flex-direction: column; gap: .45rem; }
-.form-label-admin {
-  font-family: var(--ff-c); font-size: .6rem; font-weight: 700;
-  letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.4);
-}
-.form-input-admin {
-  padding: 10px 14px; background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1); border-radius: 8px;
-  color: var(--white); font-size: .88rem; outline: none;
-  transition: border-color .25s;
-  width: 100%;
-}
-.form-input-admin:focus { border-color: rgba(200,145,58,.45); }
-.form-input-admin::placeholder { color: rgba(255,255,255,.18); }
-.form-input-admin.textarea { resize: vertical; min-height: 90px; line-height: 1.7; }
-select.form-input-admin { appearance: none; cursor: pointer; }
-.form-toggle-row {
-  display: flex; align-items: center; gap: 1rem;
-  padding: .9rem 1rem; background: rgba(255,255,255,.03);
-  border: 1px solid rgba(255,255,255,.07); border-radius: 8px;
-}
-.form-toggle-label {
-  font-family: var(--ff-c); font-size: .7rem; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.5);
-}
-.toggle { position: relative; display: inline-block; width: 42px; height: 24px; }
-.toggle input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-  position: absolute; inset: 0; background: rgba(255,255,255,.1);
-  border-radius: 24px; cursor: pointer; transition: background .25s;
-}
-.toggle-slider::before {
-  content: ''; position: absolute; height: 18px; width: 18px;
-  left: 3px; bottom: 3px; background: rgba(255,255,255,.4);
-  border-radius: 50%; transition: transform .25s, background .25s;
-}
-.toggle input:checked + .toggle-slider { background: rgba(200,145,58,.5); }
-.toggle input:checked + .toggle-slider::before { transform: translateX(18px); background: var(--gold); }
-
-/* Quill override */
-.ql-toolbar { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.1) !important; border-radius: 8px 8px 0 0 !important; }
-.ql-container { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1) !important; border-top: none !important; border-radius: 0 0 8px 8px !important; min-height: 320px; }
-.ql-editor { color: var(--white); font-size: .9rem; line-height: 1.85; }
-.ql-editor.ql-blank::before { color: rgba(255,255,255,.2) !important; font-style: normal; }
-.ql-stroke { stroke: rgba(255,255,255,.4) !important; }
-.ql-fill  { fill:   rgba(255,255,255,.4) !important; }
-.ql-picker-label { color: rgba(255,255,255,.4) !important; }
-.ql-toolbar button:hover .ql-stroke { stroke: var(--gold) !important; }
-.ql-toolbar .ql-active .ql-stroke { stroke: var(--gold) !important; }
-
-/* Form actions */
-.form-actions {
-  display: flex; gap: 1rem; align-items: center;
-  padding-top: 1.4rem; margin-top: 1.4rem;
-  border-top: 1px solid rgba(255,255,255,.07);
-}
-.btn-save {
-  padding: 11px 28px; border-radius: 8px;
-  background: var(--gold); color: var(--ink);
-  font-family: var(--ff-c); font-size: .76rem; font-weight: 700;
-  letter-spacing: .12em; text-transform: uppercase;
-  border: none; cursor: pointer; transition: all .25s;
-}
-.btn-save:hover { background: var(--gold-l); }
-.btn-save:disabled { opacity: .5; cursor: not-allowed; }
-.btn-cancel {
-  padding: 11px 22px; border-radius: 8px;
-  background: transparent; color: rgba(255,255,255,.4);
-  border: 1px solid rgba(255,255,255,.1);
-  font-family: var(--ff-c); font-size: .76rem; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  cursor: pointer; transition: all .25s;
-}
-.btn-cancel:hover { color: var(--white); border-color: rgba(255,255,255,.3); }
-.form-msg {
-  font-family: var(--ff-c); font-size: .7rem; font-weight: 600;
-  letter-spacing: .08em; margin-left: auto;
-}
-.form-msg.ok  { color: var(--ok); }
-.form-msg.err { color: var(--err); }
-
-/* Toast */
-.toast {
-  position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
-  padding: 1rem 1.6rem; border-radius: 10px;
-  font-family: var(--ff-c); font-size: .76rem; font-weight: 700;
-  letter-spacing: .08em; color: var(--ink);
-  transform: translateY(120%); opacity: 0;
-  transition: all .4s var(--ease);
-  pointer-events: none;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.ok  { background: var(--ok); }
-.toast.err { background: var(--err); color: var(--white); }
-
-/* Confirm modal */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 9998;
-  background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0; pointer-events: none; transition: opacity .3s;
-}
-.modal-overlay.show { opacity: 1; pointer-events: all; }
-.modal {
-  background: var(--deep); border: 1px solid rgba(255,255,255,.1);
-  border-radius: 16px; padding: 2rem; max-width: 380px; width: 90%;
-  transform: scale(.95); transition: transform .3s var(--ease);
-}
-.modal-overlay.show .modal { transform: scale(1); }
-.modal h3 { font-family: var(--ff-d); font-size: 1.4rem; font-weight: 700; color: var(--white); margin-bottom: .6rem; }
-.modal p  { font-size: .82rem; font-weight: 300; color: rgba(255,255,255,.5); margin-bottom: 1.6rem; line-height: 1.7; }
-.modal-btns { display: flex; gap: .7rem; justify-content: flex-end; }
-.btn-cancel-modal { padding: 9px 18px; border-radius: 7px; background: transparent; border: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.45); font-family: var(--ff-c); font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: all .2s; }
-.btn-cancel-modal:hover { border-color: rgba(255,255,255,.3); color: var(--white); }
-.btn-confirm-del { padding: 9px 18px; border-radius: 7px; background: var(--err); border: none; color: var(--white); font-family: var(--ff-c); font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; transition: all .2s; }
-
-/* Loader */
-.loading-overlay {
-  position: fixed; inset: 0; z-index: 9997;
-  background: var(--ink); display: flex; align-items: center; justify-content: center;
-}
-.loading-spinner {
-  width: 48px; height: 48px; border-radius: 50%;
-  border: 1.5px solid rgba(200,145,58,.2); border-top-color: var(--gold);
-  animation: spin .9s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+  .toast{position:fixed;bottom:2rem;right:2rem;background:var(--deep);border:1px solid var(--gold);color:var(--white);padding:1rem 1.4rem;font-family:var(--ff-c);font-size:.78rem;letter-spacing:.08em;z-index:1000;transform:translateY(100px);opacity:0;transition:.3s}
+  .toast.show{transform:translateY(0);opacity:1}
+  .toast.error{border-color:#e0735a;color:#ffb8a8}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div class="loading-overlay" id="init-loader">
-  <div class="loading-spinner"></div>
-</div>
-
-<!-- LOGIN -->
-<div id="login-screen" style="display:none">
-  <div class="login-box">
-    <div class="login-logo">
-      <h1>Maritime <em>Affairs</em></h1>
-      <p>Admin Portal</p>
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="email">Email address</label>
-      <input class="form-input" type="email" id="email" placeholder="admin@maritime-affairs.eu" autocomplete="email">
-    </div>
-    <div class="form-group">
-      <label class="form-label" for="password">Password</label>
-      <input class="form-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign in</button>
-    <div class="login-err" id="login-err"></div>
+<!-- LOGIN SCREEN -->
+<div id="login" class="login-screen">
+  <div class="login-card">
+    <div class="sub">Maritime Affairs</div>
+    <h2>Editorial <em>Console</em></h2>
+    <p style="opacity:.5;font-size:.85rem;margin:1rem 0 2rem;line-height:1.55">Sign in with your editorial credentials.</p>
+    <form id="login-form">
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="login-email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="login-password" required autocomplete="current-password">
+      </div>
+      <button class="btn" type="submit">Sign in →</button>
+      <div class="login-error" id="login-error"></div>
+    </form>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <h2>Maritime <em>Affairs</em></h2>
-      <span>Admin</span>
+<!-- APP (hidden until logged in) -->
+<div id="app" style="display:none">
+  <div class="topbar">
+    <h1>Editorial <em>Console</em></h1>
+    <div class="right">
+      <span class="pill" id="user-email">—</span>
+      <button class="btn ghost" id="signout-btn">Sign out</button>
     </div>
-    <nav class="sidebar-nav">
-      <div class="sidebar-section-label">Content</div>
-      <button class="sidebar-btn active" id="nav-list" onclick="showList()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg>
-        All Articles
-      </button>
-      <button class="sidebar-btn" id="nav-new" onclick="showForm(null)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>
-        New Article
-      </button>
-      <div class="sidebar-section-label" style="margin-top:.5rem">Site</div>
-      <button class="sidebar-btn" onclick="window.open('../publications.html','_blank')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/></svg>
-        View Publications
-      </button>
-    </nav>
-    <div class="sidebar-bottom">
-      <span class="user-info" id="user-email">—</span>
-      <button class="btn-logout" onclick="doLogout()">Sign out</button>
-    </div>
-  </aside>
+  </div>
 
-  <!-- MAIN -->
-  <div class="main-area">
-
-    <!-- LIST VIEW -->
-    <div id="list-view">
-      <div class="main-header">
-        <h2>Publications <em>Hub</em></h2>
-        <div class="header-actions">
-          <button class="btn-new" onclick="showForm(null)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            New Article
-          </button>
+  <main id="app-main">
+    <!-- list view -->
+    <div id="view-list">
+      <div class="list-head">
+        <h2>All <em>articles</em></h2>
+        <div style="display:flex;gap:1rem;align-items:center">
+          <span class="meta" id="article-count">0 articles</span>
+          <button class="btn" id="new-btn">+ New article</button>
         </div>
       </div>
-      <div class="main-content">
-        <div class="stats-row" id="stats-row">
-          <div class="stat-card"><div class="sv" id="stat-total">—</div><div class="sl">Total articles</div></div>
-          <div class="stat-card"><div class="sv" id="stat-pub">—</div><div class="sl">Published</div></div>
-          <div class="stat-card"><div class="sv" id="stat-draft">—</div><div class="sl">Drafts</div></div>
-          <div class="stat-card"><div class="sv" id="stat-units">4</div><div class="sl">Units</div></div>
-        </div>
-        <div class="articles-table-wrap">
-          <div class="table-header">
-            <span>Title</span><span>Unit</span><span>Date</span><span>Status</span><span></span>
+
+      <div id="list-empty" class="empty" style="display:none">
+        <h3>No articles yet</h3>
+        <p>Click <strong>+ New article</strong> to write your first piece.</p>
+      </div>
+
+      <table id="list-table" style="display:none">
+        <thead>
+          <tr><th>Title</th><th>Unit</th><th>Author</th><th>Status</th><th>Updated</th></tr>
+        </thead>
+        <tbody id="list-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- editor view -->
+    <div id="view-editor" style="display:none">
+      <div class="list-head">
+        <button class="btn ghost" onclick="showList()">← Back to list</button>
+        <span class="meta" id="editor-status">New article</span>
+      </div>
+
+      <div class="editor">
+        <div class="main">
+          <div class="field">
+            <label>Title</label>
+            <input type="text" id="f-title" placeholder="Article title">
           </div>
-          <div id="articles-list"><div class="table-empty">Loading…</div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FORM VIEW -->
-    <div id="form-view">
-      <div class="main-header">
-        <h2 id="form-title">New <em>Article</em></h2>
-      </div>
-      <div class="main-content">
-        <div class="form-card">
-          <input type="hidden" id="edit-id">
-
-          <div class="form-row">
-            <div class="form-group-admin">
-              <label class="form-label-admin">Title *</label>
-              <input class="form-input-admin" id="f-title" type="text" placeholder="Article title">
-            </div>
-            <div class="form-group-admin">
-              <label class="form-label-admin">Slug (URL) *</label>
-              <input class="form-input-admin" id="f-slug" type="text" placeholder="auto-generated">
-            </div>
+          <div class="field">
+            <label>Slug (URL handle)</label>
+            <input type="text" id="f-slug" placeholder="article-slug">
+          </div>
+          <div class="field">
+            <label>Summary</label>
+            <textarea id="f-summary" placeholder="Short abstract shown in lists and cards"></textarea>
+          </div>
+          <div class="field">
+            <label>Content (HTML)</label>
+            <textarea id="f-content" class="code" placeholder="<p>Write the body in HTML...</p>"></textarea>
           </div>
 
-          <div class="form-row">
-            <div class="form-group-admin">
-              <label class="form-label-admin">Unit *</label>
-              <select class="form-input-admin" id="f-unit">
-                <option value="">— Select unit —</option>
-                <option value="Blue Policy &amp; Law">Blue Policy & Law</option>
-                <option value="Blue Economy &amp; Logistics">Blue Economy & Logistics</option>
-                <option value="Defense &amp; Security">Defense & Security</option>
-                <option value="Tech, Energy &amp; Resources">Tech, Energy & Resources</option>
+          <div class="editor-actions">
+            <button class="btn" id="save-btn">Save</button>
+            <button class="btn ghost" id="save-publish-btn">Save &amp; publish</button>
+            <button class="btn danger" id="delete-btn" style="margin-left:auto">Delete</button>
+          </div>
+        </div>
+
+        <div class="side">
+          <div class="panel">
+            <h4>Status</h4>
+            <label class="toggle"><input type="checkbox" id="f-published"><span>Published</span></label>
+          </div>
+          <div class="panel">
+            <h4>Metadata</h4>
+            <div class="field">
+              <label>Unit</label>
+              <select id="f-unit">
+                <option value="">—</option>
+                <option>Defense &amp; Security</option>
+                <option>Blue Economy &amp; Logistics</option>
+                <option>Tech, Energy &amp; Resources</option>
+                <option>Blue Policy &amp; Law</option>
+                <option>Maritime Affairs</option>
               </select>
             </div>
-            <div class="form-group-admin">
-              <label class="form-label-admin">Author</label>
-              <input class="form-input-admin" id="f-author" type="text" placeholder="Maritime Affairs Editorial">
+            <div class="field">
+              <label>Author</label>
+              <input type="text" id="f-author" placeholder="Author name">
+            </div>
+            <div class="field">
+              <label>Read time (min)</label>
+              <input type="number" id="f-read-min" min="1" max="60" value="5">
             </div>
           </div>
-
-          <div class="form-row">
-            <div class="form-group-admin">
-              <label class="form-label-admin">Cover image URL</label>
-              <input class="form-input-admin" id="f-image" type="url" placeholder="https://...">
+          <div class="panel">
+            <h4>Cover image</h4>
+            <div class="field">
+              <label>Image URL</label>
+              <input type="url" id="f-image-url" placeholder="https://...">
             </div>
-            <div class="form-group-admin">
-              <label class="form-label-admin">Est. read time (minutes)</label>
-              <input class="form-input-admin" id="f-readmin" type="number" min="1" max="60" placeholder="8">
-            </div>
-          </div>
-
-          <div class="form-row one">
-            <div class="form-group-admin">
-              <label class="form-label-admin">Summary * <small style="font-size:.55rem;opacity:.5">(shown on publications page)</small></label>
-              <textarea class="form-input-admin textarea" id="f-summary" placeholder="2–3 sentence overview of the article…"></textarea>
-            </div>
-          </div>
-
-          <!-- Quill -->
-          <div class="form-group-admin" style="margin-bottom:1.2rem">
-            <label class="form-label-admin" style="margin-bottom:.6rem">Full article content *</label>
-            <div id="quill-editor"></div>
-          </div>
-
-          <div class="form-toggle-row">
-            <label class="toggle">
-              <input type="checkbox" id="f-published">
-              <span class="toggle-slider"></span>
-            </label>
-            <span class="form-toggle-label">Published — visible on the website</span>
-          </div>
-
-          <div class="form-actions">
-            <button class="btn-save" id="btn-save" onclick="saveArticle()">Save article</button>
-            <button class="btn-cancel" onclick="showList()">Cancel</button>
-            <span class="form-msg" id="form-msg"></span>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
-<div class="modal-overlay" id="del-modal">
-  <div class="modal">
-    <h3>Delete article?</h3>
-    <p>This action cannot be undone. The article will be permanently removed from the database.</p>
-    <div class="modal-btns">
-      <button class="btn-cancel-modal" onclick="closeModal()">Cancel</button>
-      <button class="btn-confirm-del" id="btn-confirm-del">Delete</button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
 <script>
-/* ═══════════════════════════════════════
-   CONFIGURATION — IMPORTANT
-   1. Go to https://supabase.com and create a project
-   2. Run supabase-setup.sql in the SQL editor
-   3. Paste your Project URL and anon key below
-   4. Add admin users via: Authentication > Users > Add user
-   ═══════════════════════════════════════ */
-const SUPABASE_URL  = 'https://xuinnqoftizczzvkmzjg.supabase.co';     // e.g. https://xxxxxxxxxxxx.supabase.co
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4'; // starts with "eyJ..."
+const SUPABASE_URL = 'https://yqddlucwsjhwmlqvinmu.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsImtpZCI6Ik9pTUUyZ1pBVHhrR3ZoTU8iLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3lxZGRsdWN3c2pod21scXZpbm11LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIiLCJhdWQiOiIiLCJleHAiOjI1NDE3NjE3MzMsImlhdCI6MTc2MTc2MTczMywicm9sZSI6ImFub24iLCJhYWwiOiJhYWwxIiwic2Vzc2lvbl9pZCI6IiIsImlzX2Fub255bW91cyI6ZmFsc2V9.2-3KOVZRxudY6ENzCtlKBBJoQbGD6Wj2ZN3w6iYeUjs';
 
-/* ─────────────────────────── */
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-let quill = null;
-let deleteTarget = null;
-let articles = [];
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+let currentArticleId = null;
 
-/* ── INIT ── */
-async function init() {
-  if (!SUPABASE_URL || SUPABASE_URL === 'https://xxxx.supabase.co') {
-    showConfigError();
-    return;
-  }
-  const { data: { session } } = await sb.auth.getSession();
-  document.getElementById('init-loader').style.display = 'none';
-  if (session) {
-    startApp(session.user);
-  } else {
-    document.getElementById('login-screen').style.display = 'flex';
-  }
+const $ = id => document.getElementById(id);
+function toast(msg, isErr){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!isErr);
+  t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2400);
 }
 
-function showConfigError() {
-  document.getElementById('init-loader').innerHTML = `
-    <div style="text-align:center;padding:2rem;max-width:480px">
-      <h2 style="font-family:var(--ff-d);font-size:2rem;color:var(--gold);margin-bottom:1rem">Configure Supabase</h2>
-      <p style="font-family:var(--ff-b);font-size:.9rem;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:1.5rem">
-        Edit <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">admin/index.html</code>
-        and replace <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">https://xuinnqoftizczzvkmzjg.supabase.co</code>
-        and <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4</code>
-        with your project credentials.<br><br>
-        Then run <code style="color:var(--gold-l);background:rgba(255,255,255,.07);padding:2px 6px;border-radius:4px">supabase-setup.sql</code>
-        in your Supabase SQL editor to create the required tables.
-      </p>
-      <a href="../publications.html" style="font-family:var(--ff-c);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:10px 22px;border-radius:8px">Back to site</a>
-    </div>`;
-}
+/* ---- AUTH ---- */
+$('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('login-email').value.trim();
+  const password = $('login-password').value;
+  const err = $('login-error');
+  err.classList.remove('show');
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (error){ err.textContent = error.message; err.classList.add('show'); return; }
+  enterApp(data.user);
+});
 
-function startApp(user) {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  document.getElementById('user-email').textContent = user.email;
-  initQuill();
-  fetchArticles();
-}
-
-/* ── AUTH ── */
-async function doLogin() {
-  const email = document.getElementById('email').value.trim();
-  const pass  = document.getElementById('password').value;
-  const btn   = document.getElementById('login-btn');
-  const errEl = document.getElementById('login-err');
-  errEl.style.display = 'none';
-  if (!email || !pass) { showLoginErr('Please enter email and password.'); return; }
-  btn.disabled = true; btn.textContent = 'Signing in…';
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
-  btn.disabled = false; btn.textContent = 'Sign in';
-  if (error) { showLoginErr(error.message); return; }
-  startApp(data.user);
-}
-function showLoginErr(msg) {
-  const e = document.getElementById('login-err');
-  e.textContent = msg; e.style.display = 'block';
-}
-async function doLogout() {
+$('signout-btn').addEventListener('click', async () => {
   await sb.auth.signOut();
   location.reload();
-}
-document.getElementById('password')?.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+});
 
-/* ── QUILL ── */
-function initQuill() {
-  quill = new Quill('#quill-editor', {
-    theme: 'snow',
-    placeholder: 'Write the full article here…',
-    modules: {
-      toolbar: [
-        [{ header: [2, 3, false] }],
-        ['bold', 'italic', 'underline'],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        ['blockquote', 'link'],
-        ['clean']
-      ]
-    }
+async function checkSession(){
+  const { data } = await sb.auth.getSession();
+  if (data.session) enterApp(data.session.user);
+}
+
+function enterApp(user){
+  $('login').style.display = 'none';
+  $('app').style.display = 'block';
+  $('user-email').textContent = user.email || 'Editor';
+  loadList();
+}
+
+/* ---- LIST ---- */
+async function loadList(){
+  const { data, error } = await sb.from('articles')
+    .select('id, slug, title, unit, author, published, published_at, updated_at')
+    .order('updated_at', { ascending: false });
+  if (error){ toast(error.message, true); return; }
+  renderList(data || []);
+}
+
+function renderList(rows){
+  $('article-count').textContent = `${rows.length} article${rows.length===1?'':'s'}`;
+  if (!rows.length){
+    $('list-empty').style.display = 'block';
+    $('list-table').style.display = 'none';
+    return;
+  }
+  $('list-empty').style.display = 'none';
+  $('list-table').style.display = 'table';
+  $('list-tbody').innerHTML = rows.map(r => `
+    <tr class="row" data-id="${r.id}">
+      <td class="title">${esc(r.title || '(untitled)')}</td>
+      <td><span class="unit-tag">${esc(r.unit || '—')}</span></td>
+      <td>${esc(r.author || '—')}</td>
+      <td>${r.published ? '<span class="pub-tag">Published</span>' : '<span class="draft-tag">Draft</span>'}</td>
+      <td style="opacity:.6">${r.updated_at ? new Date(r.updated_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+    </tr>`).join('');
+  document.querySelectorAll('tr.row').forEach(tr => {
+    tr.addEventListener('click', () => openEditor(tr.dataset.id));
   });
 }
 
-/* ── FETCH ── */
-async function fetchArticles() {
-  const { data, error } = await sb.from('articles').select('*').order('created_at', { ascending: false });
-  if (error) { showToast('Failed to load articles', 'err'); return; }
-  articles = data || [];
-  renderList();
-  renderStats();
-}
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 
-function renderStats() {
-  const pub   = articles.filter(a => a.published).length;
-  document.getElementById('stat-total').textContent = articles.length;
-  document.getElementById('stat-pub').textContent   = pub;
-  document.getElementById('stat-draft').textContent = articles.length - pub;
-}
+/* ---- EDITOR ---- */
+$('new-btn').addEventListener('click', () => openEditor(null));
 
-function renderList() {
-  const container = document.getElementById('articles-list');
-  if (!articles.length) { container.innerHTML = '<div class="table-empty">No articles yet — create your first one.</div>'; return; }
-  container.innerHTML = articles.map(a => `
-    <div class="table-row">
-      <span class="row-title">${escHtml(a.title)}</span>
-      <span class="row-unit">${escHtml(a.unit || '—')}</span>
-      <span class="row-date">${fmtDate(a.created_at)}</span>
-      <span class="row-status ${a.published ? 'status-pub' : 'status-draft'}">
-        <span class="status-dot"></span>${a.published ? 'Published' : 'Draft'}
-      </span>
-      <span class="row-actions">
-        <button class="btn-edit" onclick="editArticle('${a.id}')">Edit</button>
-        <button class="btn-del" onclick="confirmDelete('${a.id}')">✕</button>
-      </span>
-    </div>`).join('');
-}
+function showList(){ $('view-list').style.display='block'; $('view-editor').style.display='none'; loadList(); }
 
-/* ── VIEWS ── */
-function showList() {
-  document.getElementById('list-view').style.display  = 'block';
-  document.getElementById('form-view').style.display  = 'none';
-  document.getElementById('nav-list').classList.add('active');
-  document.getElementById('nav-new').classList.remove('active');
-  fetchArticles();
-}
-function showForm(article) {
-  document.getElementById('list-view').style.display  = 'none';
-  document.getElementById('form-view').style.display  = 'block';
-  document.getElementById('nav-list').classList.remove('active');
-  document.getElementById('nav-new').classList.add('active');
-  document.getElementById('form-msg').textContent = '';
-  resetForm(article);
-  document.getElementById('form-title').innerHTML = article ? 'Edit <em>Article</em>' : 'New <em>Article</em>';
-}
-
-function resetForm(a) {
-  document.getElementById('edit-id').value   = a?.id || '';
-  document.getElementById('f-title').value   = a?.title || '';
-  document.getElementById('f-slug').value    = a?.slug || '';
-  document.getElementById('f-unit').value    = a?.unit || '';
-  document.getElementById('f-author').value  = a?.author || '';
-  document.getElementById('f-image').value   = a?.image_url || '';
-  document.getElementById('f-readmin').value = a?.read_min || '';
-  document.getElementById('f-summary').value = a?.summary || '';
-  document.getElementById('f-published').checked = a?.published || false;
-  if (quill) quill.root.innerHTML = a?.content || '';
-}
-
-function editArticle(id) {
-  const a = articles.find(x => x.id === id);
-  if (a) showForm(a);
-}
-
-/* ── AUTO SLUG ── */
-document.getElementById('f-title')?.addEventListener('input', function () {
-  if (!document.getElementById('edit-id').value) {
-    document.getElementById('f-slug').value = slugify(this.value);
+async function openEditor(id){
+  $('view-list').style.display = 'none';
+  $('view-editor').style.display = 'block';
+  if (!id){
+    currentArticleId = null;
+    $('editor-status').textContent = 'New article';
+    $('f-title').value=''; $('f-slug').value=''; $('f-summary').value='';
+    $('f-content').value=''; $('f-unit').value=''; $('f-author').value='';
+    $('f-image-url').value=''; $('f-read-min').value=5; $('f-published').checked=false;
+    $('delete-btn').style.display='none';
+    return;
   }
-});
-function slugify(s) {
-  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  currentArticleId = id;
+  const { data, error } = await sb.from('articles').select('*').eq('id', id).single();
+  if (error || !data){ toast('Failed to load article', true); showList(); return; }
+  $('editor-status').textContent = 'Editing — ' + (data.title || '(untitled)');
+  $('f-title').value = data.title || '';
+  $('f-slug').value = data.slug || '';
+  $('f-summary').value = data.summary || '';
+  $('f-content').value = data.content || '';
+  $('f-unit').value = data.unit || '';
+  $('f-author').value = data.author || '';
+  $('f-image-url').value = data.image_url || '';
+  $('f-read-min').value = data.read_min || 5;
+  $('f-published').checked = !!data.published;
+  $('delete-btn').style.display = 'inline-block';
 }
 
-/* ── SAVE ── */
-async function saveArticle() {
-  const id      = document.getElementById('edit-id').value;
-  const title   = document.getElementById('f-title').value.trim();
-  const slug    = document.getElementById('f-slug').value.trim() || slugify(title);
-  const unit    = document.getElementById('f-unit').value;
-  const author  = document.getElementById('f-author').value.trim() || 'Maritime Affairs';
-  const imageUrl= document.getElementById('f-image').value.trim();
-  const readMin = parseInt(document.getElementById('f-readmin').value) || null;
-  const summary = document.getElementById('f-summary').value.trim();
-  const content = quill?.root.innerHTML || '';
-  const published = document.getElementById('f-published').checked;
-
-  const msgEl = document.getElementById('form-msg');
-  msgEl.className = 'form-msg';
-
-  if (!title || !slug || !unit || !summary || !content) {
-    msgEl.textContent = 'Please fill in all required fields.';
-    msgEl.classList.add('err'); return;
-  }
-
-  const btn = document.getElementById('btn-save');
-  btn.disabled = true; btn.textContent = 'Saving…';
-
-  const payload = {
-    title, slug, unit, author,
-    image_url: imageUrl || null,
-    read_min: readMin,
-    summary, content, published,
-    published_at: published ? new Date().toISOString() : null,
+function collect(){
+  return {
+    title: $('f-title').value.trim() || 'Untitled',
+    slug: ($('f-slug').value.trim() || $('f-title').value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')) || null,
+    summary: $('f-summary').value.trim() || null,
+    content: $('f-content').value.trim() || null,
+    unit: $('f-unit').value || null,
+    author: $('f-author').value.trim() || null,
+    image_url: $('f-image-url').value.trim() || null,
+    read_min: Number($('f-read-min').value) || 5,
+    published: $('f-published').checked,
     updated_at: new Date().toISOString()
   };
+}
 
-  let error;
-  if (id) {
-    const r = await sb.from('articles').update(payload).eq('id', id);
-    error = r.error;
+async function save(forcePublish){
+  const payload = collect();
+  if (forcePublish){ payload.published = true; $('f-published').checked = true; }
+  if (payload.published && !payload.published_at) payload.published_at = new Date().toISOString();
+
+  let res;
+  if (currentArticleId){
+    res = await sb.from('articles').update(payload).eq('id', currentArticleId).select().single();
   } else {
-    const r = await sb.from('articles').insert([payload]);
-    error = r.error;
+    res = await sb.from('articles').insert(payload).select().single();
   }
-
-  btn.disabled = false; btn.textContent = 'Save article';
-  if (error) {
-    msgEl.textContent = error.message;
-    msgEl.classList.add('err');
-  } else {
-    showToast(id ? 'Article updated ✓' : 'Article created ✓', 'ok');
-    showList();
-  }
+  if (res.error){ toast(res.error.message, true); return; }
+  currentArticleId = res.data.id;
+  $('editor-status').textContent = 'Editing — ' + (res.data.title || '(untitled)');
+  $('delete-btn').style.display = 'inline-block';
+  toast(forcePublish ? 'Saved & published' : 'Saved');
 }
 
-/* ── DELETE ── */
-function confirmDelete(id) {
-  deleteTarget = id;
-  document.getElementById('del-modal').classList.add('show');
-}
-function closeModal() {
-  deleteTarget = null;
-  document.getElementById('del-modal').classList.remove('show');
-}
-document.getElementById('btn-confirm-del').addEventListener('click', async () => {
-  if (!deleteTarget) return;
-  const { error } = await sb.from('articles').delete().eq('id', deleteTarget);
-  closeModal();
-  if (error) { showToast('Delete failed: ' + error.message, 'err'); return; }
-  showToast('Article deleted', 'ok');
-  fetchArticles();
+$('save-btn').addEventListener('click', () => save(false));
+$('save-publish-btn').addEventListener('click', () => save(true));
+
+$('delete-btn').addEventListener('click', async () => {
+  if (!currentArticleId) return;
+  if (!confirm('Delete this article? This cannot be undone.')) return;
+  const { error } = await sb.from('articles').delete().eq('id', currentArticleId);
+  if (error){ toast(error.message, true); return; }
+  toast('Deleted');
+  showList();
 });
-document.getElementById('del-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
 
-/* ── TOAST ── */
-function showToast(msg, type = 'ok') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className   = `toast ${type} show`;
-  setTimeout(() => t.classList.remove('show'), 3200);
-}
-
-/* ── UTILS ── */
-function fmtDate(d) {
-  if (!d) return '—';
-  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-function escHtml(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ── START ── */
-init();
+checkSession();
 </script>
 </body>
 </html>

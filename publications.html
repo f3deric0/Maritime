@@ -67,8 +67,60 @@
         .pub-card-body { padding: 2rem; }
         .pub-card h3 { font-family: var(--ff-d); font-size: 1.6rem; margin: 0 0 1rem; line-height: 1.2; }
         .pub-card p { font-size: 0.95rem; opacity: 0.6; line-height: 1.6; }
+        .pub-card-img { position:relative; }
+        .pub-card-ph { width:100%; height:100%; min-height:220px; background:
+            repeating-linear-gradient(135deg, rgba(200,145,58,.06) 0 12px, rgba(200,145,58,.02) 12px 24px),
+            linear-gradient(180deg, #0d3a54 0%, #050c15 100%); }
+        .pub-card-draft { position:absolute; top:1rem; right:1rem; padding:.35rem .7rem;
+            background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); color:#fff;
+            font-family:var(--ff-c); font-size:.55rem; font-weight:700; letter-spacing:.18em; text-transform:uppercase; }
+        #draft-banner { display:none; max-width:1200px; margin:1.5rem auto 0; padding:1rem 1.5rem;
+            background:rgba(200,145,58,.08); border:1px solid rgba(200,145,58,.25); color:rgba(232,184,112,.9);
+            font-family:var(--ff-c); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; text-align:center; }
 
         .wrap { max-width: 1400px; margin: 0 auto; padding: 0 5vw; }
+
+        
+        /* FEATURED ARTICLE */
+        .pub-featured { display:grid; grid-template-columns: 1.15fr 1fr; gap:0;
+            background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
+            cursor:none; transition:.4s ease; margin-bottom:3rem; overflow:hidden; }
+        .pub-featured:hover { border-color: var(--gold); transform: translateY(-4px);
+            box-shadow: 0 30px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(200,145,58,.2); }
+        .pub-featured-img { position:relative; min-height: 480px; overflow:hidden; background:#111; }
+        .pub-featured-img img { width:100%; height:100%; object-fit:cover; transition:transform .8s ease; }
+        .pub-featured:hover .pub-featured-img img { transform: scale(1.04); }
+        .pub-featured-tag { position:absolute; top:1.4rem; left:1.4rem;
+            padding:.5rem 1rem; background: var(--gold); color: var(--ink);
+            font-family: var(--ff-c); font-size:.62rem; font-weight:700; letter-spacing:.22em; text-transform:uppercase;
+            box-shadow: 0 8px 24px rgba(200,145,58,.4); }
+        .pub-featured-body { padding: 3.5rem 3rem; display:flex; flex-direction:column; justify-content:center; }
+        .pub-featured-unit { color: var(--gold); font-family: var(--ff-c); font-size:.7rem;
+            text-transform:uppercase; letter-spacing:.22em; margin-bottom: 1.2rem; }
+        .pub-featured-body h2 { font-family: var(--ff-d); font-size: clamp(2rem, 3vw, 3rem);
+            font-weight: 700; line-height: 1.05; margin: 0 0 1.4rem; letter-spacing:-.01em; }
+        .pub-featured-body p { font-size: 1.08rem; line-height: 1.7; opacity: .68; margin-bottom: 1.8rem; }
+        .pub-featured-meta { font-family: var(--ff-c); font-size:.7rem; letter-spacing:.14em;
+            text-transform:uppercase; opacity: .45; margin-bottom: 1.6rem; }
+        .pub-featured-cta { font-family: var(--ff-c); font-size:.78rem; font-weight: 700;
+            letter-spacing: .2em; text-transform: uppercase; color: var(--gold); }
+        @media(max-width:880px){ .pub-featured { grid-template-columns: 1fr; }
+            .pub-featured-img { min-height: 280px; } .pub-featured-body { padding: 2rem; } }
+
+        /* BOAT FAB → admin login */
+        .boat-fab { position:fixed; bottom:2rem; right:2rem; z-index:9000;
+            width:60px; height:60px; border-radius:50%; background: var(--gold);
+            border:none; cursor:none; display:flex; align-items:center; justify-content:center;
+            box-shadow: 0 4px 24px rgba(200,145,58,.45);
+            transition: transform .3s, box-shadow .3s; text-decoration: none; }
+        .boat-fab:hover { transform: translateY(-4px); box-shadow: 0 8px 36px rgba(200,145,58,.7); }
+        .boat-fab::after { content: 'EDIT'; position: absolute; top: -36px; right: 0;
+            font-family: var(--ff-c); font-size: .58rem; font-weight: 700;
+            letter-spacing: .22em; color: var(--gold); opacity: 0;
+            background: rgba(5,12,21,.95); padding: .35rem .7rem; border: 1px solid rgba(200,145,58,.3);
+            border-radius: 100px; transition: opacity .3s, transform .3s; transform: translateY(4px);
+            white-space: nowrap; pointer-events: none; }
+        .boat-fab:hover::after { opacity: 1; transform: translateY(0); }
 
         @media (max-width: 992px) { .pub-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { .pub-grid { grid-template-columns: 1fr; } }
@@ -102,13 +154,18 @@
             </div>
         </div>
     </a>
-    <ul class="nav-links">
-        <li><a href="index.html#mission">Mission</a></li>
-        <li><a href="index.html#units">Units</a></li>
-        <li><a href="index.html#network">Network</a></li>
-        <li><a href="publications.html" class="active">Publications</a></li>
-        <li><a href="index.html#contact">Join</a></li>
-    </ul>
+
+    <div class="ocean-pill" data-ocean-pill>
+        <canvas class="ocean-pill-canvas" aria-hidden="true"></canvas>
+        <ul class="ocean-pill-links">
+            <li><a href="index.html#mission">Mission</a></li>
+            <li><a href="index.html#units">Units</a></li>
+            <li><a href="index.html#network">Network</a></li>
+            <li><a href="publications.html" class="active">Publications</a></li>
+            <li><a href="index.html#contact">Join</a></li>
+        </ul>
+    </div>
+
     <div class="nav-r">
         <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
         <a href="index.html#contact" class="nav-btn">Join Us</a>
@@ -140,6 +197,8 @@
 </div>
 
 <main class="wrap">
+    <div id="featured-article" style="display:none; margin-top:2rem"></div>
+    <div id="draft-banner">⚠ Showing all articles — none are marked as published yet. Mark them as published in the admin to hide drafts.</div>
     <div id="articles-grid" class="pub-grid"></div>
     <div id="empty-state" style="display:none; text-align: center; padding: 10rem 0; opacity: 0.3;">
          No articles found in this category.
@@ -147,37 +206,78 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/ocean-nav.js"></script>
 <script>
 const SUPABASE_URL = 'https://xuinnqoftizczzvkmzjg.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh1aW5ucW9mdGl6Y3p6dmttempnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDAzNDQsImV4cCI6MjA5MTIxNjM0NH0.q-9me1peZF1lcNuzep_e-tNa2eQJAnwkYWQZ0f5lkU4';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 let allArticles = [];
 let currentFilter = 'all';
 
 function renderGrid() {
     const grid = document.getElementById('articles-grid');
+    const featuredEl = document.getElementById('featured-article');
     const list = currentFilter === 'all' ? allArticles : allArticles.filter(a => a.unit === currentFilter);
-    
+
     document.getElementById('hero-count').textContent = list.length;
     document.getElementById('empty-state').style.display = list.length ? 'none' : 'block';
 
-    grid.innerHTML = list.map(a => `
+    // FEATURED — most recent article
+    const featured = list[0];
+    const rest = list.slice(1);
+
+    if (featured) {
+        const date = featured.published_at || featured.updated_at;
+        const draft = featured.published === false;
+        featuredEl.style.display = 'block';
+        featuredEl.innerHTML = `
+          <article class="pub-featured" onclick="window.location.href='article.html?id=${featured.slug || featured.id}'">
+            <div class="pub-featured-img">
+              ${featured.image_url
+                  ? `<img src="${featured.image_url}" alt="${(featured.title||'').replace(/"/g,'&quot;')}" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">`
+                  : `<div class="pub-card-ph"></div>`}
+              ${draft ? `<div class="pub-card-draft">Draft</div>` : ``}
+              <div class="pub-featured-tag">Latest</div>
+            </div>
+            <div class="pub-featured-body">
+              <div class="pub-featured-unit">${featured.unit || 'Maritime Affairs'}</div>
+              <h2>${featured.title || 'Untitled'}</h2>
+              <p>${featured.summary || '—'}</p>
+              <div class="pub-featured-meta">
+                ${date ? new Date(date).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : 'Undated'}
+                ${featured.read_min ? ' &nbsp;·&nbsp; ' + featured.read_min + ' min' : ''}
+                ${featured.author ? ' &nbsp;·&nbsp; ' + featured.author : ''}
+              </div>
+              <div class="pub-featured-cta">Read article →</div>
+            </div>
+          </article>`;
+    } else {
+        featuredEl.style.display = 'none';
+    }
+
+    grid.innerHTML = rest.map(a => {
+        const date = a.published_at || a.updated_at;
+        const draft = a.published === false;
+        return `
         <article class="pub-card" onclick="window.location.href='article.html?id=${a.slug || a.id}'">
             <div class="pub-card-img">
-                ${a.image_url ? `<img src="${a.image_url}" alt="${a.title}">` : `<div style="padding:40px; opacity:0.2">No Image</div>`}
+                ${a.image_url
+                    ? `<img src="${a.image_url}" alt="${(a.title||'').replace(/"/g,'&quot;')}" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">`
+                    : `<div class="pub-card-ph"></div>`}
+                ${draft ? `<div class="pub-card-draft">Draft</div>` : ``}
             </div>
             <div class="pub-card-body">
-                <div style="color:var(--gold); font-family:var(--ff-c); font-size:0.65rem; text-transform:uppercase; margin-bottom:1rem;">${a.unit || 'Unit'}</div>
-                <h3>${a.title}</h3>
-                <p>${a.summary || ''}</p>
-                <div style="margin-top:2rem; font-size:0.7rem; opacity:0.4; font-family:var(--ff-c)">
-                    ${new Date(a.published_at).toLocaleDateString('en-GB')}
+                <div style="color:var(--gold); font-family:var(--ff-c); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.18em; margin-bottom:1rem;">${a.unit || 'Maritime Affairs'}</div>
+                <h3>${a.title || 'Untitled'}</h3>
+                <p>${a.summary || '—'}</p>
+                <div style="margin-top:2rem; font-size:0.7rem; opacity:0.4; font-family:var(--ff-c); letter-spacing:0.12em; text-transform:uppercase">
+                    ${date ? new Date(date).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : 'Undated'}${a.read_min ? ' &nbsp;·&nbsp; ' + a.read_min + ' min' : ''}${a.author ? ' &nbsp;·&nbsp; ' + a.author : ''}
                 </div>
             </div>
-        </article>
-    `).join('');
+        </article>`;
+    }).join('');
 }
 
 // Filtri
@@ -215,23 +315,94 @@ if (cursorEl && dotEl) {
     });
 }
 
-async function loadArticles() {
-    const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('published', true)
-        .order('published_at', { ascending: false });
+function showDiagnostic(msg) {
+    const el = document.getElementById('empty-state');
+    el.style.display = 'block';
+    el.innerHTML = `<div style="font-family:var(--ff-c);font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;opacity:0.5;line-height:2">${msg}</div>`;
+}
 
-    if (error) {
-        console.error('Supabase Error:', error.message);
+async function loadArticles() {
+    console.log('[Publications] Connecting to', SUPABASE_URL);
+    // Step 1: probe the table without filters — detects RLS blocks or empty table
+    const { data: probe, error: probeErr, count } = await sb
+        .from('articles')
+        .select('id, published, title', { count: 'exact' })
+        .limit(20);
+
+    if (probeErr) {
+        console.error('[Publications] Connection error:', probeErr.message, probeErr.hint || '');
+        showDiagnostic(`Database error: ${probeErr.message}`);
         return;
     }
 
-    allArticles = data || [];
+    if (!probe || probe.length === 0) {
+        console.warn('[Publications] Table empty or RLS blocks all reads. Enable SELECT for anon role in Supabase.');
+        showDiagnostic('No articles found. The table may be empty or Row Level Security is blocking reads.');
+        return;
+    }
+
+    const unpublished = probe.filter(r => !r.published).length;
+    console.log(`[Publications] Probe OK — ${probe.length} record(s) returned, total in table ≈ ${count}, ${unpublished} not published.`);
+    console.table(probe);
+
+    // Step 2: fetch articles. Try published-only first; if none, fall back to ALL
+    // so the page never appears empty when content actually exists.
+    // Schema (from admin/index.html): id, title, slug, unit, author, image_url,
+    // read_min, summary, content, published, published_at, updated_at.
+    const SELECT = 'id, slug, title, summary, unit, image_url, author, read_min, published, published_at, updated_at';
+
+    let { data, error } = await sb
+        .from('articles')
+        .select(SELECT)
+        .eq('published', true)
+        .order('published_at', { ascending: false, nullsFirst: false });
+
+    if (error) {
+        console.error('[Publications] Fetch error on published filter:', error.message);
+        // retry without filter — column might be missing on this DB
+        const retry = await sb.from('articles').select(SELECT).order('updated_at', { ascending: false });
+        data = retry.data; error = retry.error;
+    }
+
+    if (error) {
+        console.error('[Publications] Fetch error:', error.message);
+        showDiagnostic(`Fetch error: ${error.message}`);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        console.warn('[Publications] No published rows — falling back to ALL rows so content is visible.');
+        const fallback = await sb.from('articles').select(SELECT).order('updated_at', { ascending: false });
+        if (fallback.error || !fallback.data || fallback.data.length === 0) {
+            showDiagnostic(`Found ${probe.length} article(s) in the database, but none could be loaded. Check that the 'published' flag is set in the admin.`);
+            return;
+        }
+        data = fallback.data;
+        document.getElementById('draft-banner').style.display = 'block';
+    }
+
+    allArticles = data;
+    console.log(`[Publications] Loaded ${allArticles.length} article(s).`, allArticles);
     renderGrid();
 }
 
 loadArticles();
 </script>
+
+<a href="admin/index.html" class="boat-fab" title="Editorial admin">
+  <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="#050c15" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- mast -->
+    <path d="M16 4 L16 20"/>
+    <!-- main sail -->
+    <path d="M16 6 L16 19 L7 19 Z" fill="#050c15" fill-opacity=".15"/>
+    <!-- jib -->
+    <path d="M16 8 L16 18 L23 18 Z" fill="#050c15" fill-opacity=".25"/>
+    <!-- hull -->
+    <path d="M4 22 Q16 28 28 22 L26 25 Q16 29 6 25 Z" fill="#050c15" fill-opacity=".35"/>
+    <!-- water -->
+    <path d="M3 27 Q7 26 11 27 T19 27 T27 27 T31 27" stroke-width="1.2" opacity=".55"/>
+  </svg>
+</a>
+
 </body>
 </html>
