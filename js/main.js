@@ -25,18 +25,26 @@ const lPct  = document.getElementById('l-pct');
 const ldr   = document.getElementById('loader');
 let lv = 0;
 
-const lInt = setInterval(() => {
-  lv += Math.random() * 22 + 4;
-  if (lv >= 100) {
-    lv = 100;
-    clearInterval(lInt);
-    setTimeout(openLoader, 400);
-  }
-  lFill.style.width    = lv + '%';
-  lPct.textContent     = Math.floor(lv) + '%';
-}, 80);
+if (ldr && lFill && lPct) {
+  const lInt = setInterval(() => {
+    lv += Math.random() * 22 + 4;
+    if (lv >= 100) {
+      lv = 100;
+      clearInterval(lInt);
+      setTimeout(openLoader, 400);
+    }
+    lFill.style.width = lv + '%';
+    lPct.textContent = Math.floor(lv) + '%';
+  }, 80);
+} else {
+  setTimeout(startHero, 0);
+}
 
 function openLoader() {
+  if (!ldr) {
+    startHero();
+    return;
+  }
   ldr.querySelectorAll('.l-half').forEach(h =>
     h.classList.add(h.classList.contains('l-top') ? 'exit-top' : 'exit-bot')
   );
@@ -52,6 +60,7 @@ const ivEl    = document.getElementById('iv');
 const iskip   = document.getElementById('iskip');
 
 function closeIntro() {
+  if (!introEl) return;
   introEl.classList.add('gone');
   setTimeout(() => introEl.style.display = 'none', 1200);
 }
@@ -96,7 +105,7 @@ function startHero() {
 const cursorEl = document.getElementById('compass-cursor');
 const dotEl    = document.getElementById('cursor-dot');
 
-if (cursorEl && dotEl) {
+if (cursorEl && dotEl && window.matchMedia('(pointer: fine)').matches) {
   const needle = cursorEl.querySelector('.needle');
   let mx = 0, my = 0, cx = 0, cy = 0, angle = 0;
 
@@ -121,6 +130,9 @@ if (cursorEl && dotEl) {
     el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
   });
+} else {
+  cursorEl?.remove();
+  dotEl?.remove();
 }
 
 /* ── PROGRESS BAR ── */

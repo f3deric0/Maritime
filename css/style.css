@@ -103,6 +103,68 @@ nav.dark { height: 64px; background: rgba(5,12,21,.95); backdrop-filter: blur(24
 @keyframes pulse { 0%,100%{ box-shadow:0 0 0 0 rgba(200,145,58,.6); } 50%{ box-shadow:0 0 0 8px rgba(200,145,58,0); } }
 .nav-btn { font-family: var(--ff-c); font-size: .76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); background: var(--gold); padding: 10px 24px; border-radius: 100px; cursor: none; box-shadow: 0 4px 20px rgba(200,145,58,.35); transition: all .3s var(--ease); }
 .nav-btn:hover { background: var(--gold-l); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(200,145,58,.5); }
+.ocean-pill {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-height: 48px;
+  border: 1px solid rgba(200,145,58,.32);
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(100deg, rgba(8,36,58,.9), rgba(45,167,194,.55) 45%, rgba(202,170,112,.75) 70%, rgba(184,152,104,.86));
+  box-shadow: 0 10px 34px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.ocean-pill-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: .82;
+  pointer-events: none;
+}
+.ocean-pill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.16), transparent 45%, rgba(5,12,21,.22));
+}
+.ocean-pill-links {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  min-height: 48px;
+  padding: 0 10px;
+}
+.ocean-pill-links a {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font-family: var(--ff-c);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.86);
+  text-shadow: 0 1px 7px rgba(5,12,21,.65);
+  cursor: none;
+  transition: color .25s var(--ease), background .25s var(--ease);
+  white-space: nowrap;
+}
+.ocean-pill-links a:hover,
+.ocean-pill-links a.active {
+  color: var(--ink);
+  background: rgba(232,184,112,.9);
+  text-shadow: none;
+}
 
 /* COORDINATE HUD */
 #coords { position: fixed; bottom: 2rem; right: 5vw; z-index: 400; font-family: var(--ff-c); font-size: .6rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: rgba(200,145,58,.5); text-align: right; line-height: 1.8; opacity: 0; transition: opacity .6s; }
@@ -367,8 +429,21 @@ footer { background: var(--ink); padding: 6rem 5vw 2.5rem; border-top: 1px solid
   .cta-grid { grid-template-columns:repeat(2,1fr); }
   .ft-grid { grid-template-columns:1fr 1fr; gap:2.5rem; }
   .nav-links { display:none; }
+  nav { padding: 0 3vw; }
+  .ocean-pill { position: static; transform: none; order: 3; width: 100%; margin-top: 8px; }
+  .ocean-pill-links { justify-content: center; overflow-x: auto; scrollbar-width: none; }
+  .ocean-pill-links::-webkit-scrollbar { display: none; }
 }
 @media(max-width:700px){
+  nav { height: auto; min-height: 70px; padding: 10px 4vw; flex-wrap: wrap; gap: 8px; }
+  nav.dark { height: auto; min-height: 70px; }
+  .logo-pill { padding-right: 12px; }
+  .logo-text, .nav-pulse { display: none; }
+  .nav-r { gap: .7rem; }
+  .nav-btn { padding: 9px 15px; font-size: .68rem; }
+  .ocean-pill { min-height: 42px; }
+  .ocean-pill-links { min-height: 42px; justify-content: flex-start; padding: 0 7px; }
+  .ocean-pill-links a { height: 30px; padding: 0 10px; font-size: .66rem; }
   .nums-grid { grid-template-columns:1fr 1fr; }
   .cta-grid { grid-template-columns:1fr; }
   .ft-grid { grid-template-columns:1fr; }

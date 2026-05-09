@@ -17,7 +17,20 @@
   resize();
   window.addEventListener('resize', resize);
 
-  function draw() {
+  const frameInterval = 1000 / 30;
+  let lastFrame = 0;
+
+  function draw(now) {
+    if (document.hidden) {
+      requestAnimationFrame(draw);
+      return;
+    }
+    if (now - lastFrame < frameInterval) {
+      requestAnimationFrame(draw);
+      return;
+    }
+    lastFrame = now;
+
     ctx.clearRect(0, 0, W, H);
 
     /* ── grid lines (chart graticules) ── */
@@ -83,5 +96,5 @@
     requestAnimationFrame(draw);
   }
 
-  draw();
+  requestAnimationFrame(draw);
 })();
