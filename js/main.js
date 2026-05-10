@@ -104,6 +104,15 @@ if (navEl) {
 
 function startHero() {
   if (navEl) navEl.style.opacity = '1';
+
+  // Kick any pill videos that were blocked while nav was opacity:0
+  document.querySelectorAll('.ocean-pill-video').forEach(v => {
+    v.muted = true;
+    try { v.currentTime = 0; } catch (_) {}
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+  });
+
   const coords = document.getElementById('coords');
   if (coords) coords.classList.add('show');
 

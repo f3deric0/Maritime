@@ -112,7 +112,7 @@ nav.dark { height: 64px; background: rgba(5,12,21,.95); backdrop-filter: blur(24
   border: 1px solid rgba(200,145,58,.32);
   border-radius: 999px;
   overflow: hidden;
-  background: linear-gradient(100deg, rgba(8,36,58,.9), rgba(45,167,194,.55) 45%, rgba(202,170,112,.75) 70%, rgba(184,152,104,.86));
+  background: #021118; /* dark fallback shown for a frame before the video starts */
   box-shadow: 0 10px 34px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.12);
 }
 .ocean-pill-canvas {
