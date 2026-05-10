@@ -434,7 +434,7 @@ footer { background: var(--ink); padding: 6rem 5vw 2.5rem; border-top: 1px solid
   .ft-grid { grid-template-columns:1fr 1fr; gap:2.5rem; }
   .nav-links { display:none; }
   nav { padding: 0 3vw; }
-  .ocean-pill { position: static; transform: none; order: 3; width: 100%; margin-top: 8px; }
+  .ocean-pill { position: relative; transform: none; order: 3; width: 100%; margin-top: 8px; left: auto; top: auto; }
   .ocean-pill-links { justify-content: center; overflow-x: auto; scrollbar-width: none; }
   .ocean-pill-links::-webkit-scrollbar { display: none; }
 }
@@ -445,7 +445,7 @@ footer { background: var(--ink); padding: 6rem 5vw 2.5rem; border-top: 1px solid
   .logo-text, .nav-pulse { display: none; }
   .nav-r { gap: .7rem; }
   .nav-btn { padding: 9px 15px; font-size: .68rem; }
-  .ocean-pill { min-height: 42px; }
+  .ocean-pill { position: relative; left: auto; top: auto; transform: none; min-height: 42px; }
   .ocean-pill-links { min-height: 42px; justify-content: flex-start; padding: 0 7px; }
   .ocean-pill-links a { height: 30px; padding: 0 10px; font-size: .66rem; }
   .nums-grid { grid-template-columns:1fr 1fr; }
