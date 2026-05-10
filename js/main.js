@@ -68,21 +68,26 @@ function closeIntro() {
 }
 
 function startIntro() {
-  if (!ivEl) { closeIntro(); return; }
+  if (!introEl || !ivEl) { closeIntro(); return; }
+  // reveal the intro NOW (it was display:none until the loader finished)
+  introEl.style.display = 'flex';
+  introEl.style.opacity = '1';
   ivEl.muted = true;
   ivEl.playsInline = true;
   ivEl.addEventListener('ended',   () => setTimeout(closeIntro, 400));
   ivEl.addEventListener('error',   () => closeIntro());
-  ivEl.addEventListener('stalled', () => setTimeout(closeIntro, 2000));
+  ivEl.addEventListener('stalled', () => setTimeout(closeIntro, 2500));
   const tryPlay = () => {
     try { ivEl.currentTime = 0; } catch (_) {}
     const p = ivEl.play();
     if (p && typeof p.catch === 'function') p.catch(() => closeIntro());
   };
+  // Force-load in case preload didn't kick in
+  try { ivEl.load(); } catch (_) {}
   if (ivEl.readyState >= 2) tryPlay();
   else ivEl.addEventListener('loadeddata', tryPlay, { once: true });
-  // Hard safety fallback: never block the page more than 8s after the loader exits.
-  setTimeout(closeIntro, 8000);
+  // Hard safety: never block the page more than 9s after the loader exits.
+  setTimeout(closeIntro, 9000);
 }
 if (iskip) iskip.addEventListener('click', closeIntro);
 

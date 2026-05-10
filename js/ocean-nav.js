@@ -1,6 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
-   OCEAN PILL NAV — animated ocean inside the nav pill
-   Waves, sailboat, gold light sparkles — runs at 60fps via RAF
+   OCEAN PILL NAV — aerial tropical beach inside the nav pill
+   Top half turquoise water, bottom half cream sand,
+   animated white foam shoreline running horizontally.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   const pills = document.querySelectorAll('[data-ocean-pill]');
@@ -15,9 +16,9 @@
     function fit() {
       const r = pill.getBoundingClientRect();
       dpr = Math.min(2, window.devicePixelRatio || 1);
-      W = Math.round(r.width * dpr);
+      W = Math.round(r.width  * dpr);
       H = Math.round(r.height * dpr);
-      canvas.width = W;
+      canvas.width  = W;
       canvas.height = H;
       canvas.style.width  = r.width  + 'px';
       canvas.style.height = r.height + 'px';
@@ -25,183 +26,175 @@
     fit();
     new ResizeObserver(() => fit()).observe(pill);
 
-    /* ── sparkle particles ── */
-    const sparks = Array.from({ length: 14 }, (_, i) => ({
-      x:     Math.random(),
-      phase: Math.random() * Math.PI * 2,
-      speed: 0.6 + Math.random() * 1.2,
-      size:  0.8 + Math.random() * 1.4,
-      depth: Math.random()
+    /* sand grain dots — fixed */
+    const grains = Array.from({ length: 70 }, () => ({
+      rx: Math.random(),
+      ry: Math.random(),
+      a:  0.05 + Math.random() * 0.14,
+      s:  0.5 + Math.random() * 1.2
     }));
 
-    /* ── boat ── */
-    const boat = { x: -0.12, speed: 0.014 };
+    /* water sparkles */
+    const sparkles = Array.from({ length: 18 }, () => ({
+      rx: Math.random(),
+      ry: Math.random() * 0.45,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.8 + Math.random() * 1.6,
+      size:  0.6 + Math.random() * 1.2
+    }));
 
-    const start = performance.now();
+    const t0 = performance.now();
+
+    /* shoreline runs horizontally near the middle, gently wavy */
+    function shoreY(xFrac, t) {
+      const baseY = 0.46;
+      const wave  = Math.sin(xFrac * 9   + t * 0.55) * 0.038
+                  + Math.sin(xFrac * 19  - t * 0.78) * 0.020
+                  + Math.sin(xFrac * 33  + t * 1.10) * 0.008;
+      return (baseY + wave) * H;
+    }
 
     function draw(now) {
-      const t = (now - start) / 1000;
+      const t = (now - t0) / 1000;
       ctx.clearRect(0, 0, W, H);
 
-      /* 1 – deep ocean background */
-      const bg = ctx.createLinearGradient(0, 0, W, H);
-      bg.addColorStop(0,    '#02111e');
-      bg.addColorStop(0.35, '#053d5c');
-      bg.addColorStop(0.72, '#0a5878');
-      bg.addColorStop(1,    '#07283a');
-      ctx.fillStyle = bg;
+      /* ── 1. WATER (top half) ── */
+      const waterG = ctx.createLinearGradient(0, 0, 0, H * 0.6);
+      waterG.addColorStop(0,   '#5fc6c4');
+      waterG.addColorStop(0.5, '#2d9a9d');
+      waterG.addColorStop(1,   '#0e6770');
+      ctx.fillStyle = waterG;
       ctx.fillRect(0, 0, W, H);
 
-      /* 2 – wave layers (back → front) */
-      const waveDefs = [
-        { yFrac:0.82, amp:0.28, freq:0.0038, spd:0.38, cT:'rgba(5,40,66,0.92)',   cB:'rgba(2,14,22,0.96)',  op:1   },
-        { yFrac:0.70, amp:0.22, freq:0.0052, spd:0.55, cT:'rgba(9,68,102,0.78)',  cB:'rgba(3,18,30,0.90)',  op:0.9 },
-        { yFrac:0.58, amp:0.18, freq:0.0068, spd:0.74, cT:'rgba(14,96,138,0.65)', cB:'rgba(4,24,40,0.85)',  op:0.8 },
-        { yFrac:0.46, amp:0.14, freq:0.0085, spd:0.95, cT:'rgba(20,130,175,0.45)',cB:'rgba(6,30,50,0.7)',   op:0.6 },
-      ];
-
-      waveDefs.forEach(w => {
-        const yBase = H * w.yFrac;
-        const amp   = H * w.amp;
-        ctx.beginPath();
-        ctx.moveTo(0, H);
-        for (let x = 0; x <= W + 4; x += 3) {
-          const y = yBase
-            + Math.sin(x * w.freq + t * w.spd) * amp
-            + Math.sin(x * w.freq * 1.83 - t * w.spd * 0.63) * amp * 0.38
-            + Math.sin(x * w.freq * 2.71 + t * w.spd * 1.10)  * amp * 0.18;
-          ctx.lineTo(x, y);
-        }
-        ctx.lineTo(W, H);
-        ctx.closePath();
-        const wg = ctx.createLinearGradient(0, yBase - amp, 0, H);
-        wg.addColorStop(0, w.cT);
-        wg.addColorStop(1, w.cB);
-        ctx.globalAlpha = w.op;
-        ctx.fillStyle = wg;
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-
-      /* 3 – foam crests */
-      ctx.globalCompositeOperation = 'screen';
-      for (let i = 0; i < 7; i++) {
-        const phase = i * 1.73 + t * 0.8;
-        const x     = ((i * 137.5 * dpr + t * 22 * dpr) % W);
-        const yBase = H * 0.46;
-        const amp   = H * 0.14;
-        const y     = yBase
-          + Math.sin(x * 0.0085 + t * 0.95) * amp
-          + Math.sin(x * 0.0052 - t * 0.55) * amp * 0.38;
-        const alpha = Math.max(0, 0.18 + Math.sin(phase * 1.3) * 0.12);
-        ctx.fillStyle = `rgba(190,220,235,${alpha})`;
-        ctx.beginPath();
-        ctx.ellipse(x, y, (22 + Math.sin(phase) * 6) * dpr, 2.5 * dpr, 0, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.globalCompositeOperation = 'source-over';
-
-      /* 4 – gold sunlight sparkles */
+      /* surface ripples */
       ctx.globalCompositeOperation = 'lighter';
-      sparks.forEach((sp, i) => {
-        const x  = ((sp.x * W + t * sp.speed * 18 * dpr) % W);
-        const yB = H * (0.28 + sp.depth * 0.22);
-        const y  = yB + Math.sin(t * sp.speed + sp.phase) * H * 0.07;
-        const a  = Math.max(0, 0.55 + Math.sin(t * sp.speed * 2.4 + sp.phase) * 0.45);
-        const sz = sp.size * dpr * (0.7 + Math.sin(t * 3 + i) * 0.3);
-        const sg = ctx.createRadialGradient(x, y, 0, x, y, sz * 3.5);
-        sg.addColorStop(0,   `rgba(255,230,140,${a})`);
-        sg.addColorStop(0.4, `rgba(220,170,60,${a * 0.5})`);
-        sg.addColorStop(1,   'rgba(180,120,20,0)');
-        ctx.fillStyle = sg;
+      for (let i = 0; i < 20; i++) {
+        const xFrac = (i / 20 + t * 0.04) % 1;
+        const x = xFrac * W;
+        const y = H * (0.05 + (i % 5) * 0.07);
+        const len = 28 * dpr + Math.sin(i + t * 0.6) * 12 * dpr;
+        ctx.strokeStyle = `rgba(200,240,240,${0.05 + Math.sin(i * 1.7 + t) * 0.04})`;
+        ctx.lineWidth = 0.7 * dpr;
         ctx.beginPath();
-        ctx.arc(x, y, sz * 3.5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      ctx.globalCompositeOperation = 'source-over';
-
-      /* 5 – sailboat */
-      boat.x += 0.0035 * boat.speed;
-      if (boat.x > 1.12) boat.x = -0.12;
-      const bx  = boat.x * W;
-      const bob = Math.sin(t * 1.8) * 1.8 * dpr;
-      const by  = H * 0.41 + bob;
-      const sc  = dpr * (H / 48);
-
-      ctx.save();
-      ctx.translate(bx, by);
-      ctx.scale(sc, sc);
-
-      // hull
-      ctx.beginPath();
-      ctx.moveTo(-9, 2);
-      ctx.bezierCurveTo(-9, 5, 9, 5, 9, 2);
-      ctx.lineTo(7, 6);
-      ctx.lineTo(-7, 6);
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(200,145,58,0.92)';
-      ctx.fill();
-
-      // mast
-      ctx.strokeStyle = 'rgba(255,245,210,0.80)';
-      ctx.lineWidth = 0.9;
-      ctx.beginPath();
-      ctx.moveTo(0, 2);
-      ctx.lineTo(0, -14);
-      ctx.stroke();
-
-      // mainsail
-      ctx.beginPath();
-      ctx.moveTo(0, -13);
-      ctx.lineTo(0, 2);
-      ctx.lineTo(-7.5, -1.5);
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(255,250,235,0.85)';
-      ctx.fill();
-
-      // jib
-      ctx.beginPath();
-      ctx.moveTo(0, -9);
-      ctx.lineTo(0, 1);
-      ctx.lineTo(6.5, -2.5);
-      ctx.closePath();
-      ctx.fillStyle = 'rgba(232,184,112,0.75)';
-      ctx.fill();
-
-      // wake lines
-      ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-      ctx.lineWidth = 0.7;
-      for (let w = 1; w <= 3; w++) {
-        ctx.beginPath();
-        ctx.moveTo(-9 - w * 3, 4 + w * 0.5);
-        ctx.lineTo(-9 - w * 10, 4 + w * 2);
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + len, y + Math.sin(t * 0.7 + i) * 0.3);
         ctx.stroke();
       }
 
-      ctx.restore();
+      /* sparkles */
+      sparkles.forEach(s => {
+        const x = ((s.rx + Math.sin(t * 0.05 + s.phase) * 0.04) * W);
+        const y = (s.ry * 0.42 + 0.04) * H;
+        const a = Math.max(0, 0.4 + Math.sin(t * s.speed + s.phase) * 0.5);
+        const r = s.size * dpr * (1 + Math.sin(t * 2 + s.phase) * 0.3);
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r * 4);
+        g.addColorStop(0, `rgba(255,255,255,${a})`);
+        g.addColorStop(0.4, `rgba(180,240,240,${a * 0.5})`);
+        g.addColorStop(1, 'rgba(180,240,240,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r * 4, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.globalCompositeOperation = 'source-over';
 
-      /* 6 – top gloss */
-      const gloss = ctx.createLinearGradient(0, 0, 0, H * 0.5);
-      gloss.addColorStop(0,   'rgba(255,255,255,0.09)');
-      gloss.addColorStop(0.5, 'rgba(255,255,255,0.02)');
-      gloss.addColorStop(1,   'rgba(255,255,255,0)');
-      ctx.fillStyle = gloss;
+      /* ── 2. SAND (bottom half) clipped below shoreline ── */
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(0, H);
+      for (let x = 0; x <= W; x += 4) {
+        ctx.lineTo(x, shoreY(x / W, t));
+      }
+      ctx.lineTo(W, H);
+      ctx.closePath();
+      ctx.clip();
+
+      const sandG = ctx.createLinearGradient(0, H * 0.4, 0, H);
+      sandG.addColorStop(0,    '#f5d8b9');
+      sandG.addColorStop(0.45, '#ecc69e');
+      sandG.addColorStop(1,    '#c89970');
+      ctx.fillStyle = sandG;
       ctx.fillRect(0, 0, W, H);
 
-      /* 7 – edge fade */
+      /* sand grains */
+      grains.forEach(g => {
+        ctx.fillStyle = `rgba(120,75,40,${g.a})`;
+        ctx.beginPath();
+        ctx.arc(g.rx * W, H * 0.5 + g.ry * H * 0.5, g.s * dpr, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      /* wet sand band immediately below the shoreline */
+      for (let x = 0; x <= W; x += 4) {
+        const sy = shoreY(x / W, t);
+        const grad = ctx.createLinearGradient(x, sy, x, sy + 22 * dpr);
+        grad.addColorStop(0, 'rgba(95,60,35,0.45)');
+        grad.addColorStop(1, 'rgba(120,80,55,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(x, sy, 4, 22 * dpr);
+      }
+      ctx.restore();
+
+      /* ── 3. FOAM at the shore (horizontal wave) ── */
+      ctx.lineCap  = 'round';
+      ctx.lineJoin = 'round';
+
+      // outer translucent fringe extending into the water
+      ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+      ctx.lineWidth = 14 * dpr;
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 3) {
+        const y = shoreY(x / W, t) - 3 * dpr;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // foam wash over wet sand
+      ctx.strokeStyle = 'rgba(255,250,245,0.55)';
+      ctx.lineWidth = 8 * dpr;
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 3) {
+        const y = shoreY(x / W, t) + 1 * dpr
+                + Math.sin(x * 0.05 + t * 1.4) * 0.8 * dpr;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // bright crest
+      ctx.strokeStyle = 'rgba(255,255,255,0.95)';
+      ctx.lineWidth = 3 * dpr;
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 2) {
+        const y = shoreY(x / W, t)
+                + Math.sin(x * 0.08 + t * 1.8) * 0.6 * dpr;
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // foam bubbles
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      for (let x = 0; x < W; x += 8 * dpr) {
+        const sy = shoreY(x / W, t);
+        const off = Math.sin(x * 0.04 + t * 1.1) * 4 * dpr;
+        const r = (0.5 + Math.sin(x * 0.1 + t * 2) * 0.4) * dpr;
+        ctx.beginPath();
+        ctx.arc(x, sy + off, Math.max(0.3, r), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      /* ── 4. edge fade vignettes ── */
       const eL = ctx.createLinearGradient(0, 0, W * 0.10, 0);
-      eL.addColorStop(0, 'rgba(2,10,18,0.65)');
+      eL.addColorStop(0, 'rgba(2,10,18,0.55)');
       eL.addColorStop(1, 'rgba(2,10,18,0)');
       ctx.fillStyle = eL; ctx.fillRect(0, 0, W * 0.10, H);
 
       const eR = ctx.createLinearGradient(W * 0.90, 0, W, 0);
       eR.addColorStop(0, 'rgba(2,10,18,0)');
-      eR.addColorStop(1, 'rgba(2,10,18,0.65)');
+      eR.addColorStop(1, 'rgba(2,10,18,0.55)');
       ctx.fillStyle = eR; ctx.fillRect(W * 0.90, 0, W * 0.10, H);
 
       requestAnimationFrame(draw);
     }
-
     requestAnimationFrame(draw);
   });
 })();

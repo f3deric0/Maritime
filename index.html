@@ -98,7 +98,7 @@
 
 <!-- INTRO VIDEO -->
 
-<div id="intro">
+<div id="intro" style="display:none">
 
   <video id="iv" autoplay muted playsinline preload="auto" disablepictureinpicture>
 
@@ -163,16 +163,15 @@
 
   <div class="hero-vid">
 
-    <canvas id="aerial-beach" aria-hidden="true"></canvas>
+    <video autoplay muted loop playsinline id="hvid">
 
-    <!-- optional drone footage: drop a file at assets/video/aerial-beach.mp4 to use it instead of the canvas -->
-    <video autoplay muted loop playsinline id="hvid" style="display:none">
-
-      <source src="./assets/video/aerial-beach.mp4" type="video/mp4">
+      <source src="./assets/video/container_ship.mp4" type="video/mp4">
 
     </video>
 
   </div>
+
+  <canvas id="chart-canvas"></canvas>
 
 
 
@@ -678,7 +677,7 @@
 
 <script src="js/ocean-nav.js"></script>
 
-<script src="js/aerial-beach.js"></script>
+<script src="js/canvas.js"></script>
 
 <script src="js/main.js"></script>
 

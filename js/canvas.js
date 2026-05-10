@@ -20,26 +20,6 @@
   const frameInterval = 1000 / 30;
   let lastFrame = 0;
 
-  /* ── comets (shooting stars over the sea) ── */
-  const comets = [];
-  function spawnComet() {
-    const fromLeft = Math.random() < 0.5;
-    const startY   = H * (0.05 + Math.random() * 0.35);
-    const angle    = (15 + Math.random() * 20) * Math.PI / 180; // descending
-    const speed    = 7 + Math.random() * 6;
-    const vx       = (fromLeft ? 1 : -1) * speed * Math.cos(angle);
-    const vy       = speed * Math.sin(angle);
-    comets.push({
-      x: fromLeft ? -120 : W + 120,
-      y: startY,
-      vx, vy,
-      life: 0,
-      maxLife: 110 + Math.random() * 60,
-      size: 1.4 + Math.random() * 1.2
-    });
-  }
-  let nextSpawn = 0;
-
   function draw(now) {
     if (document.hidden) {
       requestAnimationFrame(draw);
@@ -104,58 +84,6 @@
       ctx.fillStyle = `rgba(200,145,58,${.035 - layer * .006})`;
       ctx.fill();
     }
-
-    /* ── comets ── */
-    nextSpawn--;
-    if (nextSpawn <= 0) {
-      spawnComet();
-      nextSpawn = 30 + Math.floor(Math.random() * 90); // spawn every 1–4s @30fps
-    }
-    ctx.save();
-    ctx.globalCompositeOperation = 'lighter';
-    for (let i = comets.length - 1; i >= 0; i--) {
-      const cm = comets[i];
-      cm.x += cm.vx;
-      cm.y += cm.vy;
-      cm.life++;
-      if (cm.life > cm.maxLife || cm.x < -200 || cm.x > W + 200 || cm.y > H * 0.75) {
-        comets.splice(i, 1);
-        continue;
-      }
-      const fade = cm.life < 20
-        ? cm.life / 20
-        : Math.min(1, (cm.maxLife - cm.life) / 30);
-      // tail
-      const tailLen = 110;
-      const tx = cm.x - cm.vx * (tailLen / 8);
-      const ty = cm.y - cm.vy * (tailLen / 8);
-      const grad = ctx.createLinearGradient(tx, ty, cm.x, cm.y);
-      grad.addColorStop(0,   'rgba(200,145,58,0)');
-      grad.addColorStop(0.6, `rgba(232,184,112,${0.35 * fade})`);
-      grad.addColorStop(1,   `rgba(255,235,180,${0.95 * fade})`);
-      ctx.strokeStyle = grad;
-      ctx.lineWidth   = cm.size * 1.6;
-      ctx.lineCap     = 'round';
-      ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(cm.x, cm.y);
-      ctx.stroke();
-      // head glow
-      const hg = ctx.createRadialGradient(cm.x, cm.y, 0, cm.x, cm.y, cm.size * 14);
-      hg.addColorStop(0,   `rgba(255,245,210,${0.95 * fade})`);
-      hg.addColorStop(0.3, `rgba(232,184,112,${0.55 * fade})`);
-      hg.addColorStop(1,   'rgba(200,145,58,0)');
-      ctx.fillStyle = hg;
-      ctx.beginPath();
-      ctx.arc(cm.x, cm.y, cm.size * 14, 0, Math.PI * 2);
-      ctx.fill();
-      // bright core
-      ctx.fillStyle = `rgba(255,250,235,${fade})`;
-      ctx.beginPath();
-      ctx.arc(cm.x, cm.y, cm.size * 1.6, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.restore();
 
     /* ── coordinate tick labels ── */
     ctx.font = '10px Barlow Condensed,sans-serif';
