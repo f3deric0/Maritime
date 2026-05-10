@@ -1,9 +1,22 @@
 /* ═══════════════════════════════════════════════════════════════
-   OCEAN PILL NAV — aerial tropical beach inside the nav pill
-   Top half turquoise water, bottom half cream sand,
-   animated white foam shoreline running horizontally.
+   OCEAN PILL NAV — onde.mp4 video looped inside the nav pill
+   Falls back silently if no video element is present.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
+  // Force-play every pill video as soon as data is available.
+  // This runs before main.js and catches the pill on every page.
+  function kickPillVideos() {
+    document.querySelectorAll('.ocean-pill-video').forEach(v => {
+      v.muted = true;
+      const go = () => { if (v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } };
+      if (v.readyState >= 2) go();
+      else { v.addEventListener('loadeddata', go, { once: true }); v.addEventListener('canplay', go, { once: true }); }
+    });
+  }
+  kickPillVideos();
+  // Also retry once the DOM settles
+  if (document.readyState !== 'complete') window.addEventListener('load', kickPillVideos, { once: true });
+
   const pills = document.querySelectorAll('[data-ocean-pill]');
   if (!pills.length) return;
 

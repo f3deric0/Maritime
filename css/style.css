@@ -47,7 +47,7 @@ body.hovering #compass-cursor { transform: translate(-50%,-50%) scale(1.5); }
 /* LOADER */
 
 #loader { position: fixed; inset: 0; z-index: 9998; background: var(--ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; }
-.l-half { position: absolute; left: 0; right: 0; height: 50%; background: var(--ink); transition: transform 1.1s var(--ease2); }
+.l-half { position: absolute; left: 0; right: 0; height: 50%; background: var(--ink); transition: transform 0.65s var(--ease2); }
 .l-top { top: 0; }
 .l-bot { bottom: 0; }
 .l-half.exit-top { transform: translateY(-100%); }

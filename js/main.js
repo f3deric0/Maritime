@@ -5,6 +5,46 @@
  * counters and micro-interactions.
  */
 
+/* ── FORCE-PLAY ALL MUTED VIDEOS ─────────────────────────────────────
+   Browsers block HTML autoplay even when muted. We explicitly call
+   play() as soon as the video has data, and retry on the first user
+   gesture (which unblocks autoplay in all browsers permanently).
+   ─────────────────────────────────────────────────────────────────── */
+(function () {
+  function tryPlay(v) {
+    if (!v || !v.muted || !v.paused) return;
+    const p = v.play();
+    if (p && p.catch) p.catch(() => {});
+  }
+
+  function armVideo(v) {
+    v.muted = true;
+    // fire now if already loaded, else wait for data
+    if (v.readyState >= 2) { tryPlay(v); return; }
+    v.addEventListener('loadeddata', () => tryPlay(v), { once: true });
+    v.addEventListener('canplay',    () => tryPlay(v), { once: true });
+  }
+
+  // Arm every muted video — fire play() as soon as data arrives
+  document.querySelectorAll('video').forEach(v => { v.muted = true; armVideo(v); });
+
+  // IntersectionObserver: play when the video enters the viewport
+  if ('IntersectionObserver' in window) {
+    const visObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { tryPlay(e.target); } });
+    }, { threshold: 0.01 });
+    document.querySelectorAll('video').forEach(v => visObs.observe(v));
+  }
+
+  // On first user gesture, unlock any video still blocked by autoplay policy
+  const unlock = () => {
+    document.querySelectorAll('video').forEach(v => { v.muted = true; tryPlay(v); });
+  };
+  document.addEventListener('click',      unlock, { once: true });
+  document.addEventListener('touchstart', unlock, { once: true, passive: true });
+  document.addEventListener('keydown',    unlock, { once: true });
+})();
+
 /* ── MARQUEE ── */
 (function () {
   const items = [
@@ -27,15 +67,15 @@ let lv = 0;
 
 if (ldr && lFill && lPct) {
   const lInt = setInterval(() => {
-    lv += Math.random() * 22 + 4;
+    lv += Math.random() * 30 + 8;   // faster fill
     if (lv >= 100) {
       lv = 100;
       clearInterval(lInt);
-      setTimeout(openLoader, 400);
+      setTimeout(openLoader, 200);   // shorter pause at 100%
     }
     lFill.style.width = lv + '%';
     lPct.textContent = Math.floor(lv) + '%';
-  }, 80);
+  }, 60);                            // faster tick
 } else {
   setTimeout(() => { startHero(); startIntro(); }, 0);
 }
@@ -53,7 +93,7 @@ function openLoader() {
     ldr.style.display = 'none';
     startHero();
     startIntro();
-  }, 1200);
+  }, 700);  // shorter exit animation
 }
 
 /* ── INTRO VIDEO ── */
