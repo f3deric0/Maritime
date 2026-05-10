@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico">
+<meta name="description" content="Maritime Affairs — Expert analysis and strategic briefs on EU maritime policy, blue economy, defense and offshore energy.">
 <title>Article — Maritime Affairs</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
@@ -197,20 +199,23 @@
 <nav id="nav" class="dark">
   <a href="index.html" class="logo">
     <div class="logo-pill">
-      <img src="http://87.106.240.127/wp-content/uploads/2026/03/Logo-maritimes.jpg" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+      <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
       <div class="logo-text">
         <div class="logo-name">Maritime <em>Affairs</em></div>
         <span class="logo-sub">EU Blue Economy Do-Tank</span>
       </div>
     </div>
   </a>
-  <ul class="nav-links">
-    <li><a href="index.html#mission">Mission</a></li>
-    <li><a href="index.html#units">Units</a></li>
-    <li><a href="index.html#network">Network</a></li>
-    <li><a href="publications.html" style="color:var(--gold)">Publications</a></li>
-    <li><a href="index.html#contact">Join</a></li>
-  </ul>
+  <div class="ocean-pill" data-ocean-pill>
+    <canvas class="ocean-pill-canvas" aria-hidden="true"></canvas>
+    <ul class="ocean-pill-links">
+      <li><a href="index.html#mission">Mission</a></li>
+      <li><a href="index.html#units">Units</a></li>
+      <li><a href="index.html#network">Network</a></li>
+      <li><a href="publications.html" class="active">Publications</a></li>
+      <li><a href="index.html#contact">Join</a></li>
+    </ul>
+  </div>
   <div class="nav-r">
     <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
     <a href="index.html#contact" class="nav-btn">Join Us</a>
@@ -233,6 +238,7 @@
   </div>
 </footer>
 
+<script src="js/ocean-nav.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ═══════════════════════════════════════
