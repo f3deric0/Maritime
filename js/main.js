@@ -37,12 +37,13 @@ if (ldr && lFill && lPct) {
     lPct.textContent = Math.floor(lv) + '%';
   }, 80);
 } else {
-  setTimeout(startHero, 0);
+  setTimeout(() => { startHero(); startIntro(); }, 0);
 }
 
 function openLoader() {
   if (!ldr) {
     startHero();
+    startIntro();
     return;
   }
   ldr.querySelectorAll('.l-half').forEach(h =>
@@ -51,6 +52,7 @@ function openLoader() {
   setTimeout(() => {
     ldr.style.display = 'none';
     startHero();
+    startIntro();
   }, 1200);
 }
 
@@ -65,21 +67,22 @@ function closeIntro() {
   setTimeout(() => introEl.style.display = 'none', 1200);
 }
 
-if (ivEl) {
+function startIntro() {
+  if (!ivEl) { closeIntro(); return; }
   ivEl.muted = true;
   ivEl.playsInline = true;
-  ivEl.addEventListener('ended',    () => setTimeout(closeIntro, 400));
-  ivEl.addEventListener('error',    () => closeIntro());
-  ivEl.addEventListener('stalled',  () => setTimeout(closeIntro, 1500));
-  // Try to start it; if the browser blocks autoplay, skip the intro immediately.
+  ivEl.addEventListener('ended',   () => setTimeout(closeIntro, 400));
+  ivEl.addEventListener('error',   () => closeIntro());
+  ivEl.addEventListener('stalled', () => setTimeout(closeIntro, 2000));
   const tryPlay = () => {
+    try { ivEl.currentTime = 0; } catch (_) {}
     const p = ivEl.play();
     if (p && typeof p.catch === 'function') p.catch(() => closeIntro());
   };
   if (ivEl.readyState >= 2) tryPlay();
   else ivEl.addEventListener('loadeddata', tryPlay, { once: true });
-  // Hard safety fallback: never block the page longer than 6s.
-  setTimeout(closeIntro, 6000);
+  // Hard safety fallback: never block the page more than 8s after the loader exits.
+  setTimeout(closeIntro, 8000);
 }
 if (iskip) iskip.addEventListener('click', closeIntro);
 

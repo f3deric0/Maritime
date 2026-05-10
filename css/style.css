@@ -67,7 +67,7 @@ body.hovering #compass-cursor { transform: translate(-50%,-50%) scale(1.5); }
 
 
 /* INTRO */
-#intro { position: fixed; inset: 0; z-index: 9997; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity 1.2s var(--ease); }
+#intro { position: fixed; inset: 0; z-index: 9999; background: #000; display: flex; align-items: center; justify-content: center; transition: opacity 1.2s var(--ease); }
 #intro.gone { opacity: 0; pointer-events: none; }
 #iv { max-width: 1600px; width: 85%; border-radius: 80px; }
 #iskip { position: absolute; bottom: 2rem; right: 2rem; font-family: var(--ff-c); font-size: .72rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.4); border: 1px solid rgba(200,145,58,.35); border-radius: 100px; padding: 9px 22px; background: transparent; cursor: none; transition: all .3s var(--ease); }
