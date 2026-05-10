@@ -66,8 +66,20 @@ function closeIntro() {
 }
 
 if (ivEl) {
-  ivEl.addEventListener('ended', () => setTimeout(closeIntro, 400));
-  setTimeout(closeIntro, 6500); // fallback
+  ivEl.muted = true;
+  ivEl.playsInline = true;
+  ivEl.addEventListener('ended',    () => setTimeout(closeIntro, 400));
+  ivEl.addEventListener('error',    () => closeIntro());
+  ivEl.addEventListener('stalled',  () => setTimeout(closeIntro, 1500));
+  // Try to start it; if the browser blocks autoplay, skip the intro immediately.
+  const tryPlay = () => {
+    const p = ivEl.play();
+    if (p && typeof p.catch === 'function') p.catch(() => closeIntro());
+  };
+  if (ivEl.readyState >= 2) tryPlay();
+  else ivEl.addEventListener('loadeddata', tryPlay, { once: true });
+  // Hard safety fallback: never block the page longer than 6s.
+  setTimeout(closeIntro, 6000);
 }
 if (iskip) iskip.addEventListener('click', closeIntro);
 
