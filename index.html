@@ -94,17 +94,34 @@
 
   
 
-<!-- INTRO VIDEO -->
+<!-- SCROLL-DRIVEN INTRO VIDEO
+     Scrolling down scrubs the video forward frame-by-frame. Near the end
+     of this section the video fades and the rest of the site takes over.
+     Swap the <source> below with the new AI-generated video when ready. -->
 
-<div id="intro" style="display:none">
+<div id="scrollvid" class="scrollvid" style="display:none">
 
-  <video id="iv" autoplay muted playsinline preload="auto" disablepictureinpicture>
+  <div class="scrollvid-sticky">
 
-    <source src="./assets/video/Logo_Intro.mp4" type="video/mp4">
+    <video id="svVideo" muted playsinline preload="auto" disablepictureinpicture>
 
-  </video>
+      <source src="./assets/video/Logo_Intro.mp4" type="video/mp4">
 
-  <button id="iskip">Skip intro</button>
+    </video>
+
+    <div class="scrollvid-fade"></div>
+
+    <div class="scrollvid-hint" id="svHint">
+
+      <span class="scroll-label">Scroll to continue</span>
+
+      <div class="scroll-track"></div>
+
+    </div>
+
+    <button id="svskip">Skip intro</button>
+
+  </div>
 
 </div>
 
