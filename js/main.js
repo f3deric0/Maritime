@@ -109,79 +109,96 @@ function openLoader() {
   }, 700);  // shorter exit animation
 }
 
-/* ── SCROLL-DRIVEN INTRO VIDEO ──
-   The video is pinned full-screen while the user scrolls through a tall
-   spacer section; scroll position is mapped to video.currentTime so the
-   footage scrubs forward as you scroll down. Once the section is fully
-   scrolled past, it fades out and the normal page (nav + hero) takes over. */
-const svWrap  = document.getElementById('scrollvid');
-const svVideo = document.getElementById('svVideo');
-const svSkip  = document.getElementById('svskip');
-const svRing  = document.getElementById('svRing');
-const svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const SV_RING_C = 125.66; // circumference of the r=20 progress ring
+/* ── SCROLL-DRIVEN VIDEO (generalized) ──
+   Support multiple scroll-driven video sections via initScrollVideo({...}).
+   Each instance manages its own state (duration, target/current scrub, RAF).
+*/
 
-let svDuration = 0;
-let svTarget   = 0;
-let svCurrent  = 0;
-let svRaf      = null;
-let svDone     = false;
+const scrollVideoInstances = [];
 
-function revealPage() {
-  if (!svWrap || !svVideo || svReduceMotion || LITE) {
-    if (svWrap) svWrap.remove();
-    startHero();
-    return;
+function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false }) {
+  if (!wrap || !video || prefersReducedMotion || LITE) {
+    if (wrap) wrap.remove();
+    return null;
   }
-  svWrap.style.display = 'block';
-  // preload="none" in the markup keeps lite-mode visitors from ever fetching
-  // the file; only now — intro confirmed active — do we start buffering.
-  svVideo.preload = 'auto';
-  try { svVideo.load(); } catch (_) {}
-  svVideo.pause();
-  const setDuration = () => { svDuration = svVideo.duration || 0; };
-  if (svVideo.readyState >= 1) setDuration();
-  svVideo.addEventListener('loadedmetadata', setDuration);
-  svOnScroll(); // sync to current scroll position (e.g. on reload mid-page)
-}
 
-function svProgress() {
-  if (!svWrap) return 1;
-  const total = svWrap.offsetHeight - window.innerHeight;
-  if (total <= 0) return 1;
-  return Math.max(0, Math.min(1, (window.scrollY - svWrap.offsetTop) / total));
-}
+  const SV_RING_C_LOCAL = 125.66; // circumference for r=20
+  let duration = 0, target = 0, current = 0, raf = null, done = false;
 
-function svLoop() {
-  svCurrent += (svTarget - svCurrent) * .18;
-  if (svVideo && svDuration && !isNaN(svVideo.duration)) {
-    try { svVideo.currentTime = svCurrent * svDuration; } catch (_) {}
+  // ensure buffering starts only when we're ready
+  wrap.style.display = 'block';
+  video.preload = 'auto';
+  try { video.load(); } catch (_) {}
+  video.pause();
+  const setDuration = () => { duration = video.duration || 0; };
+  if (video.readyState >= 1) setDuration();
+  video.addEventListener('loadedmetadata', setDuration, { once: true });
+
+  function progress() {
+    const total = wrap.offsetHeight - window.innerHeight;
+    if (total <= 0) return 1;
+    return Math.max(0, Math.min(1, (window.scrollY - wrap.offsetTop) / total));
   }
-  if (Math.abs(svTarget - svCurrent) > .0008) svRaf = requestAnimationFrame(svLoop);
-  else svRaf = null;
-}
 
-function svOnScroll() {
-  if (!svWrap || svDone) return;
-  const p = svProgress();
-  svTarget = p;
-  svWrap.classList.toggle('scrolled', p > .02);
-  svWrap.classList.toggle('ending', p > .92);
-  if (svRing) svRing.style.strokeDashoffset = (SV_RING_C * (1 - p)).toFixed(2);
-  if (!svRaf) svRaf = requestAnimationFrame(svLoop);
-  if (p >= 1) { svDone = true; startHero(); }
-}
+  function loop() {
+    current += (target - current) * 0.18;
+    if (video && duration && !isNaN(video.duration)) {
+      try { video.currentTime = current * duration; } catch (_) {}
+    }
+    if (Math.abs(target - current) > .0008) raf = requestAnimationFrame(loop);
+    else raf = null;
+  }
 
-function svFinish() {
-  if (svDone) return;
-  svDone = true;
-  if (svWrap) {
-    const top = svWrap.offsetTop + svWrap.offsetHeight - window.innerHeight;
+  function onScroll() {
+    if (done) return;
+    const p = progress();
+    target = p;
+    wrap.classList.toggle('scrolled', p > .02);
+    wrap.classList.toggle('ending', p > .92);
+    if (ring) ring.style.strokeDashoffset = (SV_RING_C_LOCAL * (1 - p)).toFixed(2);
+    if (!raf) raf = requestAnimationFrame(loop);
+    if (p >= 1) { done = true; finish(); }
+  }
+
+  function finish() {
+    if (done) return;
+    done = true;
+    const top = wrap.offsetTop + wrap.offsetHeight - window.innerHeight;
     window.scrollTo({ top, behavior: 'smooth' });
+    // conservative: ensure hero enters when any intro finishes
+    startHero();
   }
-  startHero();
+
+  if (skip) skip.addEventListener('click', finish);
+
+  // initial sync
+  onScroll();
+
+  const inst = { wrap, video, skip, ring, onScroll };
+  scrollVideoInstances.push(inst);
+  return inst;
 }
-if (svSkip) svSkip.addEventListener('click', svFinish);
+
+function svOnScrollAll() { scrollVideoInstances.forEach(i => i.onScroll()); }
+
+// Initialize the existing intro instance if present
+const _svWrap = document.getElementById('scrollvid');
+const _svVideo = document.getElementById('svVideo');
+const _svSkip = document.getElementById('svskip');
+const _svRing = document.getElementById('svRing');
+const _svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion });
+
+// Initialize any other .scrollvid sections on the page (e.g. a second moment)
+document.querySelectorAll('.scrollvid').forEach(el => {
+  const v = el.querySelector('video');
+  if (!v) return;
+  if (v.id === 'svVideo') return; // skip the already-initialized intro
+  const ring = el.querySelector('.ring-fill') || el.querySelector('#svRing2');
+  const skip = el.querySelector('button');
+  initScrollVideo({ wrap: el, video: v, skip, ring, prefersReducedMotion: _svReduceMotion });
+});
 
 /* ── HERO ENTRANCE ── */
 // Pause word animations until after loader
@@ -270,7 +287,7 @@ const pbar = document.getElementById('bar');
 window.addEventListener('scroll', () => {
   const h = document.documentElement;
   if (pbar) pbar.style.transform = `scaleX(${h.scrollTop / (h.scrollHeight - h.clientHeight)})`;
-  svOnScroll();
+  svOnScrollAll();
   onScroll();
 }, { passive: true });
 

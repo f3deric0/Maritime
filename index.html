@@ -442,6 +442,47 @@
 
 
 
+<!-- SECOND SCROLL-DRIVEN VIDEO (placeholder)
+     Duplicate of the intro block but independent instance. Replace the
+     <source> with the user-generated MP4 at assets/video/scroll-[name].mp4
+-->
+
+<div id="scrollvid-2" class="scrollvid" style="display:none">
+
+  <div class="scrollvid-sticky">
+
+    <video id="svVideo2" muted playsinline preload="none" disablepictureinpicture>
+
+      <source src="./assets/video/scroll-second-placeholder.mp4" type="video/mp4">
+
+    </video>
+
+    <div class="scrollvid-fade"></div>
+
+    <div class="scrollvid-hint" id="svHint2">
+
+      <span class="scroll-label">Scroll to continue</span>
+
+      <div class="scroll-track"></div>
+
+    </div>
+
+    <div class="scrollvid-ring" aria-hidden="true">
+      <svg viewBox="0 0 44 44">
+        <circle class="ring-track" cx="22" cy="22" r="20"/>
+        <circle class="ring-fill" id="svRing2" cx="22" cy="22" r="20"/>
+        <text class="ring-n" x="22" y="25" text-anchor="middle">N</text>
+      </svg>
+    </div>
+
+    <button id="svskip2">Skip</button>
+
+  </div>
+
+</div>
+
+
+
 <!-- UNITS -->
 
 <div class="units-outer" id="units">
