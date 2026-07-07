@@ -109,6 +109,12 @@ function openLoader() {
   }, 700);  // shorter exit animation
 }
 
+function revealPage() {
+  if (!svInstance) {
+    startHero();
+  }
+}
+
 /* ── SCROLL-DRIVEN VIDEO (generalized) ──
    Support multiple scroll-driven video sections via initScrollVideo({...}).
    Each instance manages its own state (duration, target/current scrub, RAF).
@@ -140,24 +146,15 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
     return Math.max(0, Math.min(1, (window.scrollY - wrap.offsetTop) / total));
   }
 
-  // smoothing and thresholded seek for smoother scrub
-  const EASE = 0.23; // higher ease -> snappier following while remaining smooth
-  const SEEK_THRESHOLD_S = 0.02; // seconds: minimum delta to actually seek
-  const canFastSeek = typeof video.fastSeek === 'function';
+  // smoothing: lower factor yields buttery smooth scrolling
+  const EASE = 0.15;
 
   function loop() {
     current += (target - current) * EASE;
     if (video && duration && !isNaN(video.duration)) {
       const desired = current * duration;
-      // only perform costly seek when delta exceeds threshold to avoid decoder churn
       try {
-        if (Math.abs((video.currentTime || 0) - desired) > SEEK_THRESHOLD_S) {
-          if (canFastSeek) {
-            video.fastSeek(desired);
-          } else {
-            video.currentTime = desired;
-          }
-        }
+        video.currentTime = desired;
       } catch (_) {}
     }
     if (Math.abs(target - current) > .0008) raf = requestAnimationFrame(loop);
@@ -165,22 +162,41 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
   }
 
   function onScroll() {
-    if (done) return;
     const p = progress();
+    
+    // If the user scrolls back up, reset done so they can scrub backward
+    if (p < 0.99) {
+      done = false;
+    }
+
+    if (done) return;
+
     target = p;
     wrap.classList.toggle('scrolled', p > .02);
     wrap.classList.toggle('ending', p > .92);
     if (ring) ring.style.strokeDashoffset = (SV_RING_C_LOCAL * (1 - p)).toFixed(2);
     if (!raf) raf = requestAnimationFrame(loop);
-    if (p >= 1) { done = true; finish(); }
+    if (p >= 1) {
+      finish();
+    }
   }
 
   function finish() {
-    if (done) return;
+    const wasDone = done;
     done = true;
-    const top = wrap.offsetTop + wrap.offsetHeight - window.innerHeight;
-    window.scrollTo({ top, behavior: 'smooth' });
-    // conservative: ensure hero enters when any intro finishes
+    
+    target = 1;
+    current = 1;
+    if (video && duration && !isNaN(duration)) {
+      try { video.currentTime = duration; } catch (_) {}
+    }
+    if (ring) ring.style.strokeDashoffset = 0;
+
+    if (!wasDone) {
+      const top = wrap.offsetTop + wrap.offsetHeight - window.innerHeight;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+    // Reveal navigation menu and start hero animations
     startHero();
   }
 
@@ -203,7 +219,7 @@ const _svSkip = document.getElementById('svskip');
 const _svRing = document.getElementById('svRing');
 const _svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion, /* tuned for smoothness */ ease: 0.23, seekThreshold: 0.02 });
+const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion });
 
 // Initialize any other .scrollvid sections on the page (e.g. a second moment)
 document.querySelectorAll('.scrollvid').forEach(el => {
