@@ -153,9 +153,11 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
     current += (target - current) * EASE;
     if (video && duration && !isNaN(video.duration)) {
       const desired = current * duration;
-      try {
-        video.currentTime = desired;
-      } catch (_) {}
+      if (!video.seeking) {
+        try {
+          video.currentTime = desired;
+        } catch (_) {}
+      }
     }
     if (Math.abs(target - current) > .0008) raf = requestAnimationFrame(loop);
     else raf = null;
