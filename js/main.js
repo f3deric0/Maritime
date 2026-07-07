@@ -5,12 +5,25 @@
  * counters and micro-interactions.
  */
 
+/* ── LITE MODE ───────────────────────────────────────────────────────
+   On Save-Data or 2G connections the ambient videos (~20 MB combined)
+   are never fetched; CSS swaps in a static seascape instead. */
+const LITE = (() => {
+  const c = navigator.connection || {};
+  return !!(c.saveData || /(^|\b)(slow-)?2g$/.test(c.effectiveType || ''));
+})();
+if (LITE) document.body.classList.add('lite');
+
 /* ── FORCE-PLAY ALL MUTED VIDEOS ─────────────────────────────────────
    Browsers block HTML autoplay even when muted. We explicitly call
    play() as soon as the video has data, and retry on the first user
    gesture (which unblocks autoplay in all browsers permanently).
+   Ambient videos ship with preload="none" and no autoplay attribute, so
+   nothing downloads until this code decides it should.
    ─────────────────────────────────────────────────────────────────── */
 (function () {
+  if (LITE) return;
+
   function tryPlay(v) {
     if (!v || !v.muted || !v.paused) return;
     const p = v.play();
@@ -19,26 +32,31 @@
 
   function armVideo(v) {
     v.muted = true;
-    // fire now if already loaded, else wait for data
+    // fire now if already loaded, else start fetching and wait for data
     if (v.readyState >= 2) { tryPlay(v); return; }
     v.addEventListener('loadeddata', () => tryPlay(v), { once: true });
     v.addEventListener('canplay',    () => tryPlay(v), { once: true });
+    if (v.preload === 'none') { v.preload = 'auto'; try { v.load(); } catch (_) {} }
   }
 
   // Arm every muted video — fire play() as soon as data arrives
-  document.querySelectorAll('video').forEach(v => { v.muted = true; armVideo(v); });
+  // #svVideo is driven manually by scroll position (see scroll-scrub section
+  // below) — it must never be auto-played or it will fight that logic.
+  const autoplayVideos = () => [...document.querySelectorAll('video')].filter(v => v.id !== 'svVideo');
+
+  autoplayVideos().forEach(armVideo);
 
   // IntersectionObserver: play when the video enters the viewport
   if ('IntersectionObserver' in window) {
     const visObs = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) { tryPlay(e.target); } });
     }, { threshold: 0.01 });
-    document.querySelectorAll('video').forEach(v => visObs.observe(v));
+    autoplayVideos().forEach(v => visObs.observe(v));
   }
 
   // On first user gesture, unlock any video still blocked by autoplay policy
   const unlock = () => {
-    document.querySelectorAll('video').forEach(v => { v.muted = true; tryPlay(v); });
+    autoplayVideos().forEach(v => { v.muted = true; tryPlay(v); });
   };
   document.addEventListener('click',      unlock, { once: true });
   document.addEventListener('touchstart', unlock, { once: true, passive: true });
@@ -77,59 +95,93 @@ if (ldr && lFill && lPct) {
     lPct.textContent = Math.floor(lv) + '%';
   }, 60);                            // faster tick
 } else {
-  setTimeout(() => { startHero(); startIntro(); }, 0);
+  setTimeout(revealPage, 0);
 }
 
 function openLoader() {
-  if (!ldr) {
-    startHero();
-    startIntro();
-    return;
-  }
+  if (!ldr) { revealPage(); return; }
   ldr.querySelectorAll('.l-half').forEach(h =>
     h.classList.add(h.classList.contains('l-top') ? 'exit-top' : 'exit-bot')
   );
   setTimeout(() => {
     ldr.style.display = 'none';
-    startHero();
-    startIntro();
+    revealPage();
   }, 700);  // shorter exit animation
 }
 
-/* ── INTRO VIDEO ── */
-const introEl = document.getElementById('intro');
-const ivEl    = document.getElementById('iv');
-const iskip   = document.getElementById('iskip');
+/* ── SCROLL-DRIVEN INTRO VIDEO ──
+   The video is pinned full-screen while the user scrolls through a tall
+   spacer section; scroll position is mapped to video.currentTime so the
+   footage scrubs forward as you scroll down. Once the section is fully
+   scrolled past, it fades out and the normal page (nav + hero) takes over. */
+const svWrap  = document.getElementById('scrollvid');
+const svVideo = document.getElementById('svVideo');
+const svSkip  = document.getElementById('svskip');
+const svRing  = document.getElementById('svRing');
+const svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SV_RING_C = 125.66; // circumference of the r=20 progress ring
 
-function closeIntro() {
-  if (!introEl) return;
-  introEl.classList.add('gone');
-  setTimeout(() => introEl.style.display = 'none', 1200);
+let svDuration = 0;
+let svTarget   = 0;
+let svCurrent  = 0;
+let svRaf      = null;
+let svDone     = false;
+
+function revealPage() {
+  if (!svWrap || !svVideo || svReduceMotion || LITE) {
+    if (svWrap) svWrap.remove();
+    startHero();
+    return;
+  }
+  svWrap.style.display = 'block';
+  // preload="none" in the markup keeps lite-mode visitors from ever fetching
+  // the file; only now — intro confirmed active — do we start buffering.
+  svVideo.preload = 'auto';
+  try { svVideo.load(); } catch (_) {}
+  svVideo.pause();
+  const setDuration = () => { svDuration = svVideo.duration || 0; };
+  if (svVideo.readyState >= 1) setDuration();
+  svVideo.addEventListener('loadedmetadata', setDuration);
+  svOnScroll(); // sync to current scroll position (e.g. on reload mid-page)
 }
 
-function startIntro() {
-  if (!introEl || !ivEl) { closeIntro(); return; }
-  // reveal the intro NOW (it was display:none until the loader finished)
-  introEl.style.display = 'flex';
-  introEl.style.opacity = '1';
-  ivEl.muted = true;
-  ivEl.playsInline = true;
-  ivEl.addEventListener('ended',   () => setTimeout(closeIntro, 400));
-  ivEl.addEventListener('error',   () => closeIntro());
-  ivEl.addEventListener('stalled', () => setTimeout(closeIntro, 2500));
-  const tryPlay = () => {
-    try { ivEl.currentTime = 0; } catch (_) {}
-    const p = ivEl.play();
-    if (p && typeof p.catch === 'function') p.catch(() => closeIntro());
-  };
-  // Force-load in case preload didn't kick in
-  try { ivEl.load(); } catch (_) {}
-  if (ivEl.readyState >= 2) tryPlay();
-  else ivEl.addEventListener('loadeddata', tryPlay, { once: true });
-  // Hard safety: never block the page more than 9s after the loader exits.
-  setTimeout(closeIntro, 9000);
+function svProgress() {
+  if (!svWrap) return 1;
+  const total = svWrap.offsetHeight - window.innerHeight;
+  if (total <= 0) return 1;
+  return Math.max(0, Math.min(1, (window.scrollY - svWrap.offsetTop) / total));
 }
-if (iskip) iskip.addEventListener('click', closeIntro);
+
+function svLoop() {
+  svCurrent += (svTarget - svCurrent) * .18;
+  if (svVideo && svDuration && !isNaN(svVideo.duration)) {
+    try { svVideo.currentTime = svCurrent * svDuration; } catch (_) {}
+  }
+  if (Math.abs(svTarget - svCurrent) > .0008) svRaf = requestAnimationFrame(svLoop);
+  else svRaf = null;
+}
+
+function svOnScroll() {
+  if (!svWrap || svDone) return;
+  const p = svProgress();
+  svTarget = p;
+  svWrap.classList.toggle('scrolled', p > .02);
+  svWrap.classList.toggle('ending', p > .92);
+  if (svRing) svRing.style.strokeDashoffset = (SV_RING_C * (1 - p)).toFixed(2);
+  if (!svRaf) svRaf = requestAnimationFrame(svLoop);
+  if (p >= 1) { svDone = true; startHero(); }
+}
+
+function svFinish() {
+  if (svDone) return;
+  svDone = true;
+  if (svWrap) {
+    const top = svWrap.offsetTop + svWrap.offsetHeight - window.innerHeight;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+  startHero();
+}
+if (svSkip) svSkip.addEventListener('click', svFinish);
 
 /* ── HERO ENTRANCE ── */
 // Pause word animations until after loader
@@ -146,7 +198,7 @@ function startHero() {
   if (navEl) navEl.style.opacity = '1';
 
   // Kick any pill videos that were blocked while nav was opacity:0
-  document.querySelectorAll('.ocean-pill-video').forEach(v => {
+  if (!LITE) document.querySelectorAll('.ocean-pill-video').forEach(v => {
     v.muted = true;
     try { v.currentTime = 0; } catch (_) {}
     const p = v.play();
@@ -175,10 +227,18 @@ const cursorEl = document.getElementById('compass-cursor');
 const dotEl    = document.getElementById('cursor-dot');
 
 if (cursorEl && dotEl && window.matchMedia('(pointer: fine)').matches) {
+  // Only now is it safe to hide the native pointer (see body.cursor-on in CSS)
+  document.body.classList.add('cursor-on');
   const needle = cursorEl.querySelector('.needle');
   let mx = 0, my = 0, cx = 0, cy = 0, angle = 0;
 
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    if (!document.body.classList.contains('cursor-live')) {
+      cx = mx; cy = my; // snap into place, then reveal
+      document.body.classList.add('cursor-live');
+    }
+  });
 
   (function tick() {
     cx += (mx - cx) * .12;
@@ -210,6 +270,7 @@ const pbar = document.getElementById('bar');
 window.addEventListener('scroll', () => {
   const h = document.documentElement;
   if (pbar) pbar.style.transform = `scaleX(${h.scrollTop / (h.scrollHeight - h.clientHeight)})`;
+  svOnScroll();
   onScroll();
 }, { passive: true });
 
@@ -227,6 +288,14 @@ function onScroll() {
   doUnitsScroll(sy);
   revealCheck(sy);
   updateCoords(sy);
+
+  // The HUD lives in the same corner as the footer links — yield to them
+  const coordsEl = document.getElementById('coords');
+  const footerEl = document.querySelector('footer');
+  if (coordsEl && footerEl && coordsEl.classList.contains('show')) {
+    const footerVisible = footerEl.getBoundingClientRect().top < window.innerHeight - 80;
+    coordsEl.style.opacity = footerVisible ? '0' : '';
+  }
 }
 
 /* ── HORIZONTAL UNITS SCROLL ── */
@@ -392,3 +461,35 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
   });
 });
+
+/* ── MOBILE DRAWER MENU ── */
+(function () {
+  const toggle = document.getElementById('menu-toggle');
+  const drawer = document.getElementById('drawer');
+  if (!toggle || !drawer) return;
+
+  let open = false;
+
+  function setOpen(next) {
+    open = next;
+    document.body.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    drawer.setAttribute('aria-hidden', String(!open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      const first = drawer.querySelector('a');
+      if (first) setTimeout(() => first.focus(), 400);
+    } else {
+      toggle.focus();
+    }
+  }
+
+  toggle.addEventListener('click', () => setOpen(!open));
+  drawer.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => setOpen(false))
+  );
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && open) setOpen(false);
+  });
+})();

@@ -3,6 +3,12 @@
    Falls back silently if no video element is present.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
+  // Save-Data / 2G: never fetch the decorative pill video (CSS shows the
+  // dark fallback instead). Mirrors the LITE check in main.js, which runs
+  // after this script.
+  const conn = navigator.connection || {};
+  if (conn.saveData || /(^|\b)(slow-)?2g$/.test(conn.effectiveType || '')) return;
+
   // Force-play every pill video as soon as data is available.
   // This runs before main.js and catches the pill on every page.
   function kickPillVideos() {
@@ -10,7 +16,12 @@
       v.muted = true;
       const go = () => { if (v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); } };
       if (v.readyState >= 2) go();
-      else { v.addEventListener('loadeddata', go, { once: true }); v.addEventListener('canplay', go, { once: true }); }
+      else {
+        v.addEventListener('loadeddata', go, { once: true });
+        v.addEventListener('canplay', go, { once: true });
+        // pill videos ship with preload="none" — start fetching now
+        if (v.preload === 'none') { v.preload = 'auto'; try { v.load(); } catch (_) {} }
+      }
     });
   }
   kickPillVideos();
