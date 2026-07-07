@@ -140,10 +140,25 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
     return Math.max(0, Math.min(1, (window.scrollY - wrap.offsetTop) / total));
   }
 
+  // smoothing and thresholded seek for smoother scrub
+  const EASE = 0.23; // higher ease -> snappier following while remaining smooth
+  const SEEK_THRESHOLD_S = 0.02; // seconds: minimum delta to actually seek
+  const canFastSeek = typeof video.fastSeek === 'function';
+
   function loop() {
-    current += (target - current) * 0.18;
+    current += (target - current) * EASE;
     if (video && duration && !isNaN(video.duration)) {
-      try { video.currentTime = current * duration; } catch (_) {}
+      const desired = current * duration;
+      // only perform costly seek when delta exceeds threshold to avoid decoder churn
+      try {
+        if (Math.abs((video.currentTime || 0) - desired) > SEEK_THRESHOLD_S) {
+          if (canFastSeek) {
+            video.fastSeek(desired);
+          } else {
+            video.currentTime = desired;
+          }
+        }
+      } catch (_) {}
     }
     if (Math.abs(target - current) > .0008) raf = requestAnimationFrame(loop);
     else raf = null;
@@ -188,7 +203,7 @@ const _svSkip = document.getElementById('svskip');
 const _svRing = document.getElementById('svRing');
 const _svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion });
+const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion, /* tuned for smoothness */ ease: 0.23, seekThreshold: 0.02 });
 
 // Initialize any other .scrollvid sections on the page (e.g. a second moment)
 document.querySelectorAll('.scrollvid').forEach(el => {
