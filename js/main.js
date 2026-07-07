@@ -202,8 +202,12 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
 
   if (skip) skip.addEventListener('click', finish);
 
-  // initial sync
-  onScroll();
+  // initial sync on DOM layout complete
+  if (document.readyState === 'complete') {
+    onScroll();
+  } else {
+    window.addEventListener('load', onScroll);
+  }
 
   const inst = { wrap, video, skip, ring, onScroll };
   scrollVideoInstances.push(inst);
@@ -211,25 +215,6 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
 }
 
 function svOnScrollAll() { scrollVideoInstances.forEach(i => i.onScroll()); }
-
-// Initialize the existing intro instance if present
-const _svWrap = document.getElementById('scrollvid');
-const _svVideo = document.getElementById('svVideo');
-const _svSkip = document.getElementById('svskip');
-const _svRing = document.getElementById('svRing');
-const _svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion });
-
-// Initialize any other .scrollvid sections on the page (e.g. a second moment)
-document.querySelectorAll('.scrollvid').forEach(el => {
-  const v = el.querySelector('video');
-  if (!v) return;
-  if (v.id === 'svVideo') return; // skip the already-initialized intro
-  const ring = el.querySelector('.ring-fill') || el.querySelector('#svRing2');
-  const skip = el.querySelector('button');
-  initScrollVideo({ wrap: el, video: v, skip, ring, prefersReducedMotion: _svReduceMotion });
-});
 
 /* ── HERO ENTRANCE ── */
 // Pause word animations until after loader
@@ -269,6 +254,25 @@ function startHero() {
   setTimeout(() => { document.getElementById('hact')?.classList.add('show'); }, 1150);
   setTimeout(() => { document.getElementById('hstats')?.classList.add('show'); }, 1350);
 }
+
+// Initialize the existing intro instance if present
+const _svWrap = document.getElementById('scrollvid');
+const _svVideo = document.getElementById('svVideo');
+const _svSkip = document.getElementById('svskip');
+const _svRing = document.getElementById('svRing');
+const _svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion });
+
+// Initialize any other .scrollvid sections on the page (e.g. a second moment)
+document.querySelectorAll('.scrollvid').forEach(el => {
+  const v = el.querySelector('video');
+  if (!v) return;
+  if (v.id === 'svVideo') return; // skip the already-initialized intro
+  const ring = el.querySelector('.ring-fill') || el.querySelector('#svRing2');
+  const skip = el.querySelector('button');
+  initScrollVideo({ wrap: el, video: v, skip, ring, prefersReducedMotion: _svReduceMotion });
+});
 
 /* ── CUSTOM COMPASS CURSOR ── */
 const cursorEl = document.getElementById('compass-cursor');
