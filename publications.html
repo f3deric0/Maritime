@@ -6,8 +6,27 @@
     <link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico">
     <meta name="description" content="Strategic briefs, policy explainers and in-depth reports from the European maritime expert network. Blue Economy, Security, Energy and Policy.">
     <title>Publications — Maritime Affairs</title>
-    
+    <meta name="theme-color" content="#050c15">
+    <link rel="canonical" href="https://maritime-affairs.eu/publications.html">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Maritime Affairs">
+    <meta property="og:title" content="Publications — Maritime Affairs">
+    <meta property="og:description" content="Strategic briefs, policy explainers and in-depth reports from the European maritime expert network.">
+    <meta property="og:url" content="https://maritime-affairs.eu/publications.html">
+    <meta property="og:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Publications — Maritime Affairs">
+    <meta name="twitter:description" content="Strategic briefs, policy explainers and in-depth reports from the European maritime expert network.">
+    <meta name="twitter:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 
@@ -22,7 +41,7 @@
             --ff-b: 'Barlow', sans-serif;
         }
 
-        body { background: var(--ink); cursor: none; margin: 0; overflow-x: hidden; color: var(--white); font-family: var(--ff-b); }
+        body { background: var(--ink); margin: 0; overflow-x: hidden; color: var(--white); font-family: var(--ff-b); }
         
         /* ── NAV ACTIVE LINK ── */
         nav .nav-links a.active { color: var(--gold); }
@@ -52,7 +71,7 @@
             font-family: var(--ff-c); font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
             letter-spacing: 0.1em; color: rgba(255,255,255,0.5); background: transparent;
             border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 100px;
-            cursor: none; transition: 0.3s;
+            transition: 0.3s;
         }
         .filter-btn.active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
 
@@ -60,7 +79,7 @@
         .pub-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; padding: 4rem 0; }
         .pub-card {
             background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
-            transition: 0.4s ease; cursor: none;
+            transition: 0.4s ease;
         }
         .pub-card:hover { border-color: var(--gold); transform: translateY(-5px); }
         .pub-card-img { width: 100%; aspect-ratio: 16/10; background: #111; overflow: hidden; }
@@ -85,7 +104,7 @@
         /* FEATURED ARTICLE */
         .pub-featured { display:grid; grid-template-columns: 1.15fr 1fr; gap:0;
             background: rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08);
-            cursor:none; transition:.4s ease; margin-bottom:3rem; overflow:hidden; }
+            transition:.4s ease; margin-bottom:3rem; overflow:hidden; }
         .pub-featured:hover { border-color: var(--gold); transform: translateY(-4px);
             box-shadow: 0 30px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(200,145,58,.2); }
         .pub-featured-img { position:relative; min-height: 480px; overflow:hidden; background:#111; }
@@ -111,7 +130,7 @@
         /* BOAT FAB → admin login */
         .boat-fab { position:fixed; bottom:2rem; right:2rem; z-index:9000;
             width:60px; height:60px; border-radius:50%; background: var(--gold);
-            border:none; cursor:none; display:flex; align-items:center; justify-content:center;
+            border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
             box-shadow: 0 4px 24px rgba(200,145,58,.45);
             transition: transform .3s, box-shadow .3s; text-decoration: none; }
         .boat-fab:hover { transform: translateY(-4px); box-shadow: 0 8px 36px rgba(200,145,58,.7); }
@@ -148,7 +167,7 @@
 <nav id="nav" class="dark">
     <a href="index.html" class="logo">
         <div class="logo-pill">
-            <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+            <img src="./assets/images/Logo-maritimes-nav.png" alt="Maritime Affairs" width="44" height="44" style="height:44px;width:auto;display:block;">
             <div class="logo-text">
                 <div class="logo-name">Maritime <em>Affairs</em></div>
                 <span class="logo-sub">EU Blue Economy Do-Tank</span>
@@ -157,7 +176,7 @@
     </a>
 
     <div class="ocean-pill" data-ocean-pill>
-        <video class="ocean-pill-video" autoplay muted loop playsinline disablepictureinpicture aria-hidden="true">
+        <video class="ocean-pill-video" muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true">
           <source src="./assets/video/onde.mp4" type="video/mp4">
         </video>
         <ul class="ocean-pill-links">
@@ -172,8 +191,33 @@
     <div class="nav-r">
         <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
         <a href="index.html#contact" class="nav-btn">Join Us</a>
+        <button id="menu-toggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+          <span></span><span></span><span></span>
+        </button>
     </div>
 </nav>
+
+<!-- MOBILE DRAWER -->
+<div id="drawer" class="drawer" aria-hidden="true">
+  <svg class="drawer-rose" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+    <circle cx="100" cy="100" r="96" stroke="rgba(200,145,58,.5)" stroke-width="1"/>
+    <circle cx="100" cy="100" r="70" stroke="rgba(200,145,58,.3)" stroke-width="1"/>
+    <line x1="100" y1="4" x2="100" y2="196" stroke="rgba(200,145,58,.25)"/>
+    <line x1="4" y1="100" x2="196" y2="100" stroke="rgba(200,145,58,.25)"/>
+    <polygon points="100,18 106,96 100,112 94,96" fill="rgba(200,145,58,.6)"/>
+  </svg>
+  <ul class="drawer-links">
+    <li><a href="index.html#mission"><span class="dl-n">01</span><span class="dl-t">Mission</span></a></li>
+    <li><a href="index.html#units"><span class="dl-n">02</span><span class="dl-t">Units</span></a></li>
+    <li><a href="index.html#network"><span class="dl-n">03</span><span class="dl-t">Network</span></a></li>
+    <li><a href="publications.html"><span class="dl-n">04</span><span class="dl-t">Publications</span></a></li>
+    <li><a href="index.html#contact"><span class="dl-n">05</span><span class="dl-t">Join Us</span></a></li>
+  </ul>
+  <div class="drawer-foot">
+    <a href="mailto:info@maritime-affairs.eu">info@maritime-affairs.eu</a>
+    <span class="df-tag">Brussels · European NGO · EU Transparency Register</span>
+  </div>
+</div>
 
 <section class="pub-hero">
     <div class="wrap">
@@ -239,7 +283,7 @@ function renderGrid() {
           <article class="pub-featured" onclick="window.location.href='article.html?id=${featured.slug || featured.id}'">
             <div class="pub-featured-img">
               ${featured.image_url
-                  ? `<img src="${featured.image_url}" alt="${(featured.title||'').replace(/"/g,'&quot;')}" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">`
+                  ? `<img src="${featured.image_url}" alt="${(featured.title||'').replace(/"/g,'&quot;')}" decoding="async" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">`
                   : `<div class="pub-card-ph"></div>`}
               ${draft ? `<div class="pub-card-draft">Draft</div>` : ``}
               <div class="pub-featured-tag">Latest</div>
@@ -267,7 +311,7 @@ function renderGrid() {
         <article class="pub-card" onclick="window.location.href='article.html?id=${a.slug || a.id}'">
             <div class="pub-card-img">
                 ${a.image_url
-                    ? `<img src="${a.image_url}" alt="${(a.title||'').replace(/"/g,'&quot;')}" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">`
+                    ? `<img src="${a.image_url}" alt="${(a.title||'').replace(/"/g,'&quot;')}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">`
                     : `<div class="pub-card-ph"></div>`}
                 ${draft ? `<div class="pub-card-draft">Draft</div>` : ``}
             </div>

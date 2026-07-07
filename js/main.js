@@ -5,12 +5,25 @@
  * counters and micro-interactions.
  */
 
+/* ── LITE MODE ───────────────────────────────────────────────────────
+   On Save-Data or 2G connections the ambient videos (~20 MB combined)
+   are never fetched; CSS swaps in a static seascape instead. */
+const LITE = (() => {
+  const c = navigator.connection || {};
+  return !!(c.saveData || /(^|\b)(slow-)?2g$/.test(c.effectiveType || ''));
+})();
+if (LITE) document.body.classList.add('lite');
+
 /* ── FORCE-PLAY ALL MUTED VIDEOS ─────────────────────────────────────
    Browsers block HTML autoplay even when muted. We explicitly call
    play() as soon as the video has data, and retry on the first user
    gesture (which unblocks autoplay in all browsers permanently).
+   Ambient videos ship with preload="none" and no autoplay attribute, so
+   nothing downloads until this code decides it should.
    ─────────────────────────────────────────────────────────────────── */
 (function () {
+  if (LITE) return;
+
   function tryPlay(v) {
     if (!v || !v.muted || !v.paused) return;
     const p = v.play();
@@ -19,10 +32,11 @@
 
   function armVideo(v) {
     v.muted = true;
-    // fire now if already loaded, else wait for data
+    // fire now if already loaded, else start fetching and wait for data
     if (v.readyState >= 2) { tryPlay(v); return; }
     v.addEventListener('loadeddata', () => tryPlay(v), { once: true });
     v.addEventListener('canplay',    () => tryPlay(v), { once: true });
+    if (v.preload === 'none') { v.preload = 'auto'; try { v.load(); } catch (_) {} }
   }
 
   // Arm every muted video — fire play() as soon as data arrives
@@ -30,7 +44,7 @@
   // below) — it must never be auto-played or it will fight that logic.
   const autoplayVideos = () => [...document.querySelectorAll('video')].filter(v => v.id !== 'svVideo');
 
-  autoplayVideos().forEach(v => { v.muted = true; armVideo(v); });
+  autoplayVideos().forEach(armVideo);
 
   // IntersectionObserver: play when the video enters the viewport
   if ('IntersectionObserver' in window) {
@@ -103,7 +117,9 @@ function openLoader() {
 const svWrap  = document.getElementById('scrollvid');
 const svVideo = document.getElementById('svVideo');
 const svSkip  = document.getElementById('svskip');
+const svRing  = document.getElementById('svRing');
 const svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SV_RING_C = 125.66; // circumference of the r=20 progress ring
 
 let svDuration = 0;
 let svTarget   = 0;
@@ -112,12 +128,16 @@ let svRaf      = null;
 let svDone     = false;
 
 function revealPage() {
-  if (!svWrap || !svVideo || svReduceMotion) {
+  if (!svWrap || !svVideo || svReduceMotion || LITE) {
     if (svWrap) svWrap.remove();
     startHero();
     return;
   }
   svWrap.style.display = 'block';
+  // preload="none" in the markup keeps lite-mode visitors from ever fetching
+  // the file; only now — intro confirmed active — do we start buffering.
+  svVideo.preload = 'auto';
+  try { svVideo.load(); } catch (_) {}
   svVideo.pause();
   const setDuration = () => { svDuration = svVideo.duration || 0; };
   if (svVideo.readyState >= 1) setDuration();
@@ -147,6 +167,7 @@ function svOnScroll() {
   svTarget = p;
   svWrap.classList.toggle('scrolled', p > .02);
   svWrap.classList.toggle('ending', p > .92);
+  if (svRing) svRing.style.strokeDashoffset = (SV_RING_C * (1 - p)).toFixed(2);
   if (!svRaf) svRaf = requestAnimationFrame(svLoop);
   if (p >= 1) { svDone = true; startHero(); }
 }
@@ -177,7 +198,7 @@ function startHero() {
   if (navEl) navEl.style.opacity = '1';
 
   // Kick any pill videos that were blocked while nav was opacity:0
-  document.querySelectorAll('.ocean-pill-video').forEach(v => {
+  if (!LITE) document.querySelectorAll('.ocean-pill-video').forEach(v => {
     v.muted = true;
     try { v.currentTime = 0; } catch (_) {}
     const p = v.play();
@@ -206,10 +227,18 @@ const cursorEl = document.getElementById('compass-cursor');
 const dotEl    = document.getElementById('cursor-dot');
 
 if (cursorEl && dotEl && window.matchMedia('(pointer: fine)').matches) {
+  // Only now is it safe to hide the native pointer (see body.cursor-on in CSS)
+  document.body.classList.add('cursor-on');
   const needle = cursorEl.querySelector('.needle');
   let mx = 0, my = 0, cx = 0, cy = 0, angle = 0;
 
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    if (!document.body.classList.contains('cursor-live')) {
+      cx = mx; cy = my; // snap into place, then reveal
+      document.body.classList.add('cursor-live');
+    }
+  });
 
   (function tick() {
     cx += (mx - cx) * .12;
@@ -259,6 +288,14 @@ function onScroll() {
   doUnitsScroll(sy);
   revealCheck(sy);
   updateCoords(sy);
+
+  // The HUD lives in the same corner as the footer links — yield to them
+  const coordsEl = document.getElementById('coords');
+  const footerEl = document.querySelector('footer');
+  if (coordsEl && footerEl && coordsEl.classList.contains('show')) {
+    const footerVisible = footerEl.getBoundingClientRect().top < window.innerHeight - 80;
+    coordsEl.style.opacity = footerVisible ? '0' : '';
+  }
 }
 
 /* ── HORIZONTAL UNITS SCROLL ── */
@@ -424,3 +461,35 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
   });
 });
+
+/* ── MOBILE DRAWER MENU ── */
+(function () {
+  const toggle = document.getElementById('menu-toggle');
+  const drawer = document.getElementById('drawer');
+  if (!toggle || !drawer) return;
+
+  let open = false;
+
+  function setOpen(next) {
+    open = next;
+    document.body.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    drawer.setAttribute('aria-hidden', String(!open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    document.body.style.overflow = open ? 'hidden' : '';
+    if (open) {
+      const first = drawer.querySelector('a');
+      if (first) setTimeout(() => first.focus(), 400);
+    } else {
+      toggle.focus();
+    }
+  }
+
+  toggle.addEventListener('click', () => setOpen(!open));
+  drawer.querySelectorAll('a').forEach(a =>
+    a.addEventListener('click', () => setOpen(false))
+  );
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && open) setOpen(false);
+  });
+})();

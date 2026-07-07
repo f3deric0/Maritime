@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /user.html
+
+Sitemap: https://maritime-affairs.eu/sitemap.xml

@@ -13,8 +13,44 @@
 
 <title>Maritime Affairs — Navigating the Blue Century</title>
 <meta name="description" content="Maritime Affairs is the EU Blue Economy Do-Tank — connecting policy, industry and society across Europe's seas. Based in Brussels, active across the EU.">
+<meta name="theme-color" content="#050c15">
+<link rel="canonical" href="https://maritime-affairs.eu/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Maritime Affairs">
+<meta property="og:title" content="Maritime Affairs — Navigating the Blue Century">
+<meta property="og:description" content="The EU Blue Economy Do-Tank — connecting policy, industry and society across Europe's seas. Brussels-based, active across the EU.">
+<meta property="og:url" content="https://maritime-affairs.eu/">
+<meta property="og:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_GB">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Maritime Affairs — Navigating the Blue Century">
+<meta name="twitter:description" content="The EU Blue Economy Do-Tank — connecting policy, industry and society across Europe's seas.">
+<meta name="twitter:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NGO",
+  "name": "Maritime Affairs",
+  "alternateName": "EU Blue Economy Do-Tank",
+  "url": "https://maritime-affairs.eu/",
+  "logo": "https://maritime-affairs.eu/assets/images/Logo-maritimes.png",
+  "email": "info@maritime-affairs.eu",
+  "foundingDate": "2023",
+  "address": { "@type": "PostalAddress", "addressLocality": "Brussels", "addressCountry": "BE" },
+  "description": "Maritime Affairs is the EU Blue Economy Do-Tank — connecting policy, industry and society across Europe's seas.",
+  "knowsAbout": ["Blue Economy", "Maritime Policy", "Shipping and Logistics", "Maritime Security", "Offshore Energy"]
+}
+</script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -24,7 +60,18 @@
 
 <body>
 
+<a class="skip-link" href="#hero">Skip to content</a>
 
+<noscript>
+  <style>
+    /* Without JS the page must still be fully readable: kill the loader and
+       intro, and force every JS-revealed element visible. */
+    #loader, #scrollvid { display: none !important; }
+    #nav { opacity: 1 !important; }
+    [data-r], .hero-sub, .hero-actions, .hero-stats, .section-marker { opacity: 1 !important; transform: none !important; }
+    .hero-vid video, .ocean-pill-video { display: none; }
+  </style>
+</noscript>
 
 <!-- COMPASS CURSOR -->
 
@@ -80,7 +127,7 @@
 
     <div class="l-ring-slow"></div>
 
-    <img class="l-logo" src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs">
+    <img class="l-logo" src="./assets/images/Logo-maritimes-nav.png" alt="Maritime Affairs" width="80" height="80">
 
   </div>
 
@@ -103,7 +150,7 @@
 
   <div class="scrollvid-sticky">
 
-    <video id="svVideo" muted playsinline preload="auto" disablepictureinpicture>
+    <video id="svVideo" muted playsinline preload="none" disablepictureinpicture>
 
       <source src="./assets/video/Logo_Intro.mp4" type="video/mp4">
 
@@ -119,6 +166,14 @@
 
     </div>
 
+    <div class="scrollvid-ring" aria-hidden="true">
+      <svg viewBox="0 0 44 44">
+        <circle class="ring-track" cx="22" cy="22" r="20"/>
+        <circle class="ring-fill" id="svRing" cx="22" cy="22" r="20"/>
+        <text class="ring-n" x="22" y="25" text-anchor="middle">N</text>
+      </svg>
+    </div>
+
     <button id="svskip">Skip intro</button>
 
   </div>
@@ -131,7 +186,7 @@
 <nav id="nav">
   <a href="#hero" class="logo">
     <div class="logo-pill">
-      <img src="./assets/images/Logo-maritimes.png" alt="Maritime Affairs" style="height:44px;width:auto;display:block;">
+      <img src="./assets/images/Logo-maritimes-nav.png" alt="Maritime Affairs" width="44" height="44" style="height:44px;width:auto;display:block;">
       <div class="logo-text">
         <div class="logo-name">Maritime <em>Affairs</em></div>
         <span class="logo-sub">EU Blue Economy Do-Tank</span>
@@ -140,7 +195,7 @@
   </a>
 
   <div class="ocean-pill" data-ocean-pill>
-    <video class="ocean-pill-video" autoplay muted loop playsinline disablepictureinpicture aria-hidden="true">
+    <video class="ocean-pill-video" muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true">
       <source src="./assets/video/onde.mp4" type="video/mp4">
     </video>
     <ul class="ocean-pill-links">
@@ -155,8 +210,33 @@
   <div class="nav-r">
     <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
     <a href="#contact" class="nav-btn">Join Us</a>
+    <button id="menu-toggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- MOBILE DRAWER -->
+<div id="drawer" class="drawer" aria-hidden="true">
+  <svg class="drawer-rose" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+    <circle cx="100" cy="100" r="96" stroke="rgba(200,145,58,.5)" stroke-width="1"/>
+    <circle cx="100" cy="100" r="70" stroke="rgba(200,145,58,.3)" stroke-width="1"/>
+    <line x1="100" y1="4" x2="100" y2="196" stroke="rgba(200,145,58,.25)"/>
+    <line x1="4" y1="100" x2="196" y2="100" stroke="rgba(200,145,58,.25)"/>
+    <polygon points="100,18 106,96 100,112 94,96" fill="rgba(200,145,58,.6)"/>
+  </svg>
+  <ul class="drawer-links">
+    <li><a href="#mission"><span class="dl-n">01</span><span class="dl-t">Mission</span></a></li>
+    <li><a href="#units"><span class="dl-n">02</span><span class="dl-t">Units</span></a></li>
+    <li><a href="#network"><span class="dl-n">03</span><span class="dl-t">Network</span></a></li>
+    <li><a href="publications.html"><span class="dl-n">04</span><span class="dl-t">Publications</span></a></li>
+    <li><a href="#contact"><span class="dl-n">05</span><span class="dl-t">Join Us</span></a></li>
+  </ul>
+  <div class="drawer-foot">
+    <a href="mailto:info@maritime-affairs.eu">info@maritime-affairs.eu</a>
+    <span class="df-tag">Brussels · European NGO · EU Transparency Register</span>
+  </div>
+</div>
 
 
 
@@ -180,7 +260,7 @@
 
   <div class="hero-vid">
 
-    <video autoplay muted loop playsinline preload="auto" id="hvid">
+    <video muted loop playsinline preload="none" id="hvid">
 
       <source src="./assets/video/container_ship.mp4" type="video/mp4">
 
@@ -256,7 +336,7 @@
 
 <!-- MARQUEE -->
 
-<div class="marquee">
+<div class="marquee" aria-hidden="true">
 
   <div class="marquee-track" id="mq"></div>
 
@@ -658,13 +738,13 @@
 
       <p>Hub, Community Platform & Project Incubator for the Blue Century. EU registered, Brussels-based, globally connected.</p>
 
-      <div class="ft-soc"><a href="#" class="ft-s">in</a><a href="#" class="ft-s">𝕏</a><a href="#" class="ft-s">🇪🇺</a></div>
+      <div class="ft-soc"><a href="mailto:info@maritime-affairs.eu" class="ft-s" aria-label="Email us" title="Email">✉</a><a href="https://maritime-affairs.eu" target="_blank" rel="noopener" class="ft-s" aria-label="Website" title="Website">🌐</a><a href="https://transparency-register.europa.eu/" target="_blank" rel="noopener" class="ft-s" aria-label="EU Transparency Register" title="EU Transparency Register">🇪🇺</a></div>
 
     </div>
 
-    <div class="ft-col"><h5>Units</h5><ul><li><a href="#">Blue Policy & Law</a></li><li><a href="#">Blue Economy & Logistics</a></li><li><a href="#">Defense & Security</a></li><li><a href="#">Tech, Energy & Resources</a></li></ul></div>
+    <div class="ft-col"><h5>Units</h5><ul><li><a href="#units">Blue Policy & Law</a></li><li><a href="#units">Blue Economy & Logistics</a></li><li><a href="#units">Defense & Security</a></li><li><a href="#units">Tech, Energy & Resources</a></li></ul></div>
 
-    <div class="ft-col"><h5>Organisation</h5><ul><li><a href="#">About Us</a></li><li><a href="#">Expert Directory</a></li><li><a href="#">Publications</a></li><li><a href="#">Events</a></li><li><a href="#">Careers</a></li></ul></div>
+    <div class="ft-col"><h5>Organisation</h5><ul><li><a href="#mission">About Us</a></li><li><a href="#network">Expert Directory</a></li><li><a href="publications.html">Publications</a></li><li><a href="#contact">Events</a></li><li><a href="mailto:info@maritime-affairs.eu?subject=Careers">Careers</a></li></ul></div>
 
     <div class="ft-col">
 
@@ -684,7 +764,7 @@
 
     <span>© 2026 Maritime Affairs — European NGO</span>
 
-    <div class="ft-links"><a href="#">Privacy</a><a href="#">Cookies</a><a href="#">Legal</a></div>
+    <div class="ft-links"><a href="mailto:info@maritime-affairs.eu">Contact</a><a href="https://transparency-register.europa.eu/" target="_blank" rel="noopener">EU Register</a></div>
 
   </div>
 
