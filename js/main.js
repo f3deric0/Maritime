@@ -147,20 +147,27 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
   }
 
   // smoothing: lower factor yields buttery smooth scrolling
-  const EASE = 0.15;
+  const EASE = 0.08;
 
   function loop() {
     current += (target - current) * EASE;
     if (video && duration && !isNaN(video.duration)) {
       const desired = current * duration;
-      if (!video.seeking) {
-        try {
-          video.currentTime = desired;
-        } catch (_) {}
-      }
+      // We directly update currentTime. For optimized GOP=1 (all-keyframe) videos,
+      // this bypasses lag-inducing seeking state checks and updates instantly.
+      try {
+        video.currentTime = desired;
+      } catch (_) {}
     }
-    if (Math.abs(target - current) > .0008) raf = requestAnimationFrame(loop);
-    else raf = null;
+    if (Math.abs(target - current) > .0005) {
+      raf = requestAnimationFrame(loop);
+    } else {
+      current = target;
+      if (video && duration && !isNaN(video.duration)) {
+        try { video.currentTime = target * duration; } catch(_) {}
+      }
+      raf = null;
+    }
   }
 
   function onScroll() {
@@ -266,15 +273,7 @@ const _svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').ma
 
 const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion });
 
-// Initialize any other .scrollvid sections on the page (e.g. a second moment)
-document.querySelectorAll('.scrollvid').forEach(el => {
-  const v = el.querySelector('video');
-  if (!v) return;
-  if (v.id === 'svVideo') return; // skip the already-initialized intro
-  const ring = el.querySelector('.ring-fill') || el.querySelector('#svRing2');
-  const skip = el.querySelector('button');
-  initScrollVideo({ wrap: el, video: v, skip, ring, prefersReducedMotion: _svReduceMotion });
-});
+
 
 /* ── CUSTOM COMPASS CURSOR ── */
 const cursorEl = document.getElementById('compass-cursor');
