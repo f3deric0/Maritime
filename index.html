@@ -141,45 +141,6 @@
 
   
 
-<!-- SCROLL-DRIVEN INTRO VIDEO
-     Scrolling down scrubs the video forward frame-by-frame. Near the end
-     of this section the video fades and the rest of the site takes over.
-     Swap the <source> below with the new AI-generated video when ready. -->
-
-<div id="scrollvid" class="scrollvid" style="display:none">
-
-  <div class="scrollvid-sticky">
-
-    <video id="svVideo" muted playsinline preload="none" disablepictureinpicture>
-      <source src="./assets/video/0708.mp4" type="video/mp4">
-    </video>
-
-    <div class="scrollvid-fade"></div>
-
-    <div class="scrollvid-hint" id="svHint">
-
-      <span class="scroll-label">Scroll to continue</span>
-
-      <div class="scroll-track"></div>
-
-    </div>
-
-    <div class="scrollvid-ring" aria-hidden="true">
-      <svg viewBox="0 0 44 44">
-        <circle class="ring-track" cx="22" cy="22" r="20"/>
-        <circle class="ring-fill" id="svRing" cx="22" cy="22" r="20"/>
-        <text class="ring-n" x="22" y="25" text-anchor="middle">N</text>
-      </svg>
-    </div>
-
-    <button id="svskip">Skip intro</button>
-
-  </div>
-
-</div>
-
-
-
 <!-- NAV -->
 <nav id="nav">
   <a href="#hero" class="logo">
@@ -254,81 +215,85 @@
 
 
 
-<!-- HERO -->
+<!-- HERO
+     The background is a scroll-scrubbed WebP frame sequence (not a <video>):
+     scrolling draws the frame matching scroll progress onto #hero-canvas.
+     See design.md "Why frames, not video seek" and js/main.js initScrollFrames.
+     To swap the footage: drop a new clip in assets/video/ and run
+     ./scripts/extract-hero-frames.sh — no markup changes needed. -->
 
 <section class="hero" id="hero">
 
-  <div class="hero-vid">
+  <div class="hero-stage" id="heroStage" style="background-image:url('./assets/images/hero-poster.webp')">
 
-    <!--
-    <video muted loop playsinline preload="none" id="hvid">
+    <canvas id="hero-canvas"
+      data-frames="./assets/frames/hero"
+      data-frames-m="./assets/frames/hero-m"
+      data-count="160"
+      data-count-m="90"
+      aria-hidden="true"></canvas>
 
-      <source src="./assets/video/container_ship.mp4" type="video/mp4">
+    <canvas id="chart-canvas"></canvas>
 
-    </video>
-    -->
+    <div class="hero-inner wrap" style="max-width:100%;padding-bottom:10vh">
 
-  </div>
+      <div class="section-marker" id="hmark">EU Blue Economy Do-Tank</div>
 
-  <canvas id="chart-canvas"></canvas>
+      <div class="nameplate">
+        <div class="np-code">M/V &middot; Maritime Affairs</div>
+        <h1 id="htitle" aria-label="Maritime Affairs">
+          <div class="mega-title">
+            <span class="line"><span class="word">Maritime</span></span>
+            <span class="line ln2"><span class="word">Affairs</span></span>
+          </div>
+        </h1>
+      </div>
 
+      <p class="hero-sub" id="hsub" style="font-size:clamp(1.05rem,1.3vw,1.25rem);line-height:1.6">
 
+        Connecting <strong>policy, industry</strong> and society<br>
 
-  <div class="hero-inner wrap" style="max-width:100%;padding-bottom:10vh">
+        across Europe's seas — from shipping and<br>
 
-    <div class="section-marker" id="hmark">EU Blue Economy Do-Tank</div>
+        logistics to blue security and offshore energy.
 
-    <h1 id="htitle" aria-label="Maritime Affairs">
+      </p>
 
-      <div class="mega-title">
+      <div class="hero-actions" id="hact">
 
-        <span class="line"><span class="word">Maritime</span></span>
+        <a href="#mission" class="btn btn-gold" id="hb1">Discover our work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
 
-        <span class="line ln2"><span class="word">Affairs</span></span>
+        <a href="#contact" class="btn btn-line">Join a consortium</a>
 
       </div>
 
-    </h1>
+    </div>
 
-    <p class="hero-sub" id="hsub" style="font-size:clamp(1.05rem,1.3vw,1.25rem);line-height:1.6">
+    <div class="hero-stats" id="hstats">
 
-      Connecting <strong>policy, industry</strong> and society<br>
+      <div class="h-stat"><span class="h-num">4</span><span class="h-lbl">Strategic Units</span></div>
 
-      across Europe's seas — from shipping and<br>
+      <div class="h-stat"><span class="h-num">EU</span><span class="h-lbl">Transparency Register</span></div>
 
-      logistics to blue security and offshore energy.
-
-    </p>
-
-    <div class="hero-actions" id="hact">
-
-      <a href="#mission" class="btn btn-gold" id="hb1">Discover our work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-
-      <a href="#contact" class="btn btn-line">Join a consortium</a>
+      <div class="h-stat"><span class="h-num">2024</span><span class="h-lbl">Launch Year</span></div>
 
     </div>
 
-  </div>
+    <div class="hero-ring" id="heroRing" aria-hidden="true">
+      <svg viewBox="0 0 44 44">
+        <circle class="ring-track" cx="22" cy="22" r="20"/>
+        <circle class="ring-fill" id="heroRingFill" cx="22" cy="22" r="20"/>
+        <text class="ring-n" x="22" y="25" text-anchor="middle">N</text>
+      </svg>
+    </div>
 
+    <div class="hero-scroll" id="heroHint">
 
+      <div class="scroll-track"></div>
 
-  <div class="hero-stats" id="hstats">
+      <span class="scroll-label">Scroll to explore</span>
 
-    <div class="h-stat"><span class="h-num">4</span><span class="h-lbl">Strategic Units</span></div>
-
-    <div class="h-stat"><span class="h-num">EU</span><span class="h-lbl">Transparency Register</span></div>
-
-    <div class="h-stat"><span class="h-num">2024</span><span class="h-lbl">Launch Year</span></div>
-
-  </div>
-
-
-
-  <div class="hero-scroll">
-
-    <div class="scroll-track"></div>
-
-    <span class="scroll-label">Scroll</span>
+    </div>
 
   </div>
 
