@@ -110,9 +110,11 @@ function openLoader() {
 }
 
 function revealPage() {
-  if (!svInstance) {
-    startHero();
-  }
+  // The hero's title/actions are visible from the start now (the scrub is a
+  // background effect layered under always-visible content, not a gate the
+  // user has to scroll through first) — see design.md "Layout — the hero
+  // stage". So this always fires, unconditionally.
+  startHero();
 }
 
 /* ── SCROLL-DRIVEN VIDEO (generalized) ──
@@ -225,6 +227,106 @@ function initScrollVideo({ wrap, video, skip, ring, prefersReducedMotion = false
 
 function svOnScrollAll() { scrollVideoInstances.forEach(i => i.onScroll()); }
 
+/* ── HERO SCROLL-FRAME SEQUENCE ──
+   Draws a pre-extracted WebP frame onto a canvas per scroll position instead
+   of seeking a <video> — see design.md "Why frames, not video seek". Frame
+   set paths/counts come from data-* attributes on the canvas so swapping
+   footage (scripts/extract-hero-frames.sh) never requires a JS edit.
+*/
+function initScrollFrames({ wrap, stage, canvas, ring, reducedMotion = false }) {
+  if (!wrap || !stage || !canvas || reducedMotion || LITE) {
+    if (canvas) canvas.remove();
+    return null;
+  }
+
+  const isMobile = window.matchMedia('(max-width: 760px)').matches;
+  const basePath = isMobile ? canvas.dataset.framesM : canvas.dataset.frames;
+  const count = parseInt(isMobile ? canvas.dataset.countM : canvas.dataset.count, 10) || 0;
+  if (!basePath || !count) return null;
+
+  const ctx = canvas.getContext('2d');
+  const RING_C = 125.66; // circumference for r=20 — matches the ring markup
+
+  let target = 0, current = 0, raf = null, lastDrawn = -1;
+  let cw = 0, ch = 0;
+
+  // Cover-fit draw: scale the frame to fill the canvas box, center-cropping
+  // whichever axis overflows — the manual equivalent of object-fit:cover
+  // for a <canvas> instead of an <img>/<video>.
+  function draw(img) {
+    if (!img || !img.complete || !img.naturalWidth || !cw || !ch) return;
+    const scale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+    const dw = img.naturalWidth * scale, dh = img.naturalHeight * scale;
+    const dx = (cw - dw) / 2, dy = (ch - dh) / 2;
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }
+
+  // Preload every frame up front, starting immediately (in parallel with the
+  // loader) so most/all frames are already decoded by the time scrolling
+  // starts. If the frame currently on screen finishes loading late, redraw
+  // it — otherwise a slow frame could get stuck showing whatever came before.
+  const images = new Array(count);
+  for (let i = 0; i < count; i++) {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = `${basePath}/frame-${String(i + 1).padStart(3, '0')}.webp`;
+    img.addEventListener('load', () => {
+      const idxNow = Math.round(current * (count - 1));
+      if (i === idxNow && i !== lastDrawn) { draw(img); lastDrawn = i; }
+    }, { once: true });
+    images[i] = img;
+  }
+
+  function resize() {
+    cw = canvas.clientWidth;
+    ch = canvas.clientHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(cw * dpr);
+    canvas.height = Math.round(ch * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    draw(images[lastDrawn] || images[0]);
+  }
+
+  function progress() {
+    const total = wrap.offsetHeight - window.innerHeight;
+    if (total <= 0) return 1;
+    return Math.max(0, Math.min(1, (window.scrollY - wrap.offsetTop) / total));
+  }
+
+  const EASE = 0.09;
+
+  function loop() {
+    current += (target - current) * EASE;
+    const settled = Math.abs(target - current) < .0008;
+    const c = settled ? target : current;
+    const idx = Math.round(c * (count - 1));
+    if (idx !== lastDrawn) { draw(images[idx]); lastDrawn = idx; }
+    if (!settled) { raf = requestAnimationFrame(loop); }
+    else { current = target; raf = null; }
+  }
+
+  function onScrollFrames() {
+    const p = progress();
+    target = p;
+    stage.classList.toggle('scrolled', p > .02);
+    stage.classList.toggle('ending', p > .92);
+    if (ring) ring.style.strokeDashoffset = (RING_C * (1 - p)).toFixed(2);
+    if (!raf) raf = requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+
+  if (document.readyState === 'complete') {
+    onScrollFrames();
+  } else {
+    window.addEventListener('load', onScrollFrames);
+  }
+
+  return { onScroll: onScrollFrames };
+}
+
 /* ── HERO ENTRANCE ── */
 // Pause word animations until after loader
 document.querySelectorAll('.mega-title .word').forEach(w =>
@@ -255,6 +357,10 @@ function startHero() {
     if (hmark) hmark.classList.add('show');
   }, 100);
 
+  setTimeout(() => {
+    document.querySelector('.nameplate')?.classList.add('show');
+  }, 250);
+
   document.querySelectorAll('.mega-title .word').forEach((w, i) => {
     setTimeout(() => { w.style.animationPlayState = 'running'; }, i * 180 + 200);
   });
@@ -264,14 +370,14 @@ function startHero() {
   setTimeout(() => { document.getElementById('hstats')?.classList.add('show'); }, 1350);
 }
 
-// Initialize the existing intro instance if present
-const _svWrap = document.getElementById('scrollvid');
-const _svVideo = document.getElementById('svVideo');
-const _svSkip = document.getElementById('svskip');
-const _svRing = document.getElementById('svRing');
-const _svReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Initialize the hero's frame-scrub background, if present on this page
+const _hfWrap = document.getElementById('hero');
+const _hfStage = document.getElementById('heroStage');
+const _hfCanvas = document.getElementById('hero-canvas');
+const _hfRing = document.getElementById('heroRingFill');
+const _reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const svInstance = initScrollVideo({ wrap: _svWrap, video: _svVideo, skip: _svSkip, ring: _svRing, prefersReducedMotion: _svReduceMotion });
+const heroFrames = initScrollFrames({ wrap: _hfWrap, stage: _hfStage, canvas: _hfCanvas, ring: _hfRing, reducedMotion: _reduceMotion });
 
 
 
@@ -324,6 +430,7 @@ window.addEventListener('scroll', () => {
   const h = document.documentElement;
   if (pbar) pbar.style.transform = `scaleX(${h.scrollTop / (h.scrollHeight - h.clientHeight)})`;
   svOnScrollAll();
+  heroFrames?.onScroll();
   onScroll();
 }, { passive: true });
 
@@ -333,10 +440,6 @@ function onScroll() {
 
   // Nav state
   navEl?.classList.toggle('dark', sy > 60);
-
-  // Hero video parallax
-  const hvid = document.getElementById('hvid');
-  if (hvid) hvid.style.transform = `translateY(${sy * .35}px) scale(1.06)`;
 
   doUnitsScroll(sy);
   revealCheck(sy);
