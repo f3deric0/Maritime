@@ -2,9 +2,9 @@
 
 ## What this is
 
-Static site, no build step: plain HTML/CSS/JS deployed on Vercel. There is no `package.json`, no
-bundler, no framework. Scripts are loaded as globals (no ES modules) — `js/ocean-nav.js`,
-`js/canvas.js`, `js/main.js` in that order, from `index.html`.
+Static site, no build step: plain HTML/CSS/JS deployed on a self-managed VPS (see `deploy.md`, not
+Vercel anymore). There is no `package.json`, no bundler, no framework. Scripts are loaded as globals
+(no ES modules) — `js/ocean-nav.js`, `js/canvas.js`, `js/main.js` in that order, from `index.html`.
 
 - `index.html` / `article.html` / `publications.html` / `user.html` / `admin/index.html` — pages
 - `css/style.css` — the single global stylesheet, design tokens at the top (`:root`)
@@ -65,6 +65,6 @@ given intermittent `ConnectionResetError`s on video/large-asset Range requests i
 
 ## Deploy
 
-Vercel, static. `vercel.json` already sets cache/Range headers for `assets/video/`; if you add a
-new heavy static directory (e.g. more frame sets), consider adding an `immutable` cache rule for
-it there too.
+Self-managed VPS (IONOS, Apache) at `maritime-affairs.eu` — see `deploy.md` for the exact step-by-step
+(push to `main`, SSH deploy script, cache gotchas). `vercel.json` is legacy/unused, kept only in case
+of a future Vercel re-deploy; cache/security headers now live in `.htaccess` instead.
