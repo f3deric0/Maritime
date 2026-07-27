@@ -243,6 +243,10 @@ function initScrollFrames({ wrap, stage, canvas, ring, reducedMotion = false }) 
   const basePath = isMobile ? canvas.dataset.framesM : canvas.dataset.frames;
   const count = parseInt(isMobile ? canvas.dataset.countM : canvas.dataset.count, 10) || 0;
   if (!basePath || !count) return null;
+  // Frame files are immutable-cached for a year under stable names, so bump
+  // data-v on #hero-canvas whenever footage is re-extracted with the same
+  // filenames — otherwise returning visitors keep the old cached frames.
+  const cacheBust = canvas.dataset.v ? `?v=${canvas.dataset.v}` : '';
 
   const ctx = canvas.getContext('2d');
   const RING_C = 125.66; // circumference for r=20 — matches the ring markup
@@ -270,7 +274,7 @@ function initScrollFrames({ wrap, stage, canvas, ring, reducedMotion = false }) 
   for (let i = 0; i < count; i++) {
     const img = new Image();
     img.decoding = 'async';
-    img.src = `${basePath}/frame-${String(i + 1).padStart(3, '0')}.webp`;
+    img.src = `${basePath}/frame-${String(i + 1).padStart(3, '0')}.webp${cacheBust}`;
     img.addEventListener('load', () => {
       const idxNow = Math.round(current * (count - 1));
       if (i === idxNow && i !== lastDrawn) { draw(img); lastDrawn = i; }
