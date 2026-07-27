@@ -160,6 +160,10 @@
           </div>
           <div class="field">
             <label>Content (HTML)</label>
+            <div style="margin-bottom:.6rem">
+              <input type="file" id="f-body-file" accept="image/*" style="display:none">
+              <button type="button" class="btn ghost" id="body-upload-btn" style="padding:.5rem .9rem;font-size:.62rem">Importa immagine</button>
+            </div>
             <textarea id="f-content" class="code" placeholder="<p>Write the body in HTML...</p>"></textarea>
           </div>
 
@@ -203,6 +207,11 @@
               <label>Image URL</label>
               <input type="url" id="f-image-url" placeholder="https://...">
             </div>
+            <div class="field">
+              <input type="file" id="f-cover-file" accept="image/*" style="display:none">
+              <button type="button" class="btn ghost" id="cover-upload-btn" style="width:100%">Importa immagine</button>
+            </div>
+            <img id="cover-preview" alt="" style="display:none;width:100%;margin-top:.4rem;border:1px solid rgba(255,255,255,.1)">
           </div>
         </div>
       </div>
@@ -228,6 +237,52 @@ function toast(msg, isErr){
   t.classList.add('show');
   clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2400);
 }
+
+/* ---- IMAGE UPLOAD (Supabase Storage: article-images bucket) ---- */
+async function uploadImage(file){
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await sb.storage.from('article-images').upload(path, file, { cacheControl: '31536000', upsert: false });
+  if (error) throw error;
+  const { data } = sb.storage.from('article-images').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+$('cover-upload-btn').addEventListener('click', () => $('f-cover-file').click());
+$('f-cover-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  toast('Uploading…');
+  try {
+    const url = await uploadImage(file);
+    $('f-image-url').value = url;
+    $('cover-preview').src = url;
+    $('cover-preview').style.display = 'block';
+    toast('Cover image uploaded');
+  } catch (err) {
+    toast(err.message || 'Upload failed', true);
+  }
+});
+
+$('body-upload-btn').addEventListener('click', () => $('f-body-file').click());
+$('f-body-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  toast('Uploading…');
+  try {
+    const url = await uploadImage(file);
+    const ta = $('f-content');
+    const start = ta.selectionStart ?? ta.value.length;
+    const end = ta.selectionEnd ?? ta.value.length;
+    ta.focus();
+    ta.setRangeText(`<img src="${url}" alt="">`, start, end, 'end');
+    toast('Image inserted');
+  } catch (err) {
+    toast(err.message || 'Upload failed', true);
+  }
+});
 
 /* ---- AUTH ---- */
 $('login-form').addEventListener('submit', async (e) => {
@@ -305,6 +360,7 @@ async function openEditor(id){
     $('f-title').value=''; $('f-slug').value=''; $('f-summary').value='';
     $('f-content').value=''; $('f-unit').value=''; $('f-author').value='';
     $('f-image-url').value=''; $('f-read-min').value=5; $('f-published').checked=false;
+    $('cover-preview').style.display='none'; $('cover-preview').src='';
     $('delete-btn').style.display='none';
     return;
   }
@@ -319,6 +375,8 @@ async function openEditor(id){
   $('f-unit').value = data.unit || '';
   $('f-author').value = data.author || '';
   $('f-image-url').value = data.image_url || '';
+  if (data.image_url) { $('cover-preview').src = data.image_url; $('cover-preview').style.display = 'block'; }
+  else { $('cover-preview').style.display = 'none'; $('cover-preview').src = ''; }
   $('f-read-min').value = data.read_min || 5;
   $('f-published').checked = !!data.published;
   $('delete-btn').style.display = 'inline-block';

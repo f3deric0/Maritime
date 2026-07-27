@@ -353,9 +353,6 @@ function startHero() {
     if (p && p.catch) p.catch(() => {});
   });
 
-  const coords = document.getElementById('coords');
-  if (coords) coords.classList.add('show');
-
   setTimeout(() => {
     const hmark = document.getElementById('hmark');
     if (hmark) hmark.classList.add('show');
@@ -447,15 +444,6 @@ function onScroll() {
 
   doUnitsScroll(sy);
   revealCheck(sy);
-  updateCoords(sy);
-
-  // The HUD lives in the same corner as the footer links — yield to them
-  const coordsEl = document.getElementById('coords');
-  const footerEl = document.querySelector('footer');
-  if (coordsEl && footerEl && coordsEl.classList.contains('show')) {
-    const footerVisible = footerEl.getBoundingClientRect().top < window.innerHeight - 80;
-    coordsEl.style.opacity = footerVisible ? '0' : '';
-  }
 }
 
 /* ── HORIZONTAL UNITS SCROLL ── */
@@ -575,44 +563,6 @@ document.querySelectorAll('.btn, .nav-btn').forEach(btn => {
   });
   btn.addEventListener('mouseleave', () => btn.style.transform = '');
 });
-
-/* ── COORDINATE HUD ── */
-const coordList = [
-  { lat: '48°51′N', lon: '002°21′E', loc: 'Brussels'   },
-  { lat: '37°59′N', lon: '023°44′E', loc: 'Athens'     },
-  { lat: '41°54′N', lon: '012°27′E', loc: 'Rome'       },
-  { lat: '55°40′N', lon: '012°34′E', loc: 'Copenhagen' },
-  { lat: '43°18′N', lon: '005°22′E', loc: 'Marseille'  },
-];
-let lastCoordIdx = -1;
-
-function updateCoords(sy) {
-  const total = document.body.scrollHeight - window.innerHeight;
-  const idx   = Math.floor((sy / total) * coordList.length) % coordList.length;
-  if (idx === lastCoordIdx) return;
-  lastCoordIdx = idx;
-
-  const latEl = document.getElementById('coord-lat');
-  const lonEl = document.getElementById('coord-lon');
-  const secEl = document.getElementById('coord-sec');
-  if (!latEl) return;
-
-  [latEl, lonEl, secEl].forEach(el => {
-    el.style.opacity   = '0';
-    el.style.transform = 'translateY(4px)';
-  });
-  setTimeout(() => {
-    const co = coordList[idx];
-    latEl.textContent = co.lat;
-    lonEl.textContent = co.lon;
-    secEl.textContent = '— ' + co.loc;
-    [latEl, lonEl, secEl].forEach(el => {
-      el.style.transition = 'all .4s var(--ease)';
-      el.style.opacity    = '';
-      el.style.transform  = '';
-    });
-  }, 200);
-}
 
 /* ── SMOOTH ANCHOR SCROLL ── */
 document.querySelectorAll('a[href^="#"]').forEach(a => {
