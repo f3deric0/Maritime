@@ -455,7 +455,7 @@ function doUnitsScroll(sy) {
   const prog = Math.max(0, Math.min(1, (sy - oTop) / oH));
   const cards = document.getElementById('ucards');
   if (!cards) return;
-  const maxX = cards.scrollWidth - window.innerWidth + (window.innerWidth * .1);
+  const maxX = Math.max(0, cards.scrollWidth - window.innerWidth + (window.innerWidth * .1));
   cards.style.transform = `translateX(${-maxX * prog}px)`;
   const ufill = document.getElementById('ufill');
   if (ufill) ufill.style.width = (prog * 100) + '%';
