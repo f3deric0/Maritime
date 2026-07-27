@@ -162,17 +162,18 @@
   </div>
 </section>
 
-<!-- FLEET WATCH — live AIS map + six maritime chokepoints -->
-<section class="sec obs-fleetwatch" id="fleetwatch" aria-label="Fleet Watch — live vessel tracking and maritime chokepoints">
+<!-- FLEET WATCH — live world AIS map + 15 maritime chokepoints + major trade routes -->
+<section class="sec obs-fleetwatch" id="fleetwatch" aria-label="Fleet Watch — live vessel tracking, maritime chokepoints and trade routes">
   <div class="wrap">
 
     <div class="fw-head" data-r="up">
       <div>
         <div class="eyebrow light">Fleet Watch</div>
-        <h2 class="h2 on-dark">Six chokepoints,<br><em>watched live</em></h2>
+        <h2 class="h2 on-dark">The world's chokepoints,<br><em>watched live</em></h2>
         <p class="body-text on-dark" style="max-width:640px;margin-top:1rem">
-          Real ships, tracked by AIS, moving through the maritime chokepoints that decide whether
-          Europe's trade lifelines hold or break — from Gibraltar to the Red Sea.
+          Real ships, tracked by AIS, moving through the straits and canals that decide whether
+          global trade holds or breaks — from the Bering Strait to the Drake Passage — alongside
+          the major trade routes that connect them.
         </p>
       </div>
       <div class="fw-livestats">
@@ -183,14 +184,21 @@
 
     <div class="fw-map-wrap" id="fw-map-wrap" data-r="up" data-rd="100">
       <canvas id="fw-canvas" role="img"
-        aria-label="Live map of ships and six maritime chokepoints from Gibraltar to the Red Sea"></canvas>
+        aria-label="Live world map of ships, maritime chokepoints and major trade routes"></canvas>
       <div class="fw-nodes" id="fw-nodes" aria-label="Maritime chokepoints"></div>
       <div class="fw-hud" id="fw-hud" aria-hidden="true"></div>
+      <div class="fw-legend" aria-hidden="true">
+        <span class="fw-legend-item"><i class="fw-legend-dot"></i>Major chokepoint</span>
+        <span class="fw-legend-item"><i class="fw-legend-dot fw-legend-dot--secondary"></i>Secondary chokepoint</span>
+        <span class="fw-legend-item"><i class="fw-legend-line"></i>Trade route</span>
+      </div>
       <p class="fw-live-note" id="fw-live-note" style="display:none">Live feed temporarily unavailable — chokepoint data below is still current.</p>
     </div>
 
+    <div class="fw-routes" id="fw-routes" aria-label="Major global trade routes"></div>
+
     <div class="fw-detail" id="fw-detail" data-r="up" data-rd="150">
-      <p class="fw-detail-empty">Select a chokepoint on the map for the current situation there.</p>
+      <p class="fw-detail-empty">Select a chokepoint or trade route on the map for the current situation there.</p>
     </div>
 
   </div>

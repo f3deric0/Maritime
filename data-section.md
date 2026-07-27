@@ -5,20 +5,31 @@ live AIS map + six maritime chokepoints) are live at `insights.html`. This docum
 and direction agreed for the section, plus what shipped, so a future session doesn't start from
 zero.
 
-## What's built (phase 2 — Fleet Watch: live AIS map + chokepoints)
+## What's built (phase 2 — Fleet Watch: world AIS map + chokepoints + trade routes)
 
 - **`insights.html`** — the Fleet Watch section replaced the old "coming next" placeholder: a live
-  canvas map (Gibraltar to the Red Sea) with real coastline, six clickable chokepoint markers, live
-  AIS ship blips, a "vessels tracked now" counter, a live "busiest chokepoint" indicator, and a
+  world-scale canvas map (Bering Strait to the Drake Passage) with real coastline, 15 clickable
+  chokepoint markers tiered major/secondary, 5 clickable major trade-route lines, live AIS ship
+  blips, a "vessels tracked now" counter, a live "busiest chokepoint" indicator, a legend, and a
   lat/lon HUD on hover.
 - **`js/fleetwatch.js`** — polls `assets/data/fleet-live.json` every ~9s; degrades gracefully and
-  independently of the rest of the page if the feed is missing/stale (map + chokepoint summaries
-  still work with zero live data). Respects `prefers-reduced-motion`/`body.lite`.
-- **`assets/data/chokepoints.json`** — six real, sourced chokepoints (Gibraltar, Dover Strait,
-  Danish Straits, Bosphorus, Suez Canal, Bab-el-Mandeb), each with a real current-events summary
-  and a source link — researched via web search, not fabricated. See the file for exact sources.
-- **`assets/data/coastline.json`** — real simplified coastline (Natural Earth 110m, public domain),
-  built by **`scripts/build-coastline.py`**.
+  independently of the rest of the page if the feed is missing/stale (map + chokepoint/route
+  summaries still work with zero live data). Respects `prefers-reduced-motion`/`body.lite`. The
+  static layer (graticule/coastline/routes/rings) is cached to an offscreen canvas and just
+  blitted each frame — only the live ship dots redraw per-frame — so the much larger world
+  coastline doesn't jank the animation.
+- **`assets/data/chokepoints.json`** — 15 real, sourced chokepoints worldwide (the original six —
+  Gibraltar, Dover Strait, Danish Straits, Bosphorus, Suez Canal, Bab-el-Mandeb — plus Hormuz,
+  Malacca, Panama Canal, Cape of Good Hope, Tsushima/Korea Strait, Taiwan Strait, Bering Strait,
+  Torres Strait, Drake Passage), each tagged `tier: "major"|"secondary"`, with a real current-events
+  summary and a source link — researched via web search, not fabricated. See the file for exact
+  sources. The live relay's bounding boxes are generated from this file automatically (one box per
+  chokepoint), so this list is also what controls live-feed coverage.
+- **`assets/data/routes.json`** — 5 major global trade routes (Asia–Europe, Transpacific,
+  Transatlantic, Middle East–Asia energy route, Asia–Panama–US East Coast), each with illustrative
+  waypoints, a real sourced summary, and a source link.
+- **`assets/data/coastline.json`** — real simplified world coastline (Natural Earth 110m, public
+  domain), built by **`scripts/build-coastline.py`** (world bbox: lon -180..180, lat -62..78).
 - **`scripts/fleet-relay/`** — `relay.py` (long-running Python process), `requirements.txt`,
   `fleet-relay.service` (systemd unit). Runs on the VPS, holds one WebSocket connection to
   aisstream.io on behalf of every visitor, writes `assets/data/fleet-live.json` every ~5s. See

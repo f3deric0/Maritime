@@ -3,8 +3,9 @@
 build-coastline.py
 
 Regenerates assets/data/coastline.json — the real (simplified) coastline
-outline drawn behind the Fleet Watch map on insights.html, spanning the
-Strait of Gibraltar to the Red Sea / Bab-el-Mandeb.
+outline drawn behind the Fleet Watch map on insights.html. World scale:
+covers every chokepoint in assets/data/chokepoints.json, from the Bering
+Strait to the Drake Passage.
 
 Source: Natural Earth 110m Coastline (public domain, no attribution
 required — https://www.naturalearthdata.com/about/terms-of-use/), fetched
@@ -25,10 +26,10 @@ import os
 SRC_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_coastline.geojson"
 OUT = os.path.join(os.path.dirname(__file__), "..", "assets", "data", "coastline.json")
 
-# Region: Gibraltar to Bab-el-Mandeb/Red Sea, generous margin either side
-# so the coastline doesn't look like it's cut off mid-frame.
-LON_MIN, LON_MAX = -11.0, 46.0
-LAT_MIN, LAT_MAX = 9.0, 60.0
+# World scale — trimmed at the poles (nothing chokepoint-relevant happens
+# above ~78N or below ~62S) to keep the polyline payload down.
+LON_MIN, LON_MAX = -180.0, 180.0
+LAT_MIN, LAT_MAX = -62.0, 78.0
 MARGIN = 1.0  # degrees kept just outside the crop so lines don't dead-end abruptly
 
 

@@ -492,12 +492,22 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-nodes { position: absolute; inset: 0; pointer-events: none; }
 .fw-node { position: absolute; transform: translate(-50%,-50%); pointer-events: auto; display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 6px; cursor: pointer; }
 .fw-node-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gold-l); box-shadow: 0 0 0 4px rgba(232,184,112,.15); transition: all .25s var(--ease); flex-shrink: 0; }
+.fw-node-dot--secondary { width: 6px; height: 6px; background: rgba(232,184,112,.55); box-shadow: 0 0 0 3px rgba(232,184,112,.1); }
 .fw-node-label { font-family: var(--ff-c); font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.7); white-space: nowrap; opacity: 0; transform: translateX(-4px); transition: all .25s var(--ease); text-shadow: 0 1px 6px rgba(5,9,13,.9); }
 .fw-node:hover .fw-node-label, .fw-node:focus-visible .fw-node-label, .fw-node.active .fw-node-label { opacity: 1; transform: none; }
 .fw-node:hover .fw-node-dot, .fw-node:focus-visible .fw-node-dot, .fw-node.active .fw-node-dot { background: var(--white); box-shadow: 0 0 0 6px rgba(232,184,112,.3); }
 .fw-node:focus-visible { outline: none; }
 .fw-hud { position: absolute; bottom: 14px; right: 16px; font-family: var(--ff-c); font-size: .62rem; letter-spacing: .1em; color: rgba(232,184,112,.75); opacity: 0; transition: opacity .2s; pointer-events: none; }
 .fw-live-note { position: absolute; top: 14px; left: 16px; right: 16px; margin: 0; padding: 8px 14px; background: rgba(5,9,13,.85); border: 1px solid rgba(200,145,58,.3); border-radius: 8px; font-family: var(--ff-c); font-size: .64rem; letter-spacing: .04em; color: rgba(232,184,112,.85); }
+.fw-legend { position: absolute; bottom: 14px; left: 16px; display: flex; gap: 14px; flex-wrap: wrap; pointer-events: none; }
+.fw-legend-item { display: flex; align-items: center; gap: 6px; font-family: var(--ff-c); font-size: .56rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: rgba(239,242,241,.5); text-shadow: 0 1px 6px rgba(5,9,13,.9); }
+.fw-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold-l); box-shadow: 0 0 0 3px rgba(232,184,112,.18); flex-shrink: 0; }
+.fw-legend-dot--secondary { width: 5px; height: 5px; background: rgba(232,184,112,.5); box-shadow: 0 0 0 2px rgba(232,184,112,.1); }
+.fw-legend-line { width: 16px; height: 0; border-top: 1px dashed rgba(232,184,112,.6); display: inline-block; flex-shrink: 0; }
+.fw-routes { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1.2rem; }
+.fw-route-chip { font-family: var(--ff-c); font-size: .62rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.65); background: rgba(184,137,74,.08); border: 1px solid rgba(184,137,74,.25); border-radius: 999px; padding: .5rem 1.1rem; cursor: pointer; transition: all .2s var(--ease); }
+.fw-route-chip:hover, .fw-route-chip:focus-visible { color: var(--white); border-color: rgba(232,184,112,.5); background: rgba(184,137,74,.16); outline: none; }
+.fw-route-chip.active { color: var(--ink); background: var(--gold-l); border-color: var(--gold-l); }
 
 .fw-detail { margin-top: 1.5rem; background: var(--deep); border: 1px solid rgba(184,137,74,.2); border-radius: 16px; padding: 1.8rem 2rem; min-height: 92px; }
 .fw-detail-empty { font-size: .85rem; color: rgba(255,255,255,.4); font-style: italic; }

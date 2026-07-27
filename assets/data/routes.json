@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "title": "Fleet Watch — major global trade routes",
+    "note": "Five major container/energy trade lanes, illustrative great-circle-ish paths (not survey-precision). Summaries grounded in real, current reporting — each item carries its own source.",
+    "retrieved": "2026-07-28"
+  },
+  "items": [
+    {
+      "id": "asia-europe",
+      "name": "Asia–Europe",
+      "tag": "Highest volume · Cape-diverted",
+      "waypoints": [[121.5, 31.2], [103.8, 1.3], [80.3, 6.0], [18.47, -34.36], [-8.0, 10.0], [4.0, 51.9]],
+      "summary": "The Asia-Europe lane carried roughly 19.6 million TEU in 2025 — about 10% of all global container movements — making it one of the two highest-volume container corridors in the world alongside the transpacific. Since Houthi attacks on shipping began in late 2023, the large majority of this traffic has diverted around the Cape of Good Hope rather than through Suez and Bab-el-Mandeb, adding 6,000-11,000 nautical miles and 10-14 days per voyage and keeping freight rates 25-30% above pre-2023 levels into 2026.",
+      "source": "https://www.sekologistics.com/en/resource-hub/knowledge-hub/asia-europe-trade-lane-guide-mastering-the-worlds-largest-shipping-corridor-in-2025/",
+      "sourceLabel": "SEKO Logistics — Asia–Europe Trade Lane Guide 2026"
+    },
+    {
+      "id": "transpacific",
+      "name": "Transpacific (Asia–US West Coast)",
+      "tag": "Highest volume · Demand slump",
+      "waypoints": [[121.5, 31.2], [139.8, 35.6], [-170.0, 48.0], [-118.2, 33.7]],
+      "summary": "The transpacific eastbound lane — chiefly China and other East Asian exporters to US West Coast ports like Los Angeles/Long Beach — is one of the world's largest containerized trade flows, though 2026 has brought a demand slump: Asian exports to the US fell 8.8% year-on-year by April 2026 (Chinese shipments down 17.5%). Spot rates on the benchmark Shanghai-Los Angeles leg were running around $2,476/FEU in April 2026, only marginally above the prior year despite the volume declines.",
+      "source": "https://www.indexbox.io/blog/container-shipping-mixed-in-early-2026-us-demand-softens-asia-europe-holds-strong/",
+      "sourceLabel": "IndexBox — Container Shipping Trends, early 2026"
+    },
+    {
+      "id": "transatlantic",
+      "name": "Transatlantic (Northern Europe–US East Coast)",
+      "tag": "Stabilizing · Rate rebound",
+      "waypoints": [[4.0, 51.9], [1.4, 51.0], [-40.0, 45.0], [-74.0, 40.7]],
+      "summary": "The Northern Europe-US East Coast trade carried around 1.69 million TEU westbound in April 2026, down modestly (2.3%) year-on-year but with the rate of decline easing through the spring, and deployed capacity on the lane hit a 28-month high near 60,000 TEU. After a rough 2025, the route stabilized into 2026 with a sharp rebound in freight rates even as volumes stayed soft; a transatlantic crossing typically takes 10-12 days port to port.",
+      "source": "https://www.daviesturner.com/news-and-media/trans-atlantic-trade-starts-2026-with-record-container-shipping-tonnage",
+      "sourceLabel": "Davies Turner — Trans-Atlantic trade, 2026"
+    },
+    {
+      "id": "middle-east-asia-energy",
+      "name": "Middle East–Asia Energy Route",
+      "tag": "Energy lifeline to Asia",
+      "waypoints": [[50.2, 26.6], [56.35, 26.57], [58.5, 24.5], [75.0, 10.0], [100.95, 2.75], [103.8, 1.3], [121.5, 31.2]],
+      "summary": "This is the world's most important energy corridor: roughly a fifth of global oil consumption and LNG trade passes through the Strait of Hormuz alone, with close to 90% of that crude and the majority of the LNG bound for Asian buyers, who take delivery after a second transit through the Strait of Malacca — itself handling around 23 million barrels of oil per day and 9.2 Bcf/d of LNG. China, India, Japan and South Korea are the dominant destination markets, making this a route where a disruption at either strait compounds through the other.",
+      "source": "https://www.visualcapitalist.com/chart-energy-flows-at-risk-strait-of-hormuz/",
+      "sourceLabel": "Visual Capitalist — Energy Flows at Risk in the Strait of Hormuz"
+    },
+    {
+      "id": "asia-panama-us-east-coast",
+      "name": "Asia–Panama–US East Coast",
+      "tag": "Growing · East Coast shift",
+      "waypoints": [[121.5, 31.2], [-155.0, 20.0], [-90.0, 10.0], [-79.68, 9.08], [-77.0, 20.0], [-74.0, 40.7]],
+      "summary": "A growing share of Asian containerized imports now reaches the US East and Gulf coasts via the Panama Canal rather than landing on the West Coast for overland rail transfer — seaborne imports from major Asian economies via this route rose 10.7% year-on-year even as West Coast volumes grew just 0.9% — though the Panama leg takes 25-32 days versus 14-18 days to the West Coast. Panama Canal transits recovered to over 13,000 vessels in the year to September 2025 as water levels rebounded from the 2023-24 drought, generating record annual revenue near $5.7 billion for the Canal Authority.",
+      "source": "https://panjiva.com/research/east-beats-west-as-panama-transits-hit-seven-year-high/29464",
+      "sourceLabel": "Panjiva — East Beats West as Panama Transits Hit Seven-Year High"
+    }
+  ]
+}
