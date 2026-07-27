@@ -436,8 +436,56 @@ async function loadArticle() {
   if (!article) { showError(); return; }
 
   document.title = `${article.title} — Maritime Affairs`;
+  updateMeta(article);
   renderArticle(article);
   initScroll();
+}
+
+function updateMeta(a) {
+  const desc = (a.summary || '').trim() || `${a.title} — Maritime Affairs`;
+  const image = a.image_url || 'https://maritime-affairs.eu/assets/images/og-image.jpg';
+  const url = `https://maritime-affairs.eu/article.html?id=${encodeURIComponent(a.slug || a.id)}`;
+  const titleTag = `${a.title} — Maritime Affairs`;
+
+  const setMeta = (selector, content) => {
+    const el = document.querySelector(selector);
+    if (el) el.setAttribute('content', content);
+  };
+  setMeta('meta[name="description"]', desc);
+  setMeta('meta[property="og:title"]', titleTag);
+  setMeta('meta[property="og:description"]', desc);
+  setMeta('meta[property="og:image"]', image);
+  setMeta('meta[name="twitter:title"]', titleTag);
+  setMeta('meta[name="twitter:description"]', desc);
+  setMeta('meta[name="twitter:image"]', image);
+
+  let ogUrl = document.querySelector('meta[property="og:url"]');
+  if (!ogUrl) {
+    ogUrl = document.createElement('meta');
+    ogUrl.setAttribute('property', 'og:url');
+    document.head.appendChild(ogUrl);
+  }
+  ogUrl.setAttribute('content', url);
+
+  const ld = document.createElement('script');
+  ld.type = 'application/ld+json';
+  ld.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: a.title,
+    description: desc,
+    image,
+    author: a.author ? { '@type': 'Person', name: a.author } : { '@type': 'Organization', name: 'Maritime Affairs' },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Maritime Affairs',
+      logo: { '@type': 'ImageObject', url: 'https://maritime-affairs.eu/assets/images/Logo-maritimes.png' }
+    },
+    datePublished: a.published_at || a.updated_at || undefined,
+    dateModified: a.updated_at || a.published_at || undefined,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url }
+  });
+  document.head.appendChild(ld);
 }
 
 function renderArticle(a) {
@@ -499,7 +547,7 @@ async function loadRelated(current) {
   grid.innerHTML = articles.map(a => `
     <article class="pub-card" onclick="location.href='article.html?id=${a.slug || a.id}'">
       <div class="pub-card-img">
-        ${a.image_url ? `<img src="${a.image_url}" loading="lazy" decoding="async" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">` : `<div class="pub-card-ph"></div>`}
+        ${a.image_url ? `<img src="${a.image_url}" loading="lazy" decoding="async" alt="" onerror="this.parentElement.innerHTML='<div class=\\'pub-card-ph\\'></div>'">` : `<div class="pub-card-ph"></div>`}
       </div>
       <div class="pub-card-body">
         <div style="color:var(--gold); font-family:var(--ff-c); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.18em; margin-bottom:1rem;">${escHtml(a.unit || 'Maritime Affairs')}</div>
