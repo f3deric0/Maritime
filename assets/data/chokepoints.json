@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "Fleet Watch — maritime chokepoints",
+    "note": "Six chokepoints chosen for direct EU trade relevance. Summaries are grounded in real, current reporting (retrieved via web research) — not decorative. Update as events develop; each item carries its own source.",
+    "retrieved": "2026-07-28"
+  },
+  "items": [
+    {
+      "id": "gibraltar",
+      "name": "Strait of Gibraltar",
+      "lat": 35.95,
+      "lon": -5.60,
+      "bbox": { "latMin": 35.6, "latMax": 36.3, "lonMin": -6.1, "lonMax": -5.0 },
+      "tag": "Congestion · Migration",
+      "summary": "Over 300 vessels cross the 14km strait every day — roughly one every five minutes. Port congestion at Algeciras and Tanger Med causes recurring delays, and the strait is one of Europe's primary irregular-migration routes from Africa, with Morocco's control of departures giving it real leverage over Spain and the EU.",
+      "source": "https://theworlddata.com/strait-of-gibraltar-statistics/",
+      "sourceLabel": "The World Data — Strait of Gibraltar Statistics"
+    },
+    {
+      "id": "dover",
+      "name": "Dover Strait / English Channel",
+      "lat": 51.00,
+      "lon": 1.40,
+      "bbox": { "latMin": 50.7, "latMax": 51.3, "lonMin": 1.0, "lonMax": 1.9 },
+      "tag": "Busiest lane · Migration",
+      "summary": "The world's busiest shipping lane by vessel count — over 400 transits a day through a strait just 33km wide, demanding constant traffic management. The same narrow water carries a humanitarian crisis: around 41,000 people crossed by small boat in 2025, and a UK–France returns pilot has so far had limited effect.",
+      "source": "https://content.ballastmarkets.com/chokepoints/dover-strait/",
+      "sourceLabel": "Ballast Markets — Dover Strait chokepoint brief"
+    },
+    {
+      "id": "danish-straits",
+      "name": "Danish Straits",
+      "lat": 55.33,
+      "lon": 10.80,
+      "bbox": { "latMin": 54.5, "latMax": 56.0, "lonMin": 9.5, "lonMax": 13.0 },
+      "tag": "Shadow fleet · Environmental risk",
+      "summary": "An estimated 90 Russian \"shadow fleet\" tankers a month transit the Great Belt and Øresund carrying sanctioned oil — often uninsured, flag-hopping, and running with AIS transponders switched off. Nordic-Baltic states are now demanding proof of insurance before transit, but the spill risk from aging, uncovered vessels remains high.",
+      "source": "https://content.ballastmarkets.com/chokepoints/danish-straits/",
+      "sourceLabel": "Ballast Markets — Danish Straits shadow-fleet brief"
+    },
+    {
+      "id": "bosphorus",
+      "name": "Bosphorus / Turkish Straits",
+      "lat": 41.12,
+      "lon": 29.06,
+      "bbox": { "latMin": 40.9, "latMax": 41.3, "lonMin": 28.8, "lonMax": 29.2 },
+      "tag": "Treaty-bound · Congestion",
+      "summary": "Governed since 1936 by the Montreux Convention — marking 90 years in 2026 — the Bosphorus is a vital grain and energy corridor into and out of the Black Sea, and chronically congested. Turkey's proposed Istanbul Canal is pitched as a fix, but critics argue its real purpose is to let Ankara sidestep Montreux's traffic rules entirely.",
+      "source": "https://carnegieendowment.org/europe/research/2026/07/managing-montreux-turkey-and-the-russia-ukraine-war-in-the-black-sea",
+      "sourceLabel": "Carnegie Endowment — Managing Montreux"
+    },
+    {
+      "id": "suez",
+      "name": "Suez Canal",
+      "lat": 30.70,
+      "lon": 32.34,
+      "bbox": { "latMin": 29.8, "latMax": 31.4, "lonMin": 32.2, "lonMax": 32.6 },
+      "tag": "Recovering · Diversion",
+      "summary": "Traffic remains roughly 60% below pre-crisis levels in early 2026, two years into Red Sea diversions around the Cape of Good Hope. Egypt's estimated revenue loss is near $10bn, though 2026 forecasts point to a gradual recovery as security conditions in the Red Sea slowly improve.",
+      "source": "https://logfret.com/logfret-insights/suez-canal-traffic-remains-subdued-as-red-sea-rerouting-persists-into-2026/",
+      "sourceLabel": "Logfret Insights — Suez Canal traffic, 2026"
+    },
+    {
+      "id": "bab-el-mandeb",
+      "name": "Bab-el-Mandeb / Red Sea",
+      "lat": 12.58,
+      "lon": 43.33,
+      "bbox": { "latMin": 12.2, "latMax": 13.0, "lonMin": 43.0, "lonMax": 43.6 },
+      "tag": "Active conflict · Rerouting",
+      "summary": "Around 8% of the world's seaborne oil passes this strait, and Houthi attacks and blockade threats against shipping continued into mid-2026, repeatedly pushing traffic to divert north into the Suez approach or turn back entirely — the direct cause of the Suez Canal's own extended slump.",
+      "source": "https://thehill.com/policy/international/5991796-houthi-saudi-arabia-attacks-bab-el-mandeb-strait/",
+      "sourceLabel": "The Hill — Red Sea shipping slows after Houthi attacks"
+    }
+  ]
+}

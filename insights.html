@@ -162,16 +162,37 @@
   </div>
 </section>
 
-<!-- FLEET WATCH — PHASE 2 PLACEHOLDER -->
-<section class="sec obs-fleetwatch" aria-label="Fleet Watch, coming soon">
+<!-- FLEET WATCH — live AIS map + six maritime chokepoints -->
+<section class="sec obs-fleetwatch" id="fleetwatch" aria-label="Fleet Watch — live vessel tracking and maritime chokepoints">
   <div class="wrap">
-    <div class="obs-fw-panel" data-r="up">
-      <div class="obs-fw-tag">Coming next</div>
-      <h3>Fleet Watch — live vessel tracking</h3>
-      <p>A real-time chart of ships moving through European waters, layered on this same
-        Observatory. It needs a live AIS data feed and a small server-side relay so every visitor
-        isn't opening their own connection — in progress.</p>
+
+    <div class="fw-head" data-r="up">
+      <div>
+        <div class="eyebrow light">Fleet Watch</div>
+        <h2 class="h2 on-dark">Six chokepoints,<br><em>watched live</em></h2>
+        <p class="body-text on-dark" style="max-width:640px;margin-top:1rem">
+          Real ships, tracked by AIS, moving through the maritime chokepoints that decide whether
+          Europe's trade lifelines hold or break — from Gibraltar to the Red Sea.
+        </p>
+      </div>
+      <div class="fw-livestats">
+        <div class="fw-stat"><span class="fw-stat-val" id="fw-vessel-count">—</span><span class="fw-stat-lbl">Vessels tracked now</span></div>
+        <div class="fw-stat"><span class="fw-stat-val fw-stat-val--sm" id="fw-busiest">—</span><span class="fw-stat-lbl">Busiest chokepoint</span></div>
+      </div>
     </div>
+
+    <div class="fw-map-wrap" id="fw-map-wrap" data-r="up" data-rd="100">
+      <canvas id="fw-canvas" role="img"
+        aria-label="Live map of ships and six maritime chokepoints from Gibraltar to the Red Sea"></canvas>
+      <div class="fw-nodes" id="fw-nodes" aria-label="Maritime chokepoints"></div>
+      <div class="fw-hud" id="fw-hud" aria-hidden="true"></div>
+      <p class="fw-live-note" id="fw-live-note" style="display:none">Live feed temporarily unavailable — chokepoint data below is still current.</p>
+    </div>
+
+    <div class="fw-detail" id="fw-detail" data-r="up" data-rd="150">
+      <p class="fw-detail-empty">Select a chokepoint on the map for the current situation there.</p>
+    </div>
+
   </div>
 </section>
 
@@ -198,6 +219,7 @@
 
 <script src="js/ocean-nav.js"></script>
 <script src="js/observatory.js"></script>
+<script src="js/fleetwatch.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

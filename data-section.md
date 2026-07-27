@@ -1,14 +1,34 @@
 # Data & Insights section — concept & research
 
-Status: **Blue Economy Observatory (phase 1) is built.** "Fleet Watch" (live AIS map, phase 2) is
-still not built — see "Scope note" below. This documents the research and direction agreed for
-the section, plus what shipped, so a future session doesn't start from zero.
+Status: **Both phases are built.** Blue Economy Observatory (phase 1) and Fleet Watch (phase 2, the
+live AIS map + six maritime chokepoints) are live at `insights.html`. This documents the research
+and direction agreed for the section, plus what shipped, so a future session doesn't start from
+zero.
+
+## What's built (phase 2 — Fleet Watch: live AIS map + chokepoints)
+
+- **`insights.html`** — the Fleet Watch section replaced the old "coming next" placeholder: a live
+  canvas map (Gibraltar to the Red Sea) with real coastline, six clickable chokepoint markers, live
+  AIS ship blips, a "vessels tracked now" counter, a live "busiest chokepoint" indicator, and a
+  lat/lon HUD on hover.
+- **`js/fleetwatch.js`** — polls `assets/data/fleet-live.json` every ~9s; degrades gracefully and
+  independently of the rest of the page if the feed is missing/stale (map + chokepoint summaries
+  still work with zero live data). Respects `prefers-reduced-motion`/`body.lite`.
+- **`assets/data/chokepoints.json`** — six real, sourced chokepoints (Gibraltar, Dover Strait,
+  Danish Straits, Bosphorus, Suez Canal, Bab-el-Mandeb), each with a real current-events summary
+  and a source link — researched via web search, not fabricated. See the file for exact sources.
+- **`assets/data/coastline.json`** — real simplified coastline (Natural Earth 110m, public domain),
+  built by **`scripts/build-coastline.py`**.
+- **`scripts/fleet-relay/`** — `relay.py` (long-running Python process), `requirements.txt`,
+  `fleet-relay.service` (systemd unit). Runs on the VPS, holds one WebSocket connection to
+  aisstream.io on behalf of every visitor, writes `assets/data/fleet-live.json` every ~5s. See
+  `deploy.md` "Fleet Watch relay" for the operational runbook (install, restart, logs).
+- `assets/data/fleet-live.json` is generated on the VPS, not committed (gitignored).
 
 ## What's built (phase 1 — Blue Economy Observatory)
 
 - **`insights.html`** — full Observatory page: headline stat tiles + two hand-drawn canvas charts
-  (top short-sea shipping nations; short-sea vs. other freight split) + a Fleet Watch "coming next"
-  placeholder + Eurostat sourcing line.
+  (top short-sea shipping nations; short-sea vs. other freight split) + Eurostat sourcing line.
 - **Homepage teaser** — `#insights` section on `index.html` (between Numbers and the CTA), with 3
   stat tiles + one chart, linking to the full page. Nav entry "Insights" added (ocean-pill, mobile
   drawer, footer).

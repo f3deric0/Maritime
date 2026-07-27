@@ -71,6 +71,43 @@ just pulls the same files GitHub has.
   `initScrollFrames`.
 - **HTML pages**: `max-age=0, must-revalidate` — always fresh, no gotcha here.
 
+## Fleet Watch relay (fleet-relay.service)
+
+`insights.html`'s live ship map (`js/fleetwatch.js`) is fed by a small always-on Python process on
+the VPS — `scripts/fleet-relay/relay.py` — that holds one WebSocket connection to aisstream.io and
+writes `assets/data/fleet-live.json` every ~5s. The frontend never talks to aisstream directly (no
+API key exposed, no per-visitor connections). The essentials:
+
+- **Code** lives in the normal git-tracked docroot (`/var/www/html/scripts/fleet-relay/`) — deploys
+  normally via the steps above.
+- **Python deps** live in a venv OUTSIDE the docroot, `/opt/fleet-relay/venv`, so `git reset --hard`
+  on every deploy never touches them. One-time setup:
+  ```bash
+  python3 -m venv /opt/fleet-relay/venv
+  /opt/fleet-relay/venv/bin/pip install -r /var/www/html/scripts/fleet-relay/requirements.txt
+  ```
+- **API key** lives in `/etc/fleet-relay.env` (systemd `EnvironmentFile=`, never in git):
+  ```
+  AISSTREAM_API_KEY=...
+  ```
+- **Service** installed once:
+  ```bash
+  cp /var/www/html/scripts/fleet-relay/fleet-relay.service /etc/systemd/system/
+  systemctl daemon-reload
+  systemctl enable --now fleet-relay
+  ```
+- **Check it's alive**:
+  ```bash
+  systemctl status fleet-relay
+  journalctl -u fleet-relay -f          # watch it connect/reconnect
+  cat /var/www/html/assets/data/fleet-live.json   # should have a fresh generatedAt
+  ```
+- **Restart after a relay.py code change**: a normal deploy updates the file, but you still need
+  `systemctl restart fleet-relay` afterward — the running process won't pick up the new code on its
+  own (unlike the static site, which Apache serves fresh on every request).
+- `assets/data/fleet-live.json` is gitignored (generated, not committed) — don't be surprised it's
+  missing right after a fresh clone; the service creates it on first snapshot write.
+
 ## If SSH access ever breaks
 
 The deploy key lives only on this machine at `~/.ssh/maritime-vps` (ed25519, comment

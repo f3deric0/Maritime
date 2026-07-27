@@ -1,0 +1,35 @@
+# fleet-relay.service — systemd unit for the Fleet Watch AIS relay.
+#
+# Installed once on the VPS (not auto-installed by the deploy script — see
+# deploy.md "Fleet Watch relay" section for the one-time setup steps):
+#
+#   cp scripts/fleet-relay/fleet-relay.service /etc/systemd/system/
+#   systemctl daemon-reload
+#   systemctl enable --now fleet-relay
+#
+# relay.py itself lives inside the git-tracked docroot (/var/www/html) so
+# code fixes ship via the normal deploy flow. Its Python dependencies live
+# in a venv OUTSIDE the docroot (/opt/fleet-relay/venv) so `git reset --hard`
+# on every deploy (see deploy.md) never touches them.
+
+[Unit]
+Description=Maritime Affairs — Fleet Watch AIS relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/fleet-relay/venv/bin/python3 /var/www/html/scripts/fleet-relay/relay.py
+EnvironmentFile=/etc/fleet-relay.env
+Restart=always
+RestartSec=5
+User=www-data
+Group=www-data
+# Modest box (1.8GB RAM) — this process should never need more than a
+# few tens of MB; cap it so a leak can't take down anything else.
+MemoryMax=200M
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

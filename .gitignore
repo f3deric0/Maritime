@@ -16,3 +16,13 @@ Thumbs.db
 # Env
 .env
 .env.local
+*.env
+
+# Fleet Watch — live AIS snapshot, generated on the VPS by
+# scripts/fleet-relay/relay.py every ~5s. Never commit generated data.
+assets/data/fleet-live.json
+assets/data/fleet-live.json.tmp
+
+# Python
+__pycache__/
+*.pyc
