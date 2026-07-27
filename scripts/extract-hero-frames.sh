@@ -17,16 +17,15 @@
 #                                                    # actually has a
 #                                                    # watermark near the
 #                                                    # edges — the current
-#                                                    # 07081.mp4 does not,
-#                                                    # verified by full-clip
-#                                                    # contact-sheet + 3x
-#                                                    # contrast-boosted edge
-#                                                    # inspection)
+#                                                    # 0708.mp4 does not,
+#                                                    # verified by a
+#                                                    # start/mid/end contact
+#                                                    # sheet)
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-SRC="${1:-assets/video/07081.mp4}"
+SRC="${1:-assets/video/0708.mp4}"
 OUT_DESK="assets/frames/hero"
 OUT_MOB="assets/frames/hero-m"
 POSTER="assets/images/hero-poster.webp"
