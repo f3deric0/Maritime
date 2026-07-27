@@ -439,6 +439,58 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .num-val { display: block; font-family: var(--ff-d); font-size: clamp(2.8rem,5vw,4.5rem); font-weight: 700; color: var(--gold-l); line-height: 1; margin-bottom: .5rem; }
 .num-lbl { font-family: var(--ff-c); font-size: .65rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.45); line-height: 1.6; }
 
+/* BLUE ECONOMY OBSERVATORY — homepage teaser (#insights) + insights.html.
+   See data-section.md for background. Stat tiles reuse .nums-grid/.num-cell/
+   .num-val as-is (populated live by js/observatory.js); chart panels are
+   dark "engraved chart" boxes so js/observatory.js's canvas colors (tuned
+   for a dark ground) read correctly regardless of the section's own
+   background. */
+
+.obs-teaser { background: var(--chart); color: var(--ink); position: relative; overflow: hidden; }
+.obs-teaser::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .06; background-image: linear-gradient(rgba(9,21,36,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(9,21,36,.6) 1px, transparent 1px); background-size: 60px 60px; }
+.obs-teaser-head { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 3rem; }
+.obs-teaser-link { color: var(--ink); border: 1px solid rgba(5,12,21,.28); flex-shrink: 0; }
+.obs-teaser-link:hover { border-color: var(--ink); background: rgba(5,12,21,.06); }
+.obs-teaser-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 2.5rem; align-items: stretch; }
+.obs-teaser-stats.nums-grid { grid-template-columns: 1fr; grid-auto-rows: 1fr; margin-top: 0; }
+.obs-teaser-stats .num-cell { padding: 2rem 1.8rem; }
+.obs-teaser-stats .num-val { font-size: clamp(2rem,3vw,2.6rem); }
+.obs-teaser-chart { background: var(--ink); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(184,137,74,.22); display: flex; align-items: center; }
+.obs-teaser-chart canvas { width: 100%; height: auto; display: block; }
+
+/* insights.html — intro band */
+.obs-hero { background: var(--ink); padding: 168px 0 70px; position: relative; }
+.obs-hero p { max-width: 620px; }
+
+/* insights.html — headline stat tiles: same look as homepage Numbers, plus
+   a small delta tag under the label. Only 3 tiles here (vs. 4 on the
+   homepage Numbers section), so the column count is overridden rather than
+   inherited — repeat(4,1fr) would leave a visible empty 4th track. */
+.obs-stats.sec-nums { padding-top: 70px; }
+.obs-stats .nums-grid { grid-template-columns: repeat(3,1fr); }
+.obs-delta { display: inline-block; margin-top: .8rem; font-family: var(--ff-c); font-size: .6rem; font-weight: 700; letter-spacing: .12em; color: var(--gold-l); }
+
+/* insights.html — chart panels */
+.obs-charts { padding-top: 90px; }
+.obs-chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.obs-chart-panel { background: var(--deep); border: 1px solid rgba(184,137,74,.2); border-radius: 16px; padding: 1.9rem 1.9rem 1.4rem; }
+.obs-chart-panel h3 { font-family: var(--ff-c); font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(239,242,241,.75); margin-bottom: 1.2rem; }
+.obs-chart-panel canvas { width: 100%; height: auto; display: block; }
+.obs-chart-note { margin-top: 1rem; font-size: .82rem; font-weight: 300; color: rgba(255,255,255,.5); line-height: 1.6; }
+
+/* insights.html — Fleet Watch phase-2 placeholder */
+.obs-fleetwatch { padding-top: 30px; }
+.obs-fw-panel { border: 1px dashed rgba(200,145,58,.32); border-radius: 16px; padding: 2.6rem; text-align: center; max-width: 620px; margin: 0 auto; }
+.obs-fw-tag { display: inline-block; margin-bottom: 1rem; padding: 5px 14px; border-radius: 100px; background: rgba(200,145,58,.1); border: 1px solid rgba(200,145,58,.3); color: var(--gold-l); font-family: var(--ff-c); font-size: .6rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.obs-fw-panel h3 { font-family: var(--ff-d); font-size: 1.6rem; color: var(--white); margin-bottom: .8rem; }
+.obs-fw-panel p { font-size: .92rem; font-weight: 300; color: rgba(255,255,255,.55); line-height: 1.7; }
+
+/* insights.html — sourcing line */
+.obs-source { padding: 2.5rem 0 4rem; border-top: 1px solid rgba(255,255,255,.06); margin-top: 3rem; }
+.obs-source p { text-align: center; font-size: .74rem; color: rgba(255,255,255,.4); font-family: var(--ff-b); line-height: 1.8; }
+.obs-source a { color: var(--gold-l); }
+.obs-source code { font-family: monospace; font-size: .72em; color: rgba(255,255,255,.5); }
+
 /* CTA */
 .sec-cta { background: var(--deep); text-align: center; position: relative; overflow: hidden; }
 .cta-rings { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
@@ -525,6 +577,7 @@ footer { background: var(--ink); padding: 4.2rem 5vw 2.2rem; border-top: 1px sol
   .nums-grid { grid-template-columns:repeat(2,1fr); }
   .cta-grid { grid-template-columns:repeat(2,1fr); }
   .ft-grid { grid-template-columns:1fr 1fr; gap:2.5rem; }
+  .obs-teaser-grid, .obs-chart-grid { grid-template-columns:1fr; }
   .nav-links { display:none; }
   nav { padding: 0 3vw; }
   .ocean-pill { display: none; }
@@ -542,6 +595,8 @@ footer { background: var(--ink); padding: 4.2rem 5vw 2.2rem; border-top: 1px sol
   .ft-grid { grid-template-columns:1fr; }
   .ft-bottom { flex-direction:column; text-align:center; }
   .net-grid { grid-template-columns:1fr; }
+  .obs-hero { padding-top: 130px; }
+  .obs-stats .nums-grid { grid-template-columns: 1fr; }
   #compass-cursor, #cursor-dot { display:none; }
 }
 

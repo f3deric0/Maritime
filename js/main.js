@@ -489,9 +489,9 @@ const cObs = new IntersectionObserver(entries => {
     const step = n => {
       const t    = Math.min((n - s) / dur, 1);
       const ease = 1 - Math.pow(1 - t, 4);
-      el.textContent = Math.floor(ease * end).toLocaleString() + sfx;
+      el.textContent = Math.floor(ease * end).toLocaleString('en-US') + sfx;
       if (t < 1) requestAnimationFrame(step);
-      else el.textContent = end.toLocaleString() + sfx;
+      else el.textContent = end.toLocaleString('en-US', { maximumFractionDigits: 2 }) + sfx;
     };
     requestAnimationFrame(step);
     cObs.unobserve(el);

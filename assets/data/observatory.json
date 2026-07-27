@@ -1,0 +1,66 @@
+{
+  "meta": {
+    "title": "Blue Economy Observatory — data snapshot",
+    "source": "Eurostat — Maritime transport statistics",
+    "datasets": [
+      "mar_go_qm — Gross weight of goods transported to/from main ports by direction and type of traffic, quarterly",
+      "mar_sg_am_cw — Short sea shipping, country level, gross weight of goods to/from main ports, annual"
+    ],
+    "sourceUrl": "https://ec.europa.eu/eurostat/databrowser/product/page/mar_go_qm",
+    "retrieved": "2026-07-27",
+    "note": "Committed fallback snapshot. Every value below was pulled live from the Eurostat dissemination API (statistics/1.0/data/<dataset>?format=JSON) and computed directly with jq — not read off a rendered page. js/observatory.js tries a live fetch first and falls back to this file on any network/CORS failure, so the section never renders empty. Regenerate with scripts/fetch-eurostat.sh."
+  },
+  "stats": [
+    {
+      "id": "total-goods",
+      "value": 837.1,
+      "suffix": " Mt",
+      "label": "Goods handled at EU main ports — 2025-Q4",
+      "delta": "+1.9% year-on-year",
+      "source": "mar_go_qm, rep_mar=EU27_2020, unit=THS_T, direct=IN+OUT summed (matches how Eurostat itself publishes the headline figure), latest complete quarter vs same quarter prior year"
+    },
+    {
+      "id": "shortsea-share",
+      "value": 58.3,
+      "suffix": "%",
+      "label": "Share of EU maritime freight carried by short-sea shipping — 2024",
+      "delta": "+1.8pp vs 2023 (56.5%)",
+      "source": "mar_sg_am_cw, rep_mar=EU27_2020, seaship=SSS, unit=PC_TOT, time=2024 vs 2023"
+    },
+    {
+      "id": "shortsea-volume",
+      "value": 1.65,
+      "suffix": " Bn t",
+      "label": "EU short-sea shipping volume — 2024",
+      "source": "mar_sg_am_cw, rep_mar=EU27_2020, seaship=SSS, unit=THS_T, time=2024 (1648043 kt)"
+    }
+  ],
+  "countries": {
+    "title": "Top short-sea shipping nations, 2024",
+    "unit": "million tonnes",
+    "footnote": "Italy, the Netherlands and Spain together handled 46.3% of all EU short-sea shipping tonnage in 2024.",
+    "source": "mar_sg_am_cw, rep_mar=IT|NL|ES, seaship=SSS, unit=THS_T, time=2024",
+    "items": [
+      {
+        "name": "Italy",
+        "value": 304.1,
+        "share": 18.5
+      },
+      {
+        "name": "Netherlands",
+        "value": 238.8,
+        "share": 14.5
+      },
+      {
+        "name": "Spain",
+        "value": 220.9,
+        "share": 13.4
+      }
+    ]
+  },
+  "modeShare": {
+    "title": "Short-sea vs. other maritime freight — 2024",
+    "shortSea": 58.3,
+    "other": 41.7
+  }
+}
