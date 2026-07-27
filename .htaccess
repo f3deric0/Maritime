@@ -1,0 +1,28 @@
+# Mirrors the header/cache rules from vercel.json for Apache-based hosting (Plesk).
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  <FilesMatch "\.(mp4|mov)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+    Header set Accept-Ranges "bytes"
+  </FilesMatch>
+
+  <FilesMatch "\.(webp|png|jpe?g|gif|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  <FilesMatch "\.(js|css)$">
+    Header set Cache-Control "public, max-age=3600, must-revalidate"
+  </FilesMatch>
+
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_mime.c>
+  AddType video/mp4 .mp4
+  AddType video/quicktime .mov
+</IfModule>
