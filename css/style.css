@@ -457,13 +457,17 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .obs-teaser-stats .num-val { font-size: clamp(2rem,3vw,2.6rem); }
 .obs-teaser-chart { background: var(--ink); border-radius: 16px; padding: 1.5rem; border: 1px solid rgba(184,137,74,.22); display: flex; align-items: center; }
 .obs-teaser-chart canvas { width: 100%; height: auto; display: block; }
+.obs-teaser-sub { font-family: var(--ff-b); font-size: .85rem; font-style: italic; color: rgba(5,12,21,.48); margin-top: .6rem; }
 
 /* insights.html — intro band */
 .obs-hero { background: var(--ink); padding: 168px 0 70px; position: relative; }
 .obs-hero p { max-width: 620px; }
+.obs-hero-scale { display: flex; gap: 2.8rem; flex-wrap: wrap; margin-top: 2.2rem; position: relative; z-index: 1; }
+.obs-hero-scale .num-cell { background: none; padding: 0; }
+.obs-hero-scale .num-val { font-size: clamp(1.8rem,2.6vw,2.4rem); }
 
 /* insights.html — headline stat tiles */
-.obs-stats.sec-nums { padding-top: 70px; }
+.obs-stats.sec-nums { padding-top: 70px; background: var(--chart); }
 .obs-stats .nums-grid { grid-template-columns: repeat(3,1fr); }
 
 .obs-num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; position: relative; z-index: 1; }
@@ -500,6 +504,8 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 
 /* insights.html — Fleet Watch: live AIS map + six maritime chokepoints */
 .obs-fleetwatch { padding-top: 30px; }
+.obs-blue-economy, .obs-basins { background: var(--chart); color: var(--ink); position: relative; overflow: hidden; }
+.obs-blue-economy::before, .obs-basins::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .06; background-image: linear-gradient(rgba(9,21,36,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(9,21,36,.6) 1px, transparent 1px); background-size: 60px 60px; }
 .fw-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 .fw-livestats { display: flex; gap: 2.2rem; flex-shrink: 0; }
 .fw-stat { text-align: right; }

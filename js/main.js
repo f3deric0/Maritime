@@ -67,7 +67,7 @@ if (LITE) document.body.classList.add('lite');
 (function () {
   const items = [
     'Blue Economy', 'EU NGO', 'Do-Tank', 'Shipping & Logistics',
-    'Blue Policy', 'Defense & Security', 'Offshore Energy',
+    'Blue Policy', 'Defence & Security', 'Offshore Energy',
     'Project Catalysis', 'Expert Network', 'Brussels', 'Maritime Affairs'
   ];
   const html = items
