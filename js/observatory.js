@@ -58,16 +58,9 @@
     return !!(c.saveData || /(^|\b)(slow-)?2g$/.test(c.effectiveType || ''));
   })();
   var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SKIP_DRAW_IN = LITE || REDUCED_MOTION;
 
-  function withTimeout(promise, ms) {
-    var ctrl = new AbortController();
-    var t = setTimeout(function () { ctrl.abort(); }, ms);
-    return { signal: ctrl.signal, run: promise(ctrl.signal).finally(function () { clearTimeout(t); }) };
-  }
-
-  function fetchJSON(url, signal) {
-    return fetch(url, { signal: signal }).then(function (r) {
+  function fetchJSON(url) {
+    return fetch(url).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
       return r.json();
     });
@@ -194,8 +187,8 @@
       });
     }
 
-    if (SKIP_DRAW_IN) { frame(1); return; }
-    var start = null, dur = 700;
+    if (REDUCED_MOTION || LITE) { frame(1); return; }
+    var start = null, dur = 850;
     function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / dur, 1);
@@ -228,7 +221,7 @@
       ctx.fillStyle = 'rgba(200,145,58,.14)';
       ctx.fillRect(padX + sssW, y, trackW * progress - sssW, barH);
 
-      if (progress > 0.9) {
+      if (progress > 0.85) {
         ctx.font = '700 20px Cormorant Garamond,serif';
         ctx.fillStyle = '#050c15';
         ctx.textAlign = 'left';
@@ -246,8 +239,8 @@
       }
     }
 
-    if (SKIP_DRAW_IN) { frame(1); return; }
-    var start = null, dur = 700;
+    if (REDUCED_MOTION || LITE) { frame(1); return; }
+    var start = null, dur = 850;
     function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / dur, 1);
@@ -289,7 +282,6 @@
         startAngle = endAngle;
       });
 
-      // Center summary text
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.font = '700 18px Cormorant Garamond,serif';
@@ -298,7 +290,6 @@
       ctx.fillStyle = 'rgba(239,242,241,.6)';
       ctx.fillText('TOTAL GVA', cx, cy + 14);
 
-      // Legend on the right side if layout is wide enough
       if (w >= 500) {
         var legX = w * 0.65;
         var legY = 24;
@@ -314,8 +305,8 @@
       }
     }
 
-    if (SKIP_DRAW_IN) { frame(1); return; }
-    var start = null, dur = 750;
+    if (REDUCED_MOTION || LITE) { frame(1); return; }
+    var start = null, dur = 900;
     function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / dur, 1);
@@ -363,8 +354,8 @@
       });
     }
 
-    if (SKIP_DRAW_IN) { frame(1); return; }
-    var start = null, dur = 750;
+    if (REDUCED_MOTION || LITE) { frame(1); return; }
+    var start = null, dur = 900;
     function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / dur, 1);
@@ -374,16 +365,35 @@
     requestAnimationFrame(step);
   }
 
+  function observeChart(canvas, drawFn) {
+    if (!canvas) return;
+    if (!('IntersectionObserver' in window)) {
+      drawFn();
+      return;
+    }
+    var drawn = false;
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting && !drawn) {
+          drawn = true;
+          drawFn();
+          obs.unobserve(canvas);
+        }
+      });
+    }, { threshold: 0.15 });
+    obs.observe(canvas);
+  }
+
   function applyCharts(data) {
     var barCanvas = document.getElementById('obs-bar-canvas');
     var shareCanvas = document.getElementById('obs-share-canvas');
     var sectorsCanvas = document.getElementById('obs-sectors-canvas');
     var basinsCanvas = document.getElementById('obs-basins-canvas');
 
-    if (barCanvas) drawBarChart(barCanvas, data.countries.items);
-    if (shareCanvas) drawShareChart(shareCanvas, data.modeShare.shortSea, data.modeShare.other);
-    if (sectorsCanvas) drawSectorsChart(sectorsCanvas, data.blueEconomySectors);
-    if (basinsCanvas) drawBasinsChart(basinsCanvas, data.seaBasins);
+    observeChart(barCanvas, function () { drawBarChart(barCanvas, data.countries.items); });
+    observeChart(shareCanvas, function () { drawShareChart(shareCanvas, data.modeShare.shortSea, data.modeShare.other); });
+    observeChart(sectorsCanvas, function () { drawSectorsChart(sectorsCanvas, data.blueEconomySectors); });
+    observeChart(basinsCanvas, function () { drawBasinsChart(basinsCanvas, data.seaBasins); });
 
     var redraw = function () {
       if (barCanvas) drawBarChart(barCanvas, data.countries.items);
