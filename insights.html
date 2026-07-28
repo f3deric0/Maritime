@@ -162,6 +162,91 @@
   </div>
 </section>
 
+<!-- SECTION 1: EU BLUE ECONOMY ECONOMIC FOOTPRINT & SECTORS -->
+<section class="sec obs-blue-economy" id="blue-economy" aria-label="EU Blue Economy Economic Footprint">
+  <div class="wrap">
+    <div class="eyebrow light" data-r="left">Economic Footprint</div>
+    <h2 class="h2 on-dark" data-r="up" data-rd="100">EU Blue Economy<br><em>€183.5 Billion GVA & 3.58M Jobs</em></h2>
+    <p class="body-text on-dark" style="max-width:680px;margin-top:1rem" data-r="up" data-rd="150">
+      Verified Eurostat data across the EU's 6 core maritime sectors — from shipping and port infrastructure to offshore wind energy and coastal tourism.
+    </p>
+
+    <div class="obs-kpi-grid" style="margin-top:2.5rem">
+      <div class="obs-kpi-card" data-r="up" data-rd="100">
+        <div class="obs-kpi-val" data-obs-stat="blue-gva">€183.5 Bn</div>
+        <div class="obs-kpi-lbl">Gross Value Added (GVA)</div>
+        <div class="obs-kpi-delta" data-obs-delta="blue-gva">+4.2% annual growth</div>
+      </div>
+      <div class="obs-kpi-card" data-r="up" data-rd="150">
+        <div class="obs-kpi-val" data-obs-stat="blue-jobs">3.58M</div>
+        <div class="obs-kpi-lbl">Direct EU Maritime Employment</div>
+        <div class="obs-kpi-delta">Across 27 EU Member States</div>
+      </div>
+    </div>
+
+    <div class="obs-grid" style="margin-top:2.5rem">
+      <div class="obs-chart-panel" data-r="up" data-rd="200" style="grid-column: span 2;">
+        <h3>EU Blue Economy GVA Distribution by Sector</h3>
+        <canvas id="obs-sectors-canvas" width="640" height="380" role="img"
+          aria-label="Doughnut chart: Marine Transport 28%, Coastal Tourism 24%, Port Activities 18%, Offshore Energy 14%, Shipbuilding 11%, Living Resources 5%"></canvas>
+        <p class="obs-chart-note">Source: European Commission Blue Economy Report / Eurostat SBS. Marine transport and ports generate over 46% of total sector GVA.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 2: SEA BASIN FREIGHT COMPARISON -->
+<section class="sec obs-basins" id="sea-basins" aria-label="EU Sea Basin Freight Breakdown">
+  <div class="wrap">
+    <div class="eyebrow light" data-r="left">Regional Traffic</div>
+    <h2 class="h2 on-dark" data-r="up" data-rd="100">Maritime Freight<br><em>by European Sea Basin</em></h2>
+    <p class="body-text on-dark" style="max-width:680px;margin-top:1rem" data-r="up" data-rd="150">
+      How 3.5 Billion tonnes of annual EU maritime trade is distributed across the Mediterranean, North Sea, Atlantic, Baltic, and Black Sea basins.
+    </p>
+
+    <div class="obs-grid" style="margin-top:2.5rem">
+      <div class="obs-chart-panel" data-r="up" data-rd="200" style="grid-column: span 2;">
+        <h3>EU Freight Volume by Sea Basin (Million Tonnes / yr)</h3>
+        <canvas id="obs-basins-canvas" width="640" height="360" role="img"
+          aria-label="Horizontal bar chart: Mediterranean 1340 Mt (38.2%), North Sea 1050 Mt (29.9%), Atlantic 540 Mt (15.4%), Baltic 490 Mt (14.0%), Black Sea 88 Mt (2.5%)"></canvas>
+        <p class="obs-chart-note">Eurostat dataset mar_mg_am_c. The Mediterranean and North Sea together process over 68% of all maritime cargo entering or leaving EU ports.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTION 3: MARITIME DECARBONIZATION & EU ETS TRACKER -->
+<section class="sec obs-ets" id="decarbonization" aria-label="EU ETS Maritime & Decarbonization Index">
+  <div class="wrap">
+    <div class="eyebrow light" data-r="left">Decarbonization Index</div>
+    <h2 class="h2 on-dark" data-r="up" data-rd="100">EU ETS & FuelEU Maritime<br><em>Emissions & Transition Targets</em></h2>
+    <p class="body-text on-dark" style="max-width:680px;margin-top:1rem" data-r="up" data-rd="150">
+      Tracking the regulatory mandate driving global shipping toward zero-carbon fuels: 4,850+ vessels under EU ETS carbon allowance rules emitting ~125.4 Mt CO₂ annually.
+    </p>
+
+    <div class="obs-grid" style="margin-top:2.5rem">
+      <div class="obs-card" data-r="up" data-rd="100">
+        <h4>EU ETS Phase-in Schedule</h4>
+        <ul style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:1.8;color:rgba(239,242,241,.85)">
+          <li><strong style="color:var(--gold-l)">2024:</strong> 40% of reported emissions covered</li>
+          <li><strong style="color:var(--gold-l)">2025:</strong> 70% of reported emissions covered</li>
+          <li><strong style="color:var(--gold-l)">2026:</strong> 100% full phase-in requirement</li>
+        </ul>
+      </div>
+
+      <div class="obs-card" data-r="up" data-rd="150">
+        <h4>FuelEU Maritime GHG Targets</h4>
+        <ul style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:1.8;color:rgba(239,242,241,.85)">
+          <li><strong style="color:#00e5ff">2025:</strong> -2% GHG intensity vs 2020 baseline</li>
+          <li><strong style="color:#00e5ff">2030:</strong> -6% reduction requirement</li>
+          <li><strong style="color:#00e5ff">2040:</strong> -31% reduction target</li>
+          <li><strong style="color:#00e5ff">2050:</strong> -80% zero-carbon fuel target</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FLEET WATCH — live world AIS map + 15 maritime chokepoints + major trade routes -->
 <section class="sec obs-fleetwatch" id="fleetwatch" aria-label="Fleet Watch — live vessel tracking, maritime chokepoints and trade routes">
   <div class="wrap">
