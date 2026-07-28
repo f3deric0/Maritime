@@ -214,8 +214,8 @@
       } else if (activeView === 'cables') {
         if (statLbl1) statLbl1.textContent = 'Critical Fiber Cables';
         if (statLbl2) statLbl2.textContent = 'Total Capacity';
-        if (vesselCountEl) vesselCountEl.textContent = '10';
-        if (busiestEl) busiestEl.textContent = '~1.1 Pbps';
+        if (vesselCountEl) vesselCountEl.textContent = String(cables.length || 13);
+        if (busiestEl) busiestEl.textContent = '~1.8 Pbps';
         if (nodesLayer) nodesLayer.innerHTML = '';
         buildCableChips();
         showDetailPlaceholder('Select a submarine cable to highlight its ocean route, bandwidth, and landing points.');

@@ -27,6 +27,26 @@
       "sourceLabel": "Submarine Networks — MAREA"
     },
     {
+      "id": "cable-grace-hopper",
+      "name": "Grace Hopper Cable",
+      "tag": "US–UK–Spain High-Capacity Atlantic Trunk",
+      "lengthKm": 6250,
+      "capacityTbps": 350,
+      "yearInstalled": 2022,
+      "landingStations": ["New York (USA)", "Bude (UK)", "Bilbao (Spain)"],
+      "summary": "Google's private transatlantic cable incorporating 16 fiber pairs to deliver unprecedented capacity and reliability between North America, Great Britain, and Southern Europe.",
+      "waypoints": [
+        [-73.98, 40.75],
+        [-60.00, 42.00],
+        [-40.00, 46.00],
+        [-20.00, 49.00],
+        [-4.55, 50.83],
+        [-2.98, 43.38]
+      ],
+      "source": "https://cloud.google.com/blog/products/infrastructure/announcing-grace-hopper-subsea-cable",
+      "sourceLabel": "Google Cloud Infrastructure"
+    },
+    {
       "id": "cable-seamewe5",
       "name": "SEA-ME-WE 5",
       "tag": "Asia–Middle East–Europe Digital Spine",
@@ -79,25 +99,59 @@
       "lengthKm": 45000,
       "capacityTbps": 180,
       "yearInstalled": 2024,
-      "landingStations": ["Genoa / Marseille (Europe)", "Suez (Egypt)", "Mombasa (Kenya)", "Cape Town (South Africa)", "Lagos (Nigeria)", "Lisbon (Portugal)"],
+      "landingStations": ["Genoa / Marseille (Europe)", "Dakar / Lagos (West Africa)", "Cape Town (South Africa)", "Mombasa (East Africa)", "Djibouti", "Suez (Egypt)"],
       "summary": "The longest submarine cable system ever deployed worldwide (45,000 km), encircling the entire continent of Africa and connecting 33 countries across Africa, the Middle East, and Europe.",
       "waypoints": [
         [8.93, 44.40],
         [5.37, 43.30],
         [-5.35, 36.14],
         [-9.14, 38.72],
+        [-16.00, 28.00],
         [-17.47, 14.69],
+        [-4.00, 5.30],
+        [-0.20, 5.50],
         [3.38, 6.45],
-        [8.78, 3.73],
+        [9.70, 4.05],
+        [13.20, -8.80],
+        [14.53, -22.68],
         [18.42, -33.92],
+        [25.60, -33.90],
+        [31.00, -29.80],
+        [32.60, -25.90],
+        [39.30, -6.80],
         [39.66, -4.04],
+        [45.30, 2.00],
         [43.15, 11.59],
+        [38.00, 20.00],
         [32.54, 29.97],
         [20.00, 35.00],
         [8.93, 44.40]
       ],
       "source": "https://www.2africacable.net",
       "sourceLabel": "2Africa Cable Consortium"
+    },
+    {
+      "id": "cable-equiano",
+      "name": "Equiano Atlantic Cable",
+      "tag": "Europe to South Africa Western Route",
+      "lengthKm": 15000,
+      "capacityTbps": 144,
+      "yearInstalled": 2022,
+      "landingStations": ["Sesimbra (Portugal)", "Lomé (Togo)", "Lagos (Nigeria)", "Swakopmund (Namibia)", "Melkbosstrand (South Africa)"],
+      "summary": "Google's West Coast Africa cable running from Portugal to South Africa, introducing state-of-the-art optical switching at the fiber pair level.",
+      "waypoints": [
+        [-11.43, 38.44],
+        [-18.00, 28.00],
+        [-17.47, 14.69],
+        [-10.00, 5.00],
+        [1.22, 6.13],
+        [3.38, 6.45],
+        [8.00, -1.00],
+        [14.53, -22.68],
+        [18.44, -33.72]
+      ],
+      "source": "https://cloud.google.com/blog/products/infrastructure/introducing-equiano-subsea-cable-network-connect-africa-to-europe",
+      "sourceLabel": "Google Cloud Infrastructure"
     },
     {
       "id": "cable-tpe",
@@ -121,6 +175,27 @@
       "sourceLabel": "Submarine Networks — TPE"
     },
     {
+      "id": "cable-echo-bifrost",
+      "name": "Echo & Bifrost Transpacific",
+      "tag": "SE Asia–US Direct Transpacific Route",
+      "lengthKm": 15000,
+      "capacityTbps": 120,
+      "yearInstalled": 2024,
+      "landingStations": ["Singapore", "Jakarta (Indonesia)", "Manila (Philippines)", "Guam", "California (USA)"],
+      "summary": "Jointly developed by Meta, Google, and Keppel to provide direct, low-latency transpacific connectivity bypassing traditional high-risk seismic zones in the North Pacific.",
+      "waypoints": [
+        [103.84, 1.28],
+        [106.80, -6.20],
+        [120.98, 14.60],
+        [144.75, 13.44],
+        [175.00, 20.00],
+        [-150.00, 30.00],
+        [-122.40, 37.78]
+      ],
+      "source": "https://www.submarinenetworks.com/en/systems/trans-pacific/echo",
+      "sourceLabel": "Submarine Networks — Echo"
+    },
+    {
       "id": "cable-dunant",
       "name": "Dunant Transatlantic Cable",
       "tag": "Google Transatlantic Private Fiber",
@@ -137,6 +212,26 @@
         [-1.94, 46.72]
       ],
       "source": "https://cloud.google.com/blog/products/infrastructure/honoring-dunant-our-new-subsea-cable",
+      "sourceLabel": "Google Cloud Infrastructure"
+    },
+    {
+      "id": "cable-firmina",
+      "name": "Firmina Submarine Cable",
+      "tag": "Americas North-South High-Capacity Link",
+      "lengthKm": 14000,
+      "capacityTbps": 240,
+      "yearInstalled": 2023,
+      "landingStations": ["Myrtle Beach (USA)", "Praia Grande (Brazil)", "Punta del Este (Uruguay)", "Las Toninas (Argentina)"],
+      "summary": "Google's high-capacity subsea cable linking North and South America, designed to run entirely on a single power source at one end if operational disruptions occur.",
+      "waypoints": [
+        [-78.88, 33.69],
+        [-65.00, 20.00],
+        [-45.00, 0.00],
+        [-46.30, -23.96],
+        [-54.93, -34.96],
+        [-56.69, -36.48]
+      ],
+      "source": "https://cloud.google.com/blog/products/infrastructure/announcing-firmina-subsea-cable",
       "sourceLabel": "Google Cloud Infrastructure"
     },
     {
@@ -162,26 +257,6 @@
       ],
       "source": "https://www.submarinenetworks.com/en/systems/asia-europe-africa/fea",
       "sourceLabel": "Submarine Networks — FEA"
-    },
-    {
-      "id": "cable-equiano",
-      "name": "Equiano Atlantic Cable",
-      "tag": "Europe to South Africa Western Route",
-      "lengthKm": 15000,
-      "capacityTbps": 144,
-      "yearInstalled": 2022,
-      "landingStations": ["Sesimbra (Portugal)", "Lomé (Togo)", "Lagos (Nigeria)", "Swakopmund (Namibia)", "Melkbosstrand (South Africa)"],
-      "summary": "Google's West Coast Africa cable running from Portugal to South Africa, introducing state-of-the-art optical switching at the fiber pair level.",
-      "waypoints": [
-        [-11.43, 38.44],
-        [-17.47, 14.69],
-        [1.22, 6.13],
-        [3.38, 6.45],
-        [14.53, -22.68],
-        [18.44, -33.72]
-      ],
-      "source": "https://cloud.google.com/blog/products/infrastructure/introducing-equiano-subsea-cable-network-connect-africa-to-europe",
-      "sourceLabel": "Google Cloud Infrastructure"
     },
     {
       "id": "cable-peace",
