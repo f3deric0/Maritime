@@ -281,6 +281,10 @@
           existing.targetLon = v.lon;
           existing.targetLat = v.lat;
           existing.chokepoint = v.chokepoint;
+          existing.name = v.name;
+          existing.destination = v.destination;
+          existing.eta = v.eta;
+          existing.isCargo = v.isCargo;
           existing.lastSeen = now;
           existing.fading = false;
         } else {
@@ -288,6 +292,7 @@
             dispLon: v.lon, dispLat: v.lat,
             targetLon: v.lon, targetLat: v.lat,
             chokepoint: v.chokepoint,
+            name: v.name, destination: v.destination, eta: v.eta, isCargo: v.isCargo,
             lastSeen: now, fading: false
           };
         }
@@ -398,13 +403,16 @@
         var s = shipsById[id];
         var p = project(s.dispLon, s.dispLat, mapW, mapH);
         var alpha = s.fading ? Math.max(0, 1 - (performance.now() - s.lastSeen) / SHIP_FADE_MS) : 1;
+        // Cargo vessels (AIS type 70-79) get a brighter, slightly larger
+        // dot so they read as distinct from the rest of the live traffic.
+        var r = s.isCargo ? 3.6 : 2.6;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(232,184,112,' + (0.9 * alpha) + ')';
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = s.isCargo ? 'rgba(255,214,145,' + (0.95 * alpha) + ')' : 'rgba(232,184,112,' + (0.75 * alpha) + ')';
         ctx.fill();
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(232,184,112,' + (0.25 * alpha) + ')';
+        ctx.arc(p.x, p.y, r * 2, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(232,184,112,' + ((s.isCargo ? 0.3 : 0.2) * alpha) + ')';
         ctx.stroke();
       });
 
@@ -417,13 +425,44 @@
       draw();
     }
 
-    /* ── lat/lon HUD on hover (desktop only — callback to the hero's coordinate HUD) ── */
+    function formatEta(eta) {
+      if (!eta || !eta.month || !eta.day) return '';
+      var pad = function (n) { return n == null ? '--' : String(n).padStart(2, '0'); };
+      return pad(eta.month) + '/' + pad(eta.day) + ' ' + pad(eta.hour) + ':' + pad(eta.minute);
+    }
+
+    // Nearest live ship within a small pixel radius of the cursor — a
+    // generous hit target since the dots themselves are only 3-4px.
+    function findShipNear(px, py, w, h) {
+      var best = null, bestD2 = 144; // 12px radius, squared
+      Object.keys(shipsById).forEach(function (id) {
+        var s = shipsById[id];
+        var p = project(s.dispLon, s.dispLat, w, h);
+        var d2 = (p.x - px) * (p.x - px) + (p.y - py) * (p.y - py);
+        if (d2 < bestD2) { bestD2 = d2; best = s; }
+      });
+      return best;
+    }
+
+    /* ── HUD on hover (desktop only): ship details near the cursor, else
+       lat/lon — the lat/lon readout is a callback to the hero's removed
+       coordinate HUD ── */
     if (canvas && hudEl && window.matchMedia && window.matchMedia('(hover: hover)').matches) {
       canvas.addEventListener('mousemove', function (e) {
         var rect = canvas.getBoundingClientRect();
-        var coords = unproject(e.clientX - rect.left, e.clientY - rect.top, rect.width, rect.height);
-        var latDir = coords.lat >= 0 ? 'N' : 'S', lonDir = coords.lon >= 0 ? 'E' : 'W';
-        hudEl.textContent = Math.abs(coords.lat).toFixed(2) + '°' + latDir + ' · ' + Math.abs(coords.lon).toFixed(2) + '°' + lonDir;
+        var px = e.clientX - rect.left, py = e.clientY - rect.top;
+        var ship = findShipNear(px, py, rect.width, rect.height);
+        if (ship) {
+          var bits = [ship.name || 'Unnamed vessel', ship.isCargo ? 'Cargo' : 'Vessel'];
+          if (ship.destination) bits.push('→ ' + ship.destination);
+          var etaStr = formatEta(ship.eta);
+          if (etaStr) bits.push('ETA ' + etaStr);
+          hudEl.textContent = bits.join(' · ');
+        } else {
+          var coords = unproject(px, py, rect.width, rect.height);
+          var latDir = coords.lat >= 0 ? 'N' : 'S', lonDir = coords.lon >= 0 ? 'E' : 'W';
+          hudEl.textContent = Math.abs(coords.lat).toFixed(2) + '°' + latDir + ' · ' + Math.abs(coords.lon).toFixed(2) + '°' + lonDir;
+        }
         hudEl.style.opacity = '1';
       });
       canvas.addEventListener('mouseleave', function () { hudEl.style.opacity = '0'; });

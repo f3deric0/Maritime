@@ -6,11 +6,15 @@ Long-running process (installed on the VPS as the fleet-relay systemd
 service — see fleet-relay.service and deploy.md) that:
 
   1. Opens ONE WebSocket connection to aisstream.io on behalf of every
-     site visitor, subscribed to six small bounding boxes (one per
-     maritime chokepoint featured on insights.html — see
-     assets/data/chokepoints.json for the actual boxes).
-  2. Keeps an in-memory table of the most recently seen position per
-     vessel (MMSI), pruning anything not heard from in STALE_AFTER_SEC.
+     site visitor, subscribed to small bounding boxes (one per maritime
+     chokepoint featured on insights.html — see assets/data/chokepoints.json
+     for the actual boxes), for both PositionReport (live lat/lon) and
+     ShipStaticData (destination, ETA, ship type — "where it's going")
+     messages.
+  2. Keeps an in-memory table of the most recently seen position + static
+     data per vessel (MMSI), pruning anything not heard from in
+     STALE_AFTER_SEC. A ShipStaticData message only updates a vessel we've
+     already seen a position for — it never creates an entry by itself.
   3. Every SNAPSHOT_INTERVAL_SEC, atomically writes a compact JSON
      snapshot to OUTPUT_PATH (the docroot's assets/data/fleet-live.json)
      so the static frontend (js/fleetwatch.js) can just poll a plain
@@ -47,8 +51,13 @@ STALE_AFTER_SEC = 600          # drop a ship if we haven't heard from it in 10 m
 MAX_SHIPS_PER_CHOKEPOINT = 40  # bound memory/file size — plenty for a "wow" visual, not a full feed
 RECONNECT_BACKOFF_SEC = [2, 5, 10, 30, 60]
 
-# {mmsi: {lat, lon, name, cog, heading, chokepoint, seen_at}}
+# {mmsi: {lat, lon, name, cog, heading, chokepoint, seen_at,
+#         destination, eta, shipType, isCargo}}
 ships: dict[int, dict] = {}
+
+# AIS ship-type codes 70-79 are "Cargo" (all subtypes) per the ITU-R
+# M.1371 standard aisstream's Type field follows.
+CARGO_TYPE_MIN, CARGO_TYPE_MAX = 70, 79
 
 
 def load_chokepoints():
@@ -102,12 +111,16 @@ def write_snapshot():
         "vessels": [
             {
                 "mmsi": mmsi,
-                "name": (s["name"] or "").strip() or None,
+                "name": (s.get("name") or "").strip() or None,
                 "lat": round(s["lat"], 4),
                 "lon": round(s["lon"], 4),
                 "heading": s["heading"],
                 "cog": s["cog"],
                 "chokepoint": s["chokepoint"],
+                "destination": s.get("destination"),
+                "eta": s.get("eta"),
+                "shipType": s.get("shipType"),
+                "isCargo": bool(s.get("isCargo")),
             }
             for mmsi, s in kept.items()
         ],
@@ -133,7 +146,7 @@ async def stream_loop(chokepoints):
     subscribe_msg = {
         "APIKey": API_KEY,
         "BoundingBoxes": bounding_boxes_payload(chokepoints),
-        "FilterMessageTypes": ["PositionReport"],
+        "FilterMessageTypes": ["PositionReport", "ShipStaticData"],
     }
 
     attempt = 0
@@ -157,26 +170,48 @@ async def stream_loop(chokepoints):
 
 
 def handle_message(msg, chokepoints):
-    if msg.get("MessageType") != "PositionReport":
-        return
+    msg_type = msg.get("MessageType")
     meta = msg.get("Metadata", {})
-    pr = msg.get("Message", {}).get("PositionReport", {})
 
-    mmsi = meta.get("MMSI") or pr.get("UserID")
-    lat = meta.get("latitude", pr.get("Latitude"))
-    lon = meta.get("longitude", pr.get("Longitude"))
-    if mmsi is None or lat is None or lon is None:
-        return
+    if msg_type == "PositionReport":
+        pr = msg.get("Message", {}).get("PositionReport", {})
+        mmsi = meta.get("MMSI") or pr.get("UserID")
+        lat = meta.get("latitude", pr.get("Latitude"))
+        lon = meta.get("longitude", pr.get("Longitude"))
+        if mmsi is None or lat is None or lon is None:
+            return
+        s = ships.setdefault(mmsi, {})
+        s["lat"] = lat
+        s["lon"] = lon
+        s["name"] = meta.get("ShipName") or s.get("name")
+        s["cog"] = pr.get("Cog")
+        s["heading"] = pr.get("TrueHeading")
+        s["chokepoint"] = nearest_chokepoint(lat, lon, chokepoints)
+        s["seen_at"] = time.time()
 
-    ships[mmsi] = {
-        "lat": lat,
-        "lon": lon,
-        "name": meta.get("ShipName"),
-        "cog": pr.get("Cog"),
-        "heading": pr.get("TrueHeading"),
-        "chokepoint": nearest_chokepoint(lat, lon, chokepoints),
-        "seen_at": time.time(),
-    }
+    elif msg_type == "ShipStaticData":
+        # Only enriches a vessel we've already got a live position for —
+        # never creates an entry (and never appears on the map) by itself.
+        mmsi = meta.get("MMSI")
+        if mmsi is None or mmsi not in ships:
+            return
+        ssd = msg.get("Message", {}).get("ShipStaticData", {})
+        s = ships[mmsi]
+        destination = (ssd.get("Destination") or "").strip()
+        s["destination"] = destination or None
+        eta = ssd.get("Eta") or {}
+        s["eta"] = {
+            "month": eta.get("Month"),
+            "day": eta.get("Day"),
+            "hour": eta.get("Hour"),
+            "minute": eta.get("Minute"),
+        } if eta else None
+        ship_type = ssd.get("Type")
+        s["shipType"] = ship_type
+        s["isCargo"] = isinstance(ship_type, int) and CARGO_TYPE_MIN <= ship_type <= CARGO_TYPE_MAX
+        name = (ssd.get("Name") or "").strip()
+        if name:
+            s["name"] = name
 
 
 async def main():
