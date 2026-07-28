@@ -95,8 +95,10 @@
     var nodesLayer = document.getElementById('fw-nodes');
     var routesLayer = document.getElementById('fw-routes');
     var tabsWrap = document.getElementById('fw-view-tabs');
+    var filterWrap = document.getElementById('fw-filter-toggle');
 
     var activeView = 'fleetwatch'; // 'fleetwatch' | 'ports' | 'cables'
+    var tierFilter = 'major'; // 'major' | 'all'
     var coastline = null;
     var chokepoints = [];
     var routes = [];
@@ -126,7 +128,7 @@
         ports = r[3].items || [];
         cables = r[4].items || [];
 
-        bindTabs();
+        bindTabsAndFilters();
         updateActiveViewUI();
         resize();
         pollFleet();
@@ -147,28 +149,46 @@
       };
     }
 
-    /* ── Tab Switcher Logic ── */
-    function bindTabs() {
-      if (!tabsWrap) return;
-      var tabs = tabsWrap.querySelectorAll('.fw-tab');
-      tabs.forEach(function (tab) {
-        tab.addEventListener('click', function () {
-          var view = tab.dataset.view;
-          if (view === activeView) return;
-          activeView = view;
-          tabs.forEach(function (t) { t.classList.toggle('active', t.dataset.view === view); });
-          selectedRouteId = null;
-          selectedCableId = null;
-          selectedPortId = null;
-          selectedCpId = null;
-          updateActiveViewUI();
-          renderStatic();
-          draw();
+    /* ── Tab Switcher & Chokepoint Filter Logic ── */
+    function bindTabsAndFilters() {
+      if (tabsWrap) {
+        var tabs = tabsWrap.querySelectorAll('.fw-tab');
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var view = tab.dataset.view;
+            if (view === activeView) return;
+            activeView = view;
+            tabs.forEach(function (t) { t.classList.toggle('active', t.dataset.view === view); });
+            selectedRouteId = null;
+            selectedCableId = null;
+            selectedPortId = null;
+            selectedCpId = null;
+            updateActiveViewUI();
+            renderStatic();
+            draw();
+          });
         });
-      });
+      }
+
+      if (filterWrap) {
+        var fBtns = filterWrap.querySelectorAll('.fw-filter-btn');
+        fBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var filter = btn.dataset.filter;
+            if (filter === tierFilter) return;
+            tierFilter = filter;
+            fBtns.forEach(function (b) { b.classList.toggle('active', b.dataset.filter === filter); });
+            if (activeView === 'fleetwatch') {
+              buildNodeButtons();
+            }
+          });
+        });
+      }
     }
 
     function updateActiveViewUI() {
+      if (filterWrap) filterWrap.style.display = (activeView === 'fleetwatch') ? 'inline-flex' : 'none';
+
       if (activeView === 'fleetwatch') {
         if (statLbl1) statLbl1.textContent = 'Vessels tracked now';
         if (statLbl2) statLbl2.textContent = 'Busiest chokepoint';
@@ -200,38 +220,32 @@
       }
     }
 
-    /* ── Chokepoint Buttons (Fleet Watch View) ── */
+    /* ── Chokepoint Buttons (Fleet Watch View) — 100% Sub-Pixel Percentage Anchored ── */
     function buildNodeButtons() {
       if (!nodesLayer) return;
       nodesLayer.innerHTML = '';
-      chokepoints.forEach(function (cp) {
+      var list = tierFilter === 'major'
+        ? chokepoints.filter(function (cp) { return cp.tier === 'major'; })
+        : chokepoints;
+
+      list.forEach(function (cp) {
         var secondary = cp.tier === 'secondary';
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'fw-node' + (secondary ? ' fw-node--secondary' : '');
         btn.dataset.cp = cp.id;
         btn.setAttribute('aria-label', cp.name + ' — ' + cp.tag);
+
+        // Exact percentage positioning matching projection math
+        var leftPct = ((cp.lon + 180) / 3.6).toFixed(4);
+        var topPct = ((78 - cp.lat) / 1.4).toFixed(4);
+        btn.style.left = leftPct + '%';
+        btn.style.top = topPct + '%';
+
         btn.innerHTML = '<span class="fw-node-dot' + (secondary ? ' fw-node-dot--secondary' : '') + '"></span><span class="fw-node-label">' + cp.name + '</span>';
         btn.addEventListener('click', function () { selectChokepoint(cp.id); });
         btn.addEventListener('focus', function () { selectChokepoint(cp.id); });
         nodesLayer.appendChild(btn);
-      });
-      positionNodeButtons();
-    }
-
-    function positionNodeButtons() {
-      if (!nodesLayer) return;
-      Array.prototype.forEach.call(nodesLayer.children, function (btn) {
-        var item;
-        if (btn.dataset.cp) {
-          item = chokepoints.filter(function (c) { return c.id === btn.dataset.cp; })[0];
-        } else if (btn.dataset.port) {
-          item = ports.filter(function (p) { return p.id === btn.dataset.port; })[0];
-        }
-        if (!item) return;
-        var p = project(item.lon, item.lat, mapW, mapH);
-        btn.style.left = p.x + 'px';
-        btn.style.top = p.y + 'px';
       });
     }
 
@@ -247,7 +261,7 @@
       }
       if (routesLayer) Array.prototype.forEach.call(routesLayer.children, function (b) { b.classList.remove('active'); });
       detailPanel.innerHTML =
-        '<div class="fw-detail-tag">' + cp.tag + '</div>' +
+        '<div class="fw-detail-tag">' + cp.tag + ' · ' + cp.tier.toUpperCase() + ' CHOKEPOINT</div>' +
         '<h4>' + cp.name + '</h4>' +
         '<p>' + cp.summary + '</p>' +
         '<a href="' + cp.source + '" target="_blank" rel="noopener" class="fw-detail-source">Source: ' + cp.sourceLabel + '</a>';
@@ -285,7 +299,7 @@
       draw();
     }
 
-    /* ── Port Nodes & Chips (Ports View) ── */
+    /* ── Port Nodes (Ports View) — 100% Sub-Pixel Percentage Anchored ── */
     function buildPortNodeButtons() {
       if (!nodesLayer) return;
       nodesLayer.innerHTML = '';
@@ -295,12 +309,18 @@
         btn.className = 'fw-port-node';
         btn.dataset.port = pt.id;
         btn.setAttribute('aria-label', '#' + pt.rank + ' ' + pt.name + ' — ' + pt.teuM + 'M TEU');
+
+        // Exact percentage positioning matching projection math
+        var leftPct = ((pt.lon + 180) / 3.6).toFixed(4);
+        var topPct = ((78 - pt.lat) / 1.4).toFixed(4);
+        btn.style.left = leftPct + '%';
+        btn.style.top = topPct + '%';
+
         btn.innerHTML = '<span class="fw-port-dot">' + pt.rank + '</span><span class="fw-port-label">' + pt.name + ' (' + pt.teuM + 'M TEU)</span>';
         btn.addEventListener('click', function () { selectPort(pt.id); });
         btn.addEventListener('focus', function () { selectPort(pt.id); });
         nodesLayer.appendChild(btn);
       });
-      positionNodeButtons();
     }
 
     function buildPortChips() {
@@ -335,7 +355,7 @@
         '<div class="fw-detail-tag">World Rank #' + pt.rank + ' · ' + pt.country + '</div>' +
         '<h4>' + pt.name + ' — ' + pt.teuM + ' Million TEU/yr</h4>' +
         '<p>' + pt.summary + '</p>' +
-        '<p style="margin-top:-.4rem;font-size:.82rem;color:rgba(0,229,255,.85);"><strong>Key Exports/Cargo:</strong> ' + pt.keyExports + '</p>' +
+        '<p style="margin-top:-.4rem;font-size:.84rem;color:#00e5ff;"><strong>Key Exports/Cargo:</strong> ' + pt.keyExports + '</p>' +
         '<a href="' + pt.source + '" target="_blank" rel="noopener" class="fw-detail-source">Source: ' + pt.sourceLabel + '</a>';
     }
 
@@ -362,10 +382,10 @@
         b.classList.toggle('active', b.dataset.cable === id);
       });
       detailPanel.innerHTML =
-        '<div class="fw-detail-tag">' + cb.tag + ' · ' + cb.yearInstalled + '</div>' +
+        '<div class="fw-detail-tag">' + cb.tag + ' · Installed ' + cb.yearInstalled + '</div>' +
         '<h4>' + cb.name + ' (' + cb.capacityTbps + ' Tbps · ' + cb.lengthKm.toLocaleString() + ' km)</h4>' +
         '<p>' + cb.summary + '</p>' +
-        '<p style="margin-top:-.4rem;font-size:.82rem;color:rgba(0,229,255,.85);"><strong>Landing Stations:</strong> ' + cb.landingStations.join(' · ') + '</p>' +
+        '<p style="margin-top:-.4rem;font-size:.84rem;color:#00e5ff;"><strong>Landing Stations:</strong> ' + cb.landingStations.join(' · ') + '</p>' +
         '<a href="' + cb.source + '" target="_blank" rel="noopener" class="fw-detail-source">Source: ' + cb.sourceLabel + '</a>';
       renderStatic();
       draw();
@@ -467,7 +487,7 @@
       dpr = window.devicePixelRatio || 1;
       var cssW = canvas.clientWidth || root.clientWidth;
       var aspect = (MAP_BOUNDS.latMax - MAP_BOUNDS.latMin) / (MAP_BOUNDS.lonMax - MAP_BOUNDS.lonMin);
-      var cssH = Math.round(cssW * aspect);
+      var cssH = Math.max(Math.round(cssW * aspect), root.clientHeight || 520);
       canvas.style.height = cssH + 'px';
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
@@ -487,15 +507,15 @@
       var sctx = staticCtx, w = mapW, h = mapH;
       sctx.clearRect(0, 0, w, h);
 
-      // Graticule
-      sctx.strokeStyle = 'rgba(200,145,58,.07)';
+      // Graticule Grid
+      sctx.strokeStyle = 'rgba(200,145,58,.09)';
       sctx.lineWidth = 1;
       for (var gx = 0; gx < w; gx += 60) { sctx.beginPath(); sctx.moveTo(gx, 0); sctx.lineTo(gx, h); sctx.stroke(); }
       for (var gy = 0; gy < h; gy += 60) { sctx.beginPath(); sctx.moveTo(0, gy); sctx.lineTo(w, gy); sctx.stroke(); }
 
-      // Coastline (High Precision 10m)
-      sctx.strokeStyle = 'rgba(239,242,241,.45)';
-      sctx.lineWidth = 1.0;
+      // High Precision 10m Coastline
+      sctx.strokeStyle = 'rgba(239,242,241,.55)';
+      sctx.lineWidth = 1.1;
       coastline.polylines.forEach(function (line) {
         strokeGeoPolyline(sctx, line, w, h);
       });
@@ -506,7 +526,7 @@
           var active = rt.id === selectedRouteId;
           sctx.setLineDash(active ? [] : [3, 4]);
           sctx.strokeStyle = active ? 'rgba(232,184,112,.95)' : 'rgba(232,184,112,.22)';
-          sctx.lineWidth = active ? 2.2 : 1;
+          sctx.lineWidth = active ? 2.4 : 1.1;
           strokeGeoPolyline(sctx, rt.waypoints, w, h);
           sctx.setLineDash([]);
         });
@@ -516,8 +536,8 @@
       if (activeView === 'cables') {
         cables.forEach(function (cb) {
           var active = cb.id === selectedCableId;
-          sctx.strokeStyle = active ? '#00e5ff' : 'rgba(0,229,255,.35)';
-          sctx.lineWidth = active ? 2.5 : 1.2;
+          sctx.strokeStyle = active ? '#00ffff' : 'rgba(0,229,255,.4)';
+          sctx.lineWidth = active ? 2.8 : 1.4;
           strokeGeoPolyline(sctx, cb.waypoints, w, h);
 
           // Render landing station dots along cable
@@ -525,8 +545,8 @@
             cb.waypoints.forEach(function (pt) {
               var p = project(pt[0], pt[1], w, h);
               sctx.beginPath();
-              sctx.arc(p.x, p.y, active ? 3.5 : 2, 0, Math.PI * 2);
-              sctx.fillStyle = active ? '#ffffff' : 'rgba(0,229,255,.8)';
+              sctx.arc(p.x, p.y, active ? 3.8 : 2.2, 0, Math.PI * 2);
+              sctx.fillStyle = active ? '#ffffff' : 'rgba(0,229,255,.9)';
               sctx.fill();
             });
           }
@@ -545,19 +565,17 @@
           var s = shipsById[id];
           var p = project(s.dispLon, s.dispLat, mapW, mapH);
           var alpha = s.fading ? Math.max(0, 1 - (performance.now() - s.lastSeen) / SHIP_FADE_MS) : 1;
-          var r = s.isCargo ? 3.6 : 2.6;
+          var r = s.isCargo ? 3.8 : 2.8;
           ctx.beginPath();
           ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
           ctx.fillStyle = s.isCargo ? 'rgba(255,214,145,' + (0.95 * alpha) + ')' : 'rgba(232,184,112,' + (0.75 * alpha) + ')';
           ctx.fill();
           ctx.beginPath();
           ctx.arc(p.x, p.y, r * 2, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(232,184,112,' + ((s.isCargo ? 0.3 : 0.2) * alpha) + ')';
+          ctx.strokeStyle = 'rgba(232,184,112,' + ((s.isCargo ? 0.35 : 0.22) * alpha) + ')';
           ctx.stroke();
         });
       }
-
-      positionNodeButtons();
     }
 
     function resize() {

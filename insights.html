@@ -184,15 +184,23 @@
 
     <!-- MAP VIEW SWITCHER TABS -->
     <div class="fw-view-tabs" id="fw-view-tabs" data-r="up" aria-label="Map View Selector">
-      <button type="button" class="fw-tab active" data-view="fleetwatch" aria-label="Fleet Watch and Live AIS map">
-        <span class="fw-tab-icon">🌐</span> Fleet Watch & Live AIS
-      </button>
-      <button type="button" class="fw-tab" data-view="ports" aria-label="Top 20 World Container Ports map">
-        <span class="fw-tab-icon">⚓</span> Top 20 Porti Mondiali
-      </button>
-      <button type="button" class="fw-tab" data-view="cables" aria-label="Critical Submarine Fiber-Optic Cables map">
-        <span class="fw-tab-icon">📡</span> Cavi Sottomarini Critici
-      </button>
+      <div class="fw-tabs-main">
+        <button type="button" class="fw-tab active" data-view="fleetwatch" aria-label="Fleet Watch and Live AIS map">
+          <span class="fw-tab-icon">🌐</span> Fleet Watch & Live AIS
+        </button>
+        <button type="button" class="fw-tab" data-view="ports" aria-label="Top 20 World Container Ports map">
+          <span class="fw-tab-icon">⚓</span> Top 20 Porti Mondiali
+        </button>
+        <button type="button" class="fw-tab" data-view="cables" aria-label="Critical Submarine Fiber-Optic Cables map">
+          <span class="fw-tab-icon">📡</span> Cavi Sottomarini Critici
+        </button>
+      </div>
+
+      <div class="fw-filter-toggle" id="fw-filter-toggle">
+        <span class="fw-filter-lbl">Chokepoint:</span>
+        <button type="button" class="fw-filter-btn active" data-filter="major" title="Show 7 Major Global Chokepoints">Primari (7)</button>
+        <button type="button" class="fw-filter-btn" data-filter="all" title="Show all 15 Chokepoints">Tutti (15)</button>
+      </div>
     </div>
 
     <div class="fw-map-wrap" id="fw-map-wrap" data-r="up" data-rd="100">
