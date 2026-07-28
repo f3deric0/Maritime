@@ -30,9 +30,9 @@
   var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var STATIC_MODE = LITE || REDUCED_MOTION;
 
-  // Optimized lat/lon bounds for maximum vertical ocean headroom
-  var MAP_BOUNDS = { lonMin: -180, lonMax: 180, latMin: -58, latMax: 76 };
-  var LAT_SPAN = MAP_BOUNDS.latMax - MAP_BOUNDS.latMin; // 134
+  // Natural distortion-free Equirectangular bounds (360x140 aspect ratio: 140/360 = 0.38888)
+  var MAP_BOUNDS = { lonMin: -180, lonMax: 180, latMin: -62, latMax: 78 };
+  var LAT_SPAN = MAP_BOUNDS.latMax - MAP_BOUNDS.latMin; // 140
   var LON_SPAN = MAP_BOUNDS.lonMax - MAP_BOUNDS.lonMin; // 360
 
   function project(lon, lat, w, h) {
@@ -244,9 +244,9 @@
         btn.dataset.cp = cp.id;
         btn.setAttribute('aria-label', cp.name + ' — ' + cp.tag);
 
-        // Exact percentage positioning matching projection math
+        // Exact percentage positioning matching projection math (lon -180..180 -> 0..100%, lat -62..78 -> 100..0%)
         var leftPct = ((cp.lon + 180) / 3.6).toFixed(4);
-        var topPct = ((MAP_BOUNDS.latMax - cp.lat) / 1.34).toFixed(4);
+        var topPct = ((78 - cp.lat) / 1.4).toFixed(4);
         btn.style.left = leftPct + '%';
         btn.style.top = topPct + '%';
 
@@ -320,7 +320,7 @@
 
         // Exact percentage positioning matching projection math
         var leftPct = ((pt.lon + 180) / 3.6).toFixed(4);
-        var topPct = ((MAP_BOUNDS.latMax - pt.lat) / 1.34).toFixed(4);
+        var topPct = ((78 - pt.lat) / 1.4).toFixed(4);
         btn.style.left = leftPct + '%';
         btn.style.top = topPct + '%';
 
@@ -490,13 +490,14 @@
       requestAnimationFrame(tick);
     }
 
-    /* ── Sizing & Canvas Drawing ── */
+    /* ── Sizing & Distortion-Free Aspect Ratio Canvas Drawing ── */
     function sizeCanvas() {
       dpr = window.devicePixelRatio || 1;
       var cssW = canvas.clientWidth || root.clientWidth;
+      // 100% distortion-free equirectangular aspect ratio: 140 / 360 = 0.388888...
       var aspect = LAT_SPAN / LON_SPAN;
-      var targetMinH = window.innerWidth < 768 ? 420 : 680;
-      var cssH = Math.max(Math.round(cssW * aspect), targetMinH);
+      var cssH = Math.round(cssW * aspect);
+
       canvas.style.height = cssH + 'px';
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
@@ -524,8 +525,8 @@
       for (var gy = 0; gy < h; gy += 60) { sctx.beginPath(); sctx.moveTo(0, gy); sctx.lineTo(w, gy); sctx.stroke(); }
 
       // BATCHED SINGLE-STROKE COASTLINE: 100% continuous, crisp, no overlapping alpha joints
-      sctx.strokeStyle = 'rgba(239,242,241,.88)';
-      sctx.lineWidth = 1.25;
+      sctx.strokeStyle = 'rgba(239,242,241,.85)';
+      sctx.lineWidth = 1.2;
       sctx.lineJoin = 'round';
       sctx.lineCap = 'round';
       sctx.beginPath();
@@ -540,7 +541,7 @@
           var active = rt.id === selectedRouteId;
           sctx.setLineDash(active ? [] : [3, 4]);
           sctx.strokeStyle = active ? 'rgba(232,184,112,.95)' : 'rgba(232,184,112,.25)';
-          sctx.lineWidth = active ? 2.5 : 1.2;
+          sctx.lineWidth = active ? 2.4 : 1.2;
           strokeGeoPolyline(sctx, rt.waypoints, w, h);
           sctx.setLineDash([]);
         });
@@ -551,7 +552,7 @@
         cables.forEach(function (cb) {
           var active = cb.id === selectedCableId;
           sctx.strokeStyle = active ? '#00ffff' : 'rgba(0,229,255,.45)';
-          sctx.lineWidth = active ? 3.0 : 1.5;
+          sctx.lineWidth = active ? 2.8 : 1.4;
           strokeGeoPolyline(sctx, cb.waypoints, w, h);
 
           // Render landing station dots along cable
@@ -559,7 +560,7 @@
             cb.waypoints.forEach(function (pt) {
               var p = project(pt[0], pt[1], w, h);
               sctx.beginPath();
-              sctx.arc(p.x, p.y, active ? 4.0 : 2.4, 0, Math.PI * 2);
+              sctx.arc(p.x, p.y, active ? 3.8 : 2.2, 0, Math.PI * 2);
               sctx.fillStyle = active ? '#ffffff' : 'rgba(0,229,255,.9)';
               sctx.fill();
             });
@@ -579,7 +580,7 @@
           var s = shipsById[id];
           var p = project(s.dispLon, s.dispLat, mapW, mapH);
           var alpha = s.fading ? Math.max(0, 1 - (performance.now() - s.lastSeen) / SHIP_FADE_MS) : 1;
-          var r = s.isCargo ? 3.8 : 2.8;
+          var r = s.isCargo ? 3.6 : 2.6;
           ctx.beginPath();
           ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
           ctx.fillStyle = s.isCargo ? 'rgba(255,214,145,' + (0.95 * alpha) + ')' : 'rgba(232,184,112,' + (0.75 * alpha) + ')';
