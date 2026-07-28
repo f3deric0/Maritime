@@ -9,6 +9,22 @@
 <title>Maritime Insights — Data, Live Vessel Map & EU Freight Observatory</title>
 <meta name="description" content="Live world maritime AIS vessel tracking, EU short-sea freight observatory, 20 world container ports, 13 submarine fiber cables, and marine economy statistics.">
 <meta name="theme-color" content="#050c15">
+<link rel="canonical" href="https://maritime-affairs.eu/insights.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Maritime Affairs">
+<meta property="og:title" content="Maritime Insights — Data, Live Vessel Map & EU Freight Observatory">
+<meta property="og:description" content="Live world maritime AIS vessel tracking, EU short-sea freight observatory, 20 world container ports, 13 submarine fiber cables, and marine economy statistics.">
+<meta property="og:url" content="https://maritime-affairs.eu/insights.html">
+<meta property="og:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_GB">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Maritime Insights — Data, Live Vessel Map & EU Freight Observatory">
+<meta name="twitter:description" content="Live world maritime AIS vessel tracking, EU short-sea freight observatory, 20 world container ports, 13 submarine fiber cables.">
+<meta name="twitter:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,12 +147,12 @@
         <span class="num-lbl">EU short-sea shipping volume — 2024</span>
       </div>
       <div class="obs-num-cell" data-r="up" data-rd="300">
-        <span class="num-val" data-obs-stat="blue-gva" data-count="183.5" data-suffix=" Bn €">€183.5 Bn</span>
+        <span class="num-val" data-obs-stat="blue-gva" data-count="183.5" data-suffix=" Bn €">183.5 Bn €</span>
         <span class="num-lbl">EU Blue Economy Gross Value Added</span>
         <span class="num-delta" data-obs-delta="blue-gva">+4.2% annual growth</span>
       </div>
       <div class="obs-num-cell" data-r="up" data-rd="400">
-        <span class="num-val" data-obs-stat="blue-jobs" data-count="3.58" data-suffix=" Million">3.58M</span>
+        <span class="num-val" data-obs-stat="blue-jobs" data-count="3.58" data-suffix=" Million">3.58 Million</span>
         <span class="num-lbl">Direct EU Maritime Employment</span>
       </div>
     </div>
@@ -188,22 +204,22 @@
 
     <!-- MAP VIEW SWITCHER TABS -->
     <div class="fw-view-tabs" id="fw-view-tabs" data-r="up" aria-label="Map View Selector">
-      <div class="fw-tabs-main">
-        <button type="button" class="fw-tab active" data-view="fleetwatch" aria-label="Fleet Watch and Live AIS map">
+      <div class="fw-tabs-main" role="tablist" aria-label="Map view">
+        <button type="button" class="fw-tab active" data-view="fleetwatch" role="tab" aria-selected="true" aria-controls="fw-map-wrap" aria-label="Fleet Watch and Live AIS map">
           <span class="fw-tab-icon">🌐</span> Fleet Watch & Live AIS
         </button>
-        <button type="button" class="fw-tab" data-view="ports" aria-label="Top 20 World Container Ports map">
+        <button type="button" class="fw-tab" data-view="ports" role="tab" aria-selected="false" aria-controls="fw-map-wrap" aria-label="Top 20 World Container Ports map">
           <span class="fw-tab-icon">⚓</span> Top 20 World Ports
         </button>
-        <button type="button" class="fw-tab" data-view="cables" aria-label="Critical Submarine Fiber-Optic Cables map">
+        <button type="button" class="fw-tab" data-view="cables" role="tab" aria-selected="false" aria-controls="fw-map-wrap" aria-label="Critical Submarine Fiber-Optic Cables map">
           <span class="fw-tab-icon">📡</span> Critical Submarine Cables
         </button>
       </div>
 
-      <div class="fw-filter-toggle" id="fw-filter-toggle">
+      <div class="fw-filter-toggle" id="fw-filter-toggle" role="group" aria-label="Chokepoint tier filter">
         <span class="fw-filter-lbl">Chokepoint:</span>
-        <button type="button" class="fw-filter-btn active" data-filter="major" title="Show 7 Major Global Chokepoints">Major (7)</button>
-        <button type="button" class="fw-filter-btn" data-filter="all" title="Show all 15 Chokepoints">All (15)</button>
+        <button type="button" class="fw-filter-btn active" data-filter="major" aria-pressed="true" title="Show 7 Major Global Chokepoints">Major (7)</button>
+        <button type="button" class="fw-filter-btn" data-filter="all" aria-pressed="false" title="Show all 15 Chokepoints">All (15)</button>
       </div>
     </div>
 
@@ -261,21 +277,16 @@
     <div class="obs-grid" style="margin-top:2rem">
       <div class="obs-card" data-r="up" data-rd="100">
         <h4>Top 5 Global Ocean Carriers (Fleet TEU)</h4>
-        <ul style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:2.0;color:rgba(239,242,241,.9)">
-          <li><strong style="color:var(--gold-l)">MSC:</strong> 6.20 Million TEU (20.1% Global Market Share)</li>
-          <li><strong style="color:var(--gold-l)">Maersk Line:</strong> 4.42 Million TEU (14.3% Global Market Share)</li>
-          <li><strong style="color:var(--gold-l)">CMA CGM:</strong> 3.82 Million TEU (12.4% Global Market Share)</li>
-          <li><strong style="color:var(--gold-l)">COSCO Shipping:</strong> 3.25 Million TEU (10.5% Global Market Share)</li>
-          <li><strong style="color:var(--gold-l)">Hapag-Lloyd:</strong> 2.22 Million TEU (7.2% Global Market Share)</li>
-        </ul>
+        <ul id="obs-carriers-list" style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:2.0;color:rgba(239,242,241,.9)"></ul>
       </div>
 
       <div class="obs-card" data-r="up" data-rd="150">
         <h4>Dual-Fuel Orderbook Transition</h4>
-        <div style="font-size:2.4rem;font-family:'Cormorant Garamond',serif;font-weight:700;color:#00e5ff;margin-top:.8rem">54.0%</div>
+        <div id="obs-dualfuel-pct" style="font-size:2.4rem;font-family:'Cormorant Garamond',serif;font-weight:700;color:#00e5ff;margin-top:.8rem">—</div>
         <p style="font-size:.88rem;color:rgba(239,242,241,.75);margin-top:.4rem">of all container vessel capacity currently on order at shipyards globally is equipped with alternative green propulsion (LNG, Methanol, or Ammonia dual-fuel engines).</p>
       </div>
     </div>
+    <p class="obs-section-source">Source: <span id="obs-carriers-source">Alphaliner Fleet Statistics</span></p>
   </div>
 </section>
 
@@ -311,23 +322,15 @@
     <div class="obs-grid" style="margin-top:2.5rem">
       <div class="obs-card" data-r="up" data-rd="100">
         <h4>EU ETS Phase-in Schedule</h4>
-        <ul style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:1.8;color:rgba(239,242,241,.85)">
-          <li><strong style="color:var(--gold-l)">2024:</strong> 40% of reported emissions covered</li>
-          <li><strong style="color:var(--gold-l)">2025:</strong> 70% of reported emissions covered</li>
-          <li><strong style="color:var(--gold-l)">2026:</strong> 100% full phase-in requirement</li>
-        </ul>
+        <ul id="obs-ets-phasing-list" style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:1.8;color:rgba(239,242,241,.85)"></ul>
       </div>
 
       <div class="obs-card" data-r="up" data-rd="150">
         <h4>FuelEU Maritime GHG Targets</h4>
-        <ul style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:1.8;color:rgba(239,242,241,.85)">
-          <li><strong style="color:#00e5ff">2025:</strong> -2% GHG intensity vs 2020 baseline</li>
-          <li><strong style="color:#00e5ff">2030:</strong> -6% reduction requirement</li>
-          <li><strong style="color:#00e5ff">2040:</strong> -31% reduction target</li>
-          <li><strong style="color:#00e5ff">2050:</strong> -80% zero-carbon fuel target</li>
-        </ul>
+        <ul id="obs-fueleu-list" style="list-style:none;padding:0;margin-top:1rem;font-size:.9rem;line-height:1.8;color:rgba(239,242,241,.85)"></ul>
       </div>
     </div>
+    <p class="obs-section-source">Source: <span id="obs-decarb-source">EU ETS Directive (2023/959) / FuelEU Maritime Regulation (2023/1805)</span></p>
   </div>
 </section>
 

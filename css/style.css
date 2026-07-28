@@ -465,7 +465,6 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 /* insights.html — headline stat tiles */
 .obs-stats.sec-nums { padding-top: 70px; }
 .obs-stats .nums-grid { grid-template-columns: repeat(3,1fr); }
-.obs-delta { display: inline-block; margin-top: .8rem; font-family: var(--ff-c); font-size: .6rem; font-weight: 700; letter-spacing: .12em; color: var(--gold-l); }
 
 .obs-num-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 2rem; position: relative; z-index: 1; }
 .obs-num-grid .obs-num-cell:nth-child(4),
@@ -493,14 +492,8 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .obs-chart-panel canvas { width: 100%; height: auto; display: block; }
 .obs-chart-note { margin-top: 1rem; font-size: .82rem; font-weight: 300; color: rgba(255,255,255,.5); line-height: 1.6; }
 
-/* Observatory Data Grid & KPI Cards */
+/* Observatory Data Grid & Cards */
 .obs-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
-.obs-kpi-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-.obs-kpi-card { background: var(--deep); border: 1px solid rgba(184,137,74,.25); border-radius: 16px; padding: 2rem 2.2rem; position: relative; overflow: hidden; }
-.obs-kpi-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-l), transparent); }
-.obs-kpi-val { font-family: var(--ff-d); font-size: clamp(2.4rem, 4vw, 3.5rem); font-weight: 700; color: var(--gold-l); line-height: 1; margin-bottom: .5rem; }
-.obs-kpi-lbl { font-family: var(--ff-c); font-size: .65rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,.55); }
-.obs-kpi-delta { display: inline-block; margin-top: .8rem; font-family: var(--ff-c); font-size: .6rem; font-weight: 700; letter-spacing: .12em; color: #00e5ff; }
 
 .obs-card { background: var(--deep); border: 1px solid rgba(184,137,74,.22); border-radius: 16px; padding: 2rem 2.2rem; }
 .obs-card h4 { font-family: var(--ff-c); font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-l); margin-bottom: .8rem; }
@@ -564,9 +557,8 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-port-node:hover .fw-port-label, .fw-port-node:focus-visible .fw-port-label, .fw-port-node.active .fw-port-label { opacity: 1; transform: translateY(-50%) translateX(4px); }
 
 /* Glassmorphism & Shimmer Cards */
-.obs-chart-panel, .obs-card, .obs-kpi-card { transition: all .35s var(--ease); backdrop-filter: blur(8px); }
-.obs-chart-panel:hover, .obs-card:hover, .obs-kpi-card:hover { transform: translateY(-4px); animation: borderGlow 4s infinite ease-in-out; }
-.fw-port-node:hover .fw-port-label, .fw-port-node:focus-visible .fw-port-label, .fw-port-node.active .fw-port-label { opacity: 1; }
+.obs-chart-panel, .obs-card { transition: all .35s var(--ease); backdrop-filter: blur(8px); }
+.obs-chart-panel:hover, .obs-card:hover { transform: translateY(-4px); animation: borderGlow 4s infinite ease-in-out; }
 .fw-port-node:hover .fw-port-dot, .fw-port-node:focus-visible .fw-port-dot, .fw-port-node.active .fw-port-dot { background: var(--white); color: #040a14; box-shadow: 0 0 0 8px rgba(0,229,255,.55); }
 
 .fw-node:focus-visible { outline: none; }
@@ -607,6 +599,10 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .obs-source p { text-align: center; font-size: .74rem; color: rgba(255,255,255,.4); font-family: var(--ff-b); line-height: 1.8; }
 .obs-source a { color: var(--gold-l); }
 .obs-source code { font-family: monospace; font-size: .72em; color: rgba(255,255,255,.5); }
+
+/* Per-section citation line (Carriers, Decarbonization) — lighter-weight
+   than .obs-source, which is the page-level footer citation. */
+.obs-section-source { margin-top: 1.4rem; font-size: .68rem; color: rgba(255,255,255,.35); font-family: var(--ff-b); }
 
 /* CTA */
 .sec-cta { background: var(--deep); text-align: center; position: relative; overflow: hidden; }

@@ -114,13 +114,16 @@
     var cables = [];
     var selectedRouteId = null;
     var selectedCableId = null;
-    var selectedPortId = null;
-    var selectedCpId = null;
     var shipsById = {};
     var liveOK = null;
 
     var staticCanvas = document.createElement('canvas');
-    var ctx = null, staticCtx = null, dpr = 1, mapW = 0, mapH = 0;
+    // Separate cache for the coastline+graticule layer (see renderCoastlineLayer):
+    // at 10m resolution redrawing ~3900 coastline polylines on every route/cable
+    // selection was noticeably heavier than at the old 50m resolution, so that
+    // expensive draw now only happens on load/resize, not on every click.
+    var coastlineCanvas = document.createElement('canvas');
+    var ctx = null, staticCtx = null, coastlineCtx = null, dpr = 1, mapW = 0, mapH = 0;
 
     Promise.all([
       fetchJSON(CHOKEPOINTS_URL),
@@ -166,14 +169,20 @@
             var view = tab.dataset.view;
             if (view === activeView) return;
             activeView = view;
-            tabs.forEach(function (t) { t.classList.toggle('active', t.dataset.view === view); });
+            tabs.forEach(function (t) {
+              var isActive = t.dataset.view === view;
+              t.classList.toggle('active', isActive);
+              t.setAttribute('aria-selected', String(isActive));
+            });
             selectedRouteId = null;
             selectedCableId = null;
-            selectedPortId = null;
-            selectedCpId = null;
             updateActiveViewUI();
             renderStatic();
             draw();
+            // Switching back to Fleet Watch: the tiles were showing Ports/
+            // Cables numbers until now — refresh immediately instead of
+            // waiting up to FLEET_POLL_MS for the next scheduled poll.
+            if (view === 'fleetwatch') pollFleet();
           });
         });
       }
@@ -185,7 +194,11 @@
             var filter = btn.dataset.filter;
             if (filter === tierFilter) return;
             tierFilter = filter;
-            fBtns.forEach(function (b) { b.classList.toggle('active', b.dataset.filter === filter); });
+            fBtns.forEach(function (b) {
+              var isActive = b.dataset.filter === filter;
+              b.classList.toggle('active', isActive);
+              b.setAttribute('aria-pressed', String(isActive));
+            });
             if (activeView === 'fleetwatch') {
               buildNodeButtons();
             }
@@ -196,10 +209,19 @@
 
     function updateActiveViewUI() {
       if (filterWrap) filterWrap.style.display = (activeView === 'fleetwatch') ? 'inline-flex' : 'none';
+      // Recomputed on every view change (not just inside setLiveState, which
+      // only re-runs on the next poll) so the note can't linger on Ports/
+      // Cables after a tab switch if the feed was already down.
+      if (liveNoteEl) liveNoteEl.style.display = (liveOK !== false || activeView !== 'fleetwatch') ? 'none' : 'block';
 
       if (activeView === 'fleetwatch') {
         if (statLbl1) statLbl1.textContent = 'Vessels tracked now';
         if (statLbl2) statLbl2.textContent = 'Busiest chokepoint';
+        // Avoid a flash of the previous view's numbers until pollFleet()
+        // (triggered right after a tab switch — see bindTabsAndFilters)
+        // resolves.
+        if (vesselCountEl) vesselCountEl.textContent = '—';
+        if (busiestEl) busiestEl.textContent = '—';
         buildNodeButtons();
         buildRouteChips();
         showDetailPlaceholder('Select a chokepoint or trade route on the map for details.');
@@ -260,7 +282,6 @@
     function selectChokepoint(id) {
       var cp = chokepoints.filter(function (c) { return c.id === id; })[0];
       if (!cp || !detailPanel) return;
-      selectedCpId = id;
       selectedRouteId = null;
       if (nodesLayer) {
         Array.prototype.forEach.call(nodesLayer.children, function (b) {
@@ -293,7 +314,6 @@
       var rt = routes.filter(function (r) { return r.id === id; })[0];
       if (!rt || !detailPanel) return;
       selectedRouteId = id;
-      selectedCpId = null;
       Array.prototype.forEach.call(routesLayer.children, function (b) {
         b.classList.toggle('active', b.dataset.route === id);
       });
@@ -348,7 +368,6 @@
     function selectPort(id) {
       var pt = ports.filter(function (p) { return p.id === id; })[0];
       if (!pt || !detailPanel) return;
-      selectedPortId = id;
       if (nodesLayer) {
         Array.prototype.forEach.call(nodesLayer.children, function (b) {
           b.classList.toggle('active', b.dataset.port === id);
@@ -503,6 +522,8 @@
       canvas.height = Math.round(cssH * dpr);
       staticCanvas.width = canvas.width;
       staticCanvas.height = canvas.height;
+      coastlineCanvas.width = canvas.width;
+      coastlineCanvas.height = canvas.height;
       mapW = cssW;
       mapH = cssH;
 
@@ -510,30 +531,42 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       staticCtx = staticCanvas.getContext('2d');
       staticCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      coastlineCtx = coastlineCanvas.getContext('2d');
+      coastlineCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    /* ── Single-Stroke Batched Coastline Rendering ── */
+    // The expensive draw: graticule + the full ~3900-polyline 10m coastline,
+    // batched into one stroke. Only runs on initial load and on resize (see
+    // resize()) — NOT on every tab switch or route/cable click.
+    function renderCoastlineLayer() {
+      if (!coastline || !coastlineCtx) return;
+      var cctx = coastlineCtx, w = mapW, h = mapH;
+      cctx.clearRect(0, 0, w, h);
+
+      cctx.strokeStyle = 'rgba(200,145,58,.1)';
+      cctx.lineWidth = 1;
+      for (var gx = 0; gx < w; gx += 60) { cctx.beginPath(); cctx.moveTo(gx, 0); cctx.lineTo(gx, h); cctx.stroke(); }
+      for (var gy = 0; gy < h; gy += 60) { cctx.beginPath(); cctx.moveTo(0, gy); cctx.lineTo(w, gy); cctx.stroke(); }
+
+      cctx.strokeStyle = 'rgba(239,242,241,.85)';
+      cctx.lineWidth = 1.2;
+      cctx.lineJoin = 'round';
+      cctx.lineCap = 'round';
+      cctx.beginPath();
+      coastline.polylines.forEach(function (line) {
+        addGeoPolylinePath(cctx, line, w, h);
+      });
+      cctx.stroke();
+    }
+
+    // The cheap draw: blit the cached coastline layer, then only the parts
+    // that actually change with a selection (routes/cables highlight).
+    // Re-run on every tab switch and route/cable click.
     function renderStatic() {
       if (!coastline || !staticCtx) return;
       var sctx = staticCtx, w = mapW, h = mapH;
       sctx.clearRect(0, 0, w, h);
-
-      // Graticule Grid
-      sctx.strokeStyle = 'rgba(200,145,58,.1)';
-      sctx.lineWidth = 1;
-      for (var gx = 0; gx < w; gx += 60) { sctx.beginPath(); sctx.moveTo(gx, 0); sctx.lineTo(gx, h); sctx.stroke(); }
-      for (var gy = 0; gy < h; gy += 60) { sctx.beginPath(); sctx.moveTo(0, gy); sctx.lineTo(w, gy); sctx.stroke(); }
-
-      // BATCHED SINGLE-STROKE COASTLINE: 100% continuous, crisp, no overlapping alpha joints
-      sctx.strokeStyle = 'rgba(239,242,241,.85)';
-      sctx.lineWidth = 1.2;
-      sctx.lineJoin = 'round';
-      sctx.lineCap = 'round';
-      sctx.beginPath();
-      coastline.polylines.forEach(function (line) {
-        addGeoPolylinePath(sctx, line, w, h);
-      });
-      sctx.stroke();
+      sctx.drawImage(coastlineCanvas, 0, 0, w, h);
 
       // Trade Routes (in Fleet Watch view)
       if (activeView === 'fleetwatch') {
@@ -551,6 +584,11 @@
       if (activeView === 'cables') {
         cables.forEach(function (cb) {
           var active = cb.id === selectedCableId;
+          // Soft glow on the selected cable — matches the Ports view's
+          // radar-ping polish (.fw-port-dot) with a canvas-side equivalent,
+          // since cables render entirely on canvas (no DOM markers).
+          sctx.shadowColor = active ? 'rgba(0,229,255,.9)' : 'transparent';
+          sctx.shadowBlur = active ? 10 : 0;
           sctx.strokeStyle = active ? '#00ffff' : 'rgba(0,229,255,.45)';
           sctx.lineWidth = active ? 2.8 : 1.4;
           strokeGeoPolyline(sctx, cb.waypoints, w, h);
@@ -565,6 +603,7 @@
               sctx.fill();
             });
           }
+          sctx.shadowBlur = 0;
         });
       }
     }
@@ -595,6 +634,7 @@
 
     function resize() {
       sizeCanvas();
+      renderCoastlineLayer();
       renderStatic();
       draw();
     }

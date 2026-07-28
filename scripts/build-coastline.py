@@ -7,18 +7,18 @@ outline drawn behind the Fleet Watch map on insights.html. World scale:
 covers every chokepoint in assets/data/chokepoints.json, from the Bering
 Strait to the Drake Passage.
 
-Source: Natural Earth 50m Coastline (public domain, no attribution
+Source: Natural Earth 10m Coastline (public domain, no attribution
 required — https://www.naturalearthdata.com/about/terms-of-use/), fetched
 from the nvkelso/natural-earth-vector GitHub mirror as plain GeoJSON.
 
-50m, not 110m: the coarser 110m tier can't resolve narrow straits at all
+10m, not 110m/50m: the coarser tiers can't resolve narrow straits at all
 (Gibraltar is 14km wide, the Bosphorus under 1km) — they show as solid,
 unbroken coastline with no visible water gap, so a correctly-placed
-chokepoint marker looks like it's sitting on land. 50m is still coarse by
+chokepoint marker looks like it's sitting on land. This is still coarse by
 design (illustrative "engraved chart" style, see design.md, not a
-navigation chart, and still a small bundled asset — no CDN mapping
-library, see CLAUDE.md's no-dependency rule) but is enough to show real
-gaps at the chokepoints this map is actually about.
+navigation chart) — Douglas-Peucker simplification below keeps the
+bundled asset small despite the higher-resolution source (no CDN mapping
+library, see CLAUDE.md's no-dependency rule).
 
 Usage:
     python3 scripts/build-coastline.py
@@ -119,8 +119,8 @@ def main():
 
     out = {
         "meta": {
-            "source": "Natural Earth 50m Coastline (public domain)",
-            "sourceUrl": "https://www.naturalearthdata.com/downloads/50m-physical-vectors/",
+            "source": "Natural Earth 10m Coastline (public domain)",
+            "sourceUrl": "https://www.naturalearthdata.com/downloads/10m-physical-vectors/",
             "note": "Simplified/cropped/Douglas-Peucker-thinned by scripts/build-coastline.py — illustrative, not navigational.",
         },
         "bbox": {"lonMin": LON_MIN, "lonMax": LON_MAX, "latMin": LAT_MIN, "latMax": LAT_MAX},

@@ -487,7 +487,10 @@ const cObs = new IntersectionObserver(entries => {
     if (!end) return;
     const isFloat = end % 1 !== 0;
     const dec = isFloat ? (String(end).split('.')[1] || '').length : 0;
+    const dur = 900;
+    let s = null;
     const step = n => {
+      if (s === null) s = n;
       const t    = Math.min((n - s) / dur, 1);
       const ease = 1 - Math.pow(1 - t, 4);
       const val  = ease * end;

@@ -49,7 +49,7 @@
       "id": "blue-jobs",
       "value": 3.58,
       "suffix": " Million",
-      "label": "Direct EU Blue Economy jobs across 6 core sectors",
+      "label": "Direct EU Maritime Employment",
       "source": "EU Blue Economy Report / Eurostat Employment Statistics"
     }
   ],
@@ -109,6 +109,7 @@
   },
   "decarbonization": {
     "title": "EU ETS Maritime & Decarbonization Index",
+    "source": "EU ETS Directive (2023/959) / FuelEU Maritime Regulation (2023/1805)",
     "annualCo2Mt": 125.4,
     "vesselsRegulated": 4850,
     "etsPhasing": [

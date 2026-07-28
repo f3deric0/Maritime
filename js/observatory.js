@@ -19,7 +19,7 @@
       'shortsea-share':  { value: 58.3,  suffix: '%',     label: 'Share of EU maritime freight carried by short-sea shipping — 2024', delta: '+1.8pp vs 2023 (56.5%)' },
       'shortsea-volume': { value: 1.65,  suffix: ' Bn t',  label: 'EU short-sea shipping volume — 2024', delta: null },
       'blue-gva':        { value: 183.5, suffix: ' Bn €', label: 'EU Blue Economy Gross Value Added (GVA)', delta: '+4.2% annual growth' },
-      'blue-jobs':       { value: 3.58,  suffix: ' Million', label: 'Direct EU Blue Economy jobs across 6 core sectors', delta: null }
+      'blue-jobs':       { value: 3.58,  suffix: ' Million', label: 'Direct EU Maritime Employment', delta: null }
     },
     countries: {
       title: 'Top short-sea shipping nations, 2024',
@@ -48,6 +48,32 @@
         { basin: 'Atlantic Coast', tonnesMt: 540.0, sharePct: 15.4, color: '#69f0ae' },
         { basin: 'Baltic Sea', tonnesMt: 490.0, sharePct: 14.0, color: '#4fc3f7' },
         { basin: 'Black Sea', tonnesMt: 88.0, sharePct: 2.5, color: '#ffd740' }
+      ]
+    },
+    topCarriers: {
+      source: 'Alphaliner Fleet Statistics 2026',
+      items: [
+        { name: 'MSC', teuM: 6.20, sharePct: 20.1 },
+        { name: 'Maersk', teuM: 4.42, sharePct: 14.3 },
+        { name: 'CMA CGM', teuM: 3.82, sharePct: 12.4 },
+        { name: 'COSCO', teuM: 3.25, sharePct: 10.5 },
+        { name: 'Hapag-Lloyd', teuM: 2.22, sharePct: 7.2 }
+      ],
+      dualFuelOrderbookPct: 54.0
+    },
+    decarbonization: {
+      source: 'EU ETS Directive (2023/959) / FuelEU Maritime Regulation (2023/1805)',
+      etsPhasing: [
+        { year: '2024', surrenderPct: 40, status: 'Active' },
+        { year: '2025', surrenderPct: 70, status: 'Active' },
+        { year: '2026', surrenderPct: 100, status: 'Full Phase-in' }
+      ],
+      fuelEuTargets: [
+        { year: '2025', reductionPct: 2.0 },
+        { year: '2030', reductionPct: 6.0 },
+        { year: '2035', reductionPct: 14.5 },
+        { year: '2040', reductionPct: 31.0 },
+        { year: '2050', reductionPct: 80.0 }
       ]
     },
     retrieved: '2026-07-28'
@@ -117,6 +143,48 @@
         el.textContent = isNaN(d) ? data.retrieved : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
       }
     });
+  }
+
+  /* ── Carriers list + dual-fuel stat (was hardcoded HTML; now data-driven
+     so it can't drift out of sync with observatory.json like the missing
+     2035 FuelEU row did) ── */
+  function applyCarriers(data) {
+    var tc = data.topCarriers;
+    if (!tc) return;
+    var list = document.getElementById('obs-carriers-list');
+    var pctEl = document.getElementById('obs-dualfuel-pct');
+    var sourceEl = document.getElementById('obs-carriers-source');
+    if (list && tc.items) {
+      list.innerHTML = tc.items.map(function (c) {
+        return '<li><strong style="color:var(--gold-l)">' + c.name + ':</strong> ' +
+          c.teuM.toFixed(2) + ' Million TEU (' + c.sharePct.toFixed(1) + '% Global Market Share)</li>';
+      }).join('');
+    }
+    if (pctEl && tc.dualFuelOrderbookPct != null) pctEl.textContent = tc.dualFuelOrderbookPct.toFixed(1) + '%';
+    if (sourceEl && tc.source) sourceEl.textContent = tc.source;
+  }
+
+  /* ── ETS phase-in + FuelEU targets lists ── */
+  function applyDecarbonization(data) {
+    var d = data.decarbonization;
+    if (!d) return;
+    var etsList = document.getElementById('obs-ets-phasing-list');
+    var fuelList = document.getElementById('obs-fueleu-list');
+    var sourceEl = document.getElementById('obs-decarb-source');
+    if (etsList && d.etsPhasing) {
+      etsList.innerHTML = d.etsPhasing.map(function (p) {
+        var text = p.status === 'Full Phase-in'
+          ? p.surrenderPct + '% full phase-in requirement'
+          : p.surrenderPct + '% of reported emissions covered';
+        return '<li><strong style="color:var(--gold-l)">' + p.year + ':</strong> ' + text + '</li>';
+      }).join('');
+    }
+    if (fuelList && d.fuelEuTargets) {
+      fuelList.innerHTML = d.fuelEuTargets.map(function (t) {
+        return '<li><strong style="color:#00e5ff">' + t.year + ':</strong> -' + t.reductionPct + '% GHG intensity vs 2020 baseline</li>';
+      }).join('');
+    }
+    if (sourceEl && d.source) sourceEl.textContent = d.source;
   }
 
   function sizeCanvas(canvas, aspectFactor) {
@@ -412,6 +480,8 @@
     loadData().then(function (data) {
       applyStats(data);
       applyCharts(data);
+      applyCarriers(data);
+      applyDecarbonization(data);
     });
   }
 
