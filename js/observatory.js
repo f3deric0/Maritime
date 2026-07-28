@@ -326,24 +326,36 @@
     requestAnimationFrame(step);
   }
 
-  /* ── EU Blue Economy Sectors Doughnut Chart ── */
+  /* ── EU Blue Economy Sectors Doughnut Chart with Interactive Exploding Slice Selection ── */
   function drawSectorsChart(canvas, sectorsData) {
     if (!sectorsData || !sectorsData.items) return;
     var dim = sizeCanvas(canvas, 380 / 640), ctx = dim.ctx, w = dim.w, h = dim.h;
     var items = sectorsData.items;
     var cx = w < 500 ? w / 2 : w * 0.35;
     var cy = h / 2;
-    var outerR = Math.min(cx, cy) * 0.78;
+    var outerR = Math.min(cx, cy) * 0.76;
     var innerR = outerR * 0.54;
+    var selectedIndex = null;
 
     function frame(progress) {
       ctx.clearRect(0, 0, w, h);
       drawGraticule(ctx, w, h);
 
       var startAngle = -Math.PI / 2;
-      items.forEach(function (item) {
+      items.forEach(function (item, i) {
         var sliceAngle = (item.sharePct / 100) * (Math.PI * 2) * progress;
         var endAngle = startAngle + sliceAngle;
+        var isSel = selectedIndex === i;
+
+        var shiftX = 0, shiftY = 0;
+        if (isSel) {
+          var midAngle = startAngle + sliceAngle / 2;
+          shiftX = Math.cos(midAngle) * 14;
+          shiftY = Math.sin(midAngle) * 14;
+        }
+
+        ctx.save();
+        ctx.translate(shiftX, shiftY);
 
         ctx.beginPath();
         ctx.arc(cx, cy, outerR, startAngle, endAngle);
@@ -351,35 +363,97 @@
         ctx.closePath();
         ctx.fillStyle = item.color || '#e8b870';
         ctx.fill();
-        ctx.strokeStyle = '#040a14';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = isSel ? '#ffffff' : '#040a14';
+        ctx.lineWidth = isSel ? 3 : 1.5;
         ctx.stroke();
+
+        ctx.restore();
 
         startAngle = endAngle;
       });
 
-      ctx.fillStyle = '#ffffff';
+      // Doughnut Center Content
       ctx.textAlign = 'center';
-      ctx.font = '700 18px Cormorant Garamond,serif';
-      ctx.fillText('€183.5B', cx, cy - 2);
-      ctx.font = '10px Barlow Condensed,sans-serif';
-      ctx.fillStyle = 'rgba(239,242,241,.6)';
-      ctx.fillText('TOTAL GVA', cx, cy + 14);
+      if (selectedIndex !== null && items[selectedIndex]) {
+        var selItem = items[selectedIndex];
+        ctx.fillStyle = '#00e5ff';
+        ctx.font = '700 11px Barlow Condensed,sans-serif';
+        ctx.fillText(selItem.sector.toUpperCase(), cx, cy - 14);
 
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 22px Cormorant Garamond,serif';
+        ctx.fillText('€' + selItem.gvaBillion + ' Bn', cx, cy + 8);
+
+        ctx.fillStyle = 'rgba(239,242,241,.8)';
+        ctx.font = '600 11px Barlow Condensed,sans-serif';
+        ctx.fillText(selItem.sharePct + '% of EU GVA', cx, cy + 24);
+      } else {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 22px Cormorant Garamond,serif';
+        ctx.fillText('€183.5B', cx, cy - 2);
+        ctx.font = '600 11px Barlow Condensed,sans-serif';
+        ctx.fillStyle = 'rgba(239,242,241,.6)';
+        ctx.fillText('TOTAL EU GVA', cx, cy + 16);
+      }
+
+      // Legend
       if (w >= 500) {
-        var legX = w * 0.65;
+        var legX = w * 0.62;
         var legY = 24;
         items.forEach(function (item, i) {
           var y = legY + i * 28;
+          var isSel = selectedIndex === i;
+
           ctx.fillStyle = item.color || '#e8b870';
-          ctx.fillRect(legX, y, 12, 12);
-          ctx.fillStyle = 'rgba(239,242,241,.9)';
-          ctx.font = '600 12px Barlow Condensed,sans-serif';
+          ctx.fillRect(legX, y, 14, 14);
+          if (isSel) {
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(legX, y, 14, 14);
+          }
+
+          ctx.fillStyle = isSel ? '#00e5ff' : 'rgba(239,242,241,.9)';
+          ctx.font = (isSel ? '700' : '600') + ' 12px Barlow Condensed,sans-serif';
           ctx.textAlign = 'left';
-          ctx.fillText(item.sector + ' (' + item.sharePct + '%)', legX + 20, y + 10);
+          ctx.fillText(item.sector + ' (' + item.sharePct + '%)', legX + 22, y + 11);
         });
       }
     }
+
+    canvas.onclick = function (e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = e.clientX - rect.left;
+      var my = e.clientY - rect.top;
+
+      var dx = mx - cx;
+      var dy = my - cy;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist >= innerR * 0.8 && dist <= outerR * 1.2) {
+        var angle = Math.atan2(dy, dx);
+        if (angle < -Math.PI / 2) angle += Math.PI * 2;
+
+        var startAngle = -Math.PI / 2;
+        items.forEach(function (item, i) {
+          var sliceAngle = (item.sharePct / 100) * (Math.PI * 2);
+          var endAngle = startAngle + sliceAngle;
+          if (angle >= startAngle && angle < endAngle) {
+            selectedIndex = (selectedIndex === i) ? null : i;
+          }
+          startAngle = endAngle;
+        });
+        frame(1);
+      } else if (mx >= w * 0.6) {
+        var legY = 24;
+        items.forEach(function (item, i) {
+          var ly = legY + i * 28;
+          if (my >= ly - 6 && my <= ly + 22) {
+            selectedIndex = (selectedIndex === i) ? null : i;
+          }
+        });
+        frame(1);
+      }
+    };
 
     if (REDUCED_MOTION || LITE) { frame(1); return; }
     var start = null, dur = 900;
@@ -397,7 +471,7 @@
     if (!basinsData || !basinsData.items) return;
     var dim = sizeCanvas(canvas, 360 / 640), ctx = dim.ctx, w = dim.w, h = dim.h;
     var items = basinsData.items;
-    var padL = 130, padR = 50, padT = 20, padB = 25;
+    var padL = 130, padR = 80, padT = 20, padB = 25;
     var chartW = w - padL - padR;
     var rowH = (h - padT - padB) / items.length;
     var maxVal = 1450;
@@ -410,22 +484,26 @@
         var y = padT + i * rowH + rowH / 2;
         var barW = (item.tonnesMt / maxVal) * chartW * progress;
 
-        ctx.fillStyle = 'rgba(239,242,241,.85)';
-        ctx.font = '600 12px Barlow Condensed,sans-serif';
+        ctx.fillStyle = 'rgba(239,242,241,.95)';
+        ctx.font = '700 13px Barlow Condensed,sans-serif';
         ctx.textAlign = 'right';
         ctx.fillText(item.basin, padL - 12, y + 4);
 
         var grad = ctx.createLinearGradient(padL, 0, padL + barW, 0);
-        grad.addColorStop(0, '#041628');
+        grad.addColorStop(0, 'rgba(0,229,255,0.15)');
         grad.addColorStop(1, item.color || '#00e5ff');
         ctx.fillStyle = grad;
         ctx.fillRect(padL, y - 10, barW, 20);
 
+        ctx.strokeStyle = item.color || '#00e5ff';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(padL, y - 10, barW, 20);
+
         if (progress > 0.8) {
           ctx.fillStyle = '#ffffff';
           ctx.textAlign = 'left';
-          ctx.font = '700 12px Cormorant Garamond,serif';
-          ctx.fillText(item.tonnesMt + ' Mt', padL + barW + 8, y + 4);
+          ctx.font = '700 13px Cormorant Garamond,serif';
+          ctx.fillText(item.tonnesMt + ' Mt (' + item.sharePct + '%)', padL + barW + 10, y + 4);
         }
       });
     }

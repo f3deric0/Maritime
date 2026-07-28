@@ -14,9 +14,8 @@ strutturale dei dati), è emerso un elenco di miglioramenti da fare in tre ondat
 sotto controllo rischio e costo di ogni sessione:
 
 - **Fase 1** (piccola, basso rischio) — nav, testi, spostamento contenuti, sfondi. **COMPLETATA.**
-- **Fase 2** (media) — restyle grafico Italy/Netherlands/Spain, passata di fluidità mobile. **DA FARE.**
-- **Fase 3** (grossa, va trattata come progetto a sé) — mappa Fleet Watch interattiva
-  (pan/zoom/fullscreen/news laterali) + porti come "barche che ondeggiano". **DA FARE.**
+- **Fase 2** (media) — restyle grafico Italy/Netherlands/Spain, passata di fluidità mobile. **COMPLETATA.**
+- **Fase 3** (grossa) — mappa Fleet Watch interattiva (pan/zoom/fullscreen/news laterali) + selettore porti "barche che ondeggiano". **COMPLETATA.**
 
 ---
 

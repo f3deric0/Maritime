@@ -23,14 +23,12 @@
   var NEWS_URL = 'assets/data/maritime-news.json';
   var FLEET_POLL_MS = 9000;
   var STALE_AFTER_MS = 120000;
-  var SHIP_FADE_MS = 2500;
 
   var LITE = (function () {
     var c = navigator.connection || {};
     return !!(c.saveData || /(^|\b)(slow-)?2g$/.test(c.effectiveType || ''));
   })();
   var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var STATIC_MODE = LITE || REDUCED_MOTION;
 
   // Natural distortion-free Equirectangular bounds (360x140 aspect ratio: 140/360 = 0.38888)
   var MAP_BOUNDS = { lonMin: -180, lonMax: 180, latMin: -62, latMax: 78 };
@@ -52,6 +50,13 @@
     var py = (basePctY * h - cy) * zoomScale + cy + panY;
 
     return { x: px, y: py };
+  }
+
+  function constrainPan(w, h) {
+    var maxPanX = (w * (zoomScale - 1)) / 2 + w * 0.35;
+    var maxPanY = (h * (zoomScale - 1)) / 2 + h * 0.35;
+    panX = Math.min(Math.max(panX, -maxPanX), maxPanX);
+    panY = Math.min(Math.max(panY, -maxPanY), maxPanY);
   }
 
   function addGeoPolylinePath(ctx2d, points, w, h) {
@@ -98,14 +103,15 @@
     var busiestEl = document.getElementById('fw-busiest');
     var statLbl1 = document.getElementById('fw-stat-lbl-1');
     var statLbl2 = document.getElementById('fw-stat-lbl-2');
-    var liveNote = document.getElementById('fw-live-note');
-    var hud = document.getElementById('fw-hud');
     var nodesLayer = document.getElementById('fw-nodes');
     var routesContainer = document.getElementById('fw-routes');
     var portBoatsContainer = document.getElementById('fw-port-boats');
     var fullscreenBtn = document.getElementById('fw-fullscreen-btn');
     var newsToggleBtn = document.getElementById('fw-news-toggle');
     var sideNewsList = document.getElementById('fw-side-news-list');
+    var zoomInBtn = document.getElementById('fw-zoom-in');
+    var zoomOutBtn = document.getElementById('fw-zoom-out');
+    var resetBtn = document.getElementById('fw-reset-btn');
 
     if (!canvas) return;
 
@@ -115,19 +121,48 @@
     var cables = [];
     var coastline = null;
     var ships = [];
-    var shipMap = {};
     var activeId = null;
     var activeRouteId = null;
     var activePortId = null;
     var activeCableId = null;
     var activeView = 'fleetwatch'; // 'fleetwatch' | 'ports' | 'cables'
     var tierFilter = 'major'; // 'major' | 'all'
-    var isLiveFeedAvailable = true;
 
     // Pan & Zoom Drag state
     var isDragging = false;
     var startX = 0, startY = 0;
     var initialPanX = 0, initialPanY = 0;
+
+    // Zoom Controls
+    if (zoomInBtn) {
+      zoomInBtn.addEventListener('click', function () {
+        zoomScale = Math.min(zoomScale * 1.25, 4.0);
+        var s = renderCanvasSize();
+        constrainPan(s.w, s.h);
+        render();
+        updateNodePositions();
+      });
+    }
+
+    if (zoomOutBtn) {
+      zoomOutBtn.addEventListener('click', function () {
+        zoomScale = Math.max(zoomScale * 0.8, 0.8);
+        var s = renderCanvasSize();
+        constrainPan(s.w, s.h);
+        render();
+        updateNodePositions();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function () {
+        zoomScale = 1.0;
+        panX = 0;
+        panY = 0;
+        render();
+        updateNodePositions();
+      });
+    }
 
     // Fullscreen API toggle
     if (fullscreenBtn) {
@@ -174,6 +209,8 @@
       var dy = e.clientY - startY;
       panX = initialPanX + dx;
       panY = initialPanY + dy;
+      var s = renderCanvasSize();
+      constrainPan(s.w, s.h);
       render();
       updateNodePositions();
     });
@@ -202,6 +239,8 @@
         var dy = e.touches[0].clientY - startY;
         panX = initialPanX + dx;
         panY = initialPanY + dy;
+        var s = renderCanvasSize();
+        constrainPan(s.w, s.h);
         render();
         updateNodePositions();
       }
@@ -210,18 +249,6 @@
     canvas.addEventListener('touchend', function () {
       isDragging = false;
     });
-
-    // Mouse Wheel Zoom
-    canvas.addEventListener('wheel', function (e) {
-      e.preventDefault();
-      var zoomFactor = e.deltaY < 0 ? 1.15 : 0.88;
-      var newScale = Math.min(Math.max(zoomScale * zoomFactor, 0.8), 4.0);
-      if (newScale !== zoomScale) {
-        zoomScale = newScale;
-        render();
-        updateNodePositions();
-      }
-    }, { passive: false });
 
     function renderCanvasSize() {
       var dpr = window.devicePixelRatio || 1;
@@ -418,8 +445,9 @@
       if (!portBoatsContainer) return;
       portBoatsContainer.innerHTML = ports.map(function (prt, idx) {
         var isAct = prt.id === activePortId;
-        var delay = (idx % 5) * 0.25;
+        var delay = (idx % 5) * 0.2;
         return '<button type="button" class="fw-boat-btn' + (isAct ? ' active' : '') + '" style="animation-delay:' + delay + 's" data-port-id="' + prt.id + '">' +
+          '<div style="font-family:var(--ff-c);font-size:.64rem;font-weight:700;color:var(--gold-l)">#' + prt.rank + '</div>' +
           '<svg class="fw-boat-svg" viewBox="0 0 32 28"><path d="M4 18 L28 18 L24 24 L8 24 Z M16 4 L16 18 M16 6 L24 12 L16 12 Z"/></svg>' +
           '<span class="fw-boat-name">' + prt.name + '</span>' +
           '<span class="fw-boat-teu">' + prt.teuMillion + 'M TEU</span>' +
@@ -474,6 +502,7 @@
       var basePt = project(cp.coordinates.lon, cp.coordinates.lat, s.w, s.h);
       panX = s.w / 2 - basePt.x;
       panY = s.h / 2 - basePt.y;
+      constrainPan(s.w, s.h);
 
       if (detailPanel) {
         detailPanel.innerHTML = '<span class="fw-detail-tag">Chokepoint Profile · ' + (cp.tier === 'major' ? 'Major' : 'Secondary') + '</span>' +
@@ -498,6 +527,7 @@
       var basePt = project(prt.coordinates.lon, prt.coordinates.lat, s.w, s.h);
       panX = s.w / 2 - basePt.x;
       panY = s.h / 2 - basePt.y;
+      constrainPan(s.w, s.h);
 
       if (detailPanel) {
         detailPanel.innerHTML = '<span class="fw-detail-tag">World Container Port · Rank #' + prt.rank + '</span>' +
