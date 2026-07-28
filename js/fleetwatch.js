@@ -30,23 +30,26 @@
   var REDUCED_MOTION = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var STATIC_MODE = LITE || REDUCED_MOTION;
 
-  var MAP_BOUNDS = { lonMin: -180, lonMax: 180, latMin: -62, latMax: 78 };
+  // Optimized lat/lon bounds for maximum vertical ocean headroom
+  var MAP_BOUNDS = { lonMin: -180, lonMax: 180, latMin: -58, latMax: 76 };
+  var LAT_SPAN = MAP_BOUNDS.latMax - MAP_BOUNDS.latMin; // 134
+  var LON_SPAN = MAP_BOUNDS.lonMax - MAP_BOUNDS.lonMin; // 360
 
   function project(lon, lat, w, h) {
-    var x = ((lon - MAP_BOUNDS.lonMin) / (MAP_BOUNDS.lonMax - MAP_BOUNDS.lonMin)) * w;
-    var y = (1 - (lat - MAP_BOUNDS.latMin) / (MAP_BOUNDS.latMax - MAP_BOUNDS.latMin)) * h;
+    var x = ((lon - MAP_BOUNDS.lonMin) / LON_SPAN) * w;
+    var y = ((MAP_BOUNDS.latMax - lat) / LAT_SPAN) * h;
     return { x: x, y: y };
   }
 
   function unproject(x, y, w, h) {
-    var lon = MAP_BOUNDS.lonMin + (x / w) * (MAP_BOUNDS.lonMax - MAP_BOUNDS.lonMin);
-    var lat = MAP_BOUNDS.latMax - (y / h) * (MAP_BOUNDS.latMax - MAP_BOUNDS.latMin);
+    var lon = MAP_BOUNDS.lonMin + (x / w) * LON_SPAN;
+    var lat = MAP_BOUNDS.latMax - (y / h) * LAT_SPAN;
     return { lon: lon, lat: lat };
   }
 
-  function strokeGeoPolyline(ctx2d, points, w, h) {
+  // Appends polyline segments to an existing path (supports single-stroke batching)
+  function addGeoPolylinePath(ctx2d, points, w, h) {
     if (!points || !points.length) return;
-    ctx2d.beginPath();
     var p0 = project(points[0][0], points[0][1], w, h);
     ctx2d.moveTo(p0.x, p0.y);
     for (var i = 1; i < points.length; i++) {
@@ -70,6 +73,11 @@
         ctx2d.lineTo(p.x, p.y);
       }
     }
+  }
+
+  function strokeGeoPolyline(ctx2d, points, w, h) {
+    ctx2d.beginPath();
+    addGeoPolylinePath(ctx2d, points, w, h);
     ctx2d.stroke();
   }
 
@@ -220,7 +228,7 @@
       }
     }
 
-    /* ── Chokepoint Buttons (Fleet Watch View) — 100% Sub-Pixel Percentage Anchored ── */
+    /* ── Chokepoint Buttons (Fleet Watch View) — Sub-Pixel Percentage Anchored ── */
     function buildNodeButtons() {
       if (!nodesLayer) return;
       nodesLayer.innerHTML = '';
@@ -238,7 +246,7 @@
 
         // Exact percentage positioning matching projection math
         var leftPct = ((cp.lon + 180) / 3.6).toFixed(4);
-        var topPct = ((78 - cp.lat) / 1.4).toFixed(4);
+        var topPct = ((MAP_BOUNDS.latMax - cp.lat) / 1.34).toFixed(4);
         btn.style.left = leftPct + '%';
         btn.style.top = topPct + '%';
 
@@ -299,7 +307,7 @@
       draw();
     }
 
-    /* ── Port Nodes (Ports View) — 100% Sub-Pixel Percentage Anchored ── */
+    /* ── Port Nodes (Ports View) — Sub-Pixel Percentage Anchored ── */
     function buildPortNodeButtons() {
       if (!nodesLayer) return;
       nodesLayer.innerHTML = '';
@@ -312,7 +320,7 @@
 
         // Exact percentage positioning matching projection math
         var leftPct = ((pt.lon + 180) / 3.6).toFixed(4);
-        var topPct = ((78 - pt.lat) / 1.4).toFixed(4);
+        var topPct = ((MAP_BOUNDS.latMax - pt.lat) / 1.34).toFixed(4);
         btn.style.left = leftPct + '%';
         btn.style.top = topPct + '%';
 
@@ -486,8 +494,9 @@
     function sizeCanvas() {
       dpr = window.devicePixelRatio || 1;
       var cssW = canvas.clientWidth || root.clientWidth;
-      var aspect = (MAP_BOUNDS.latMax - MAP_BOUNDS.latMin) / (MAP_BOUNDS.lonMax - MAP_BOUNDS.lonMin);
-      var cssH = Math.max(Math.round(cssW * aspect), root.clientHeight || 520);
+      var aspect = LAT_SPAN / LON_SPAN;
+      var targetMinH = window.innerWidth < 768 ? 420 : 680;
+      var cssH = Math.max(Math.round(cssW * aspect), targetMinH);
       canvas.style.height = cssH + 'px';
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
@@ -502,31 +511,36 @@
       staticCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
+    /* ── Single-Stroke Batched Coastline Rendering ── */
     function renderStatic() {
       if (!coastline || !staticCtx) return;
       var sctx = staticCtx, w = mapW, h = mapH;
       sctx.clearRect(0, 0, w, h);
 
       // Graticule Grid
-      sctx.strokeStyle = 'rgba(200,145,58,.09)';
+      sctx.strokeStyle = 'rgba(200,145,58,.1)';
       sctx.lineWidth = 1;
       for (var gx = 0; gx < w; gx += 60) { sctx.beginPath(); sctx.moveTo(gx, 0); sctx.lineTo(gx, h); sctx.stroke(); }
       for (var gy = 0; gy < h; gy += 60) { sctx.beginPath(); sctx.moveTo(0, gy); sctx.lineTo(w, gy); sctx.stroke(); }
 
-      // High Precision 10m Coastline
-      sctx.strokeStyle = 'rgba(239,242,241,.55)';
-      sctx.lineWidth = 1.1;
+      // BATCHED SINGLE-STROKE COASTLINE: 100% continuous, crisp, no overlapping alpha joints
+      sctx.strokeStyle = 'rgba(239,242,241,.88)';
+      sctx.lineWidth = 1.25;
+      sctx.lineJoin = 'round';
+      sctx.lineCap = 'round';
+      sctx.beginPath();
       coastline.polylines.forEach(function (line) {
-        strokeGeoPolyline(sctx, line, w, h);
+        addGeoPolylinePath(sctx, line, w, h);
       });
+      sctx.stroke();
 
       // Trade Routes (in Fleet Watch view)
       if (activeView === 'fleetwatch') {
         routes.forEach(function (rt) {
           var active = rt.id === selectedRouteId;
           sctx.setLineDash(active ? [] : [3, 4]);
-          sctx.strokeStyle = active ? 'rgba(232,184,112,.95)' : 'rgba(232,184,112,.22)';
-          sctx.lineWidth = active ? 2.4 : 1.1;
+          sctx.strokeStyle = active ? 'rgba(232,184,112,.95)' : 'rgba(232,184,112,.25)';
+          sctx.lineWidth = active ? 2.5 : 1.2;
           strokeGeoPolyline(sctx, rt.waypoints, w, h);
           sctx.setLineDash([]);
         });
@@ -536,8 +550,8 @@
       if (activeView === 'cables') {
         cables.forEach(function (cb) {
           var active = cb.id === selectedCableId;
-          sctx.strokeStyle = active ? '#00ffff' : 'rgba(0,229,255,.4)';
-          sctx.lineWidth = active ? 2.8 : 1.4;
+          sctx.strokeStyle = active ? '#00ffff' : 'rgba(0,229,255,.45)';
+          sctx.lineWidth = active ? 3.0 : 1.5;
           strokeGeoPolyline(sctx, cb.waypoints, w, h);
 
           // Render landing station dots along cable
@@ -545,7 +559,7 @@
             cb.waypoints.forEach(function (pt) {
               var p = project(pt[0], pt[1], w, h);
               sctx.beginPath();
-              sctx.arc(p.x, p.y, active ? 3.8 : 2.2, 0, Math.PI * 2);
+              sctx.arc(p.x, p.y, active ? 4.0 : 2.4, 0, Math.PI * 2);
               sctx.fillStyle = active ? '#ffffff' : 'rgba(0,229,255,.9)';
               sctx.fill();
             });
