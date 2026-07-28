@@ -524,23 +524,44 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-filter-btn:hover { color: var(--white); }
 .fw-filter-btn.active { color: var(--gold-l); background: rgba(200,145,58,.15); border-color: rgba(200,145,58,.35); }
 
-/* Distortion-Free Natural Map Canvas Container */
-.fw-map-wrap { position: relative; background: radial-gradient(ellipse at 50% 45%, #061224 0%, #02060d 100%); border: 1.5px solid rgba(184,137,74,.35); border-radius: 18px; overflow: hidden; box-shadow: inset 0 0 60px rgba(0,0,0,.65), 0 20px 48px rgba(0,0,0,.4); }
+/* Distortion-Free Natural Map Canvas Container with Ambient Glow */
+.fw-map-wrap { position: relative; background: radial-gradient(ellipse at 50% 45%, #061224 0%, #02060d 100%); border: 1.5px solid rgba(184,137,74,.35); border-radius: 18px; overflow: hidden; box-shadow: inset 0 0 60px rgba(0,0,0,.65), 0 20px 48px rgba(0,0,0,.4); transition: border-color .4s var(--ease), box-shadow .4s var(--ease); }
+.fw-map-wrap:hover { border-color: rgba(232,184,112,.6); box-shadow: inset 0 0 70px rgba(0,0,0,.7), 0 24px 60px rgba(200,145,58,.15); }
 .fw-map-wrap canvas { display: block; width: 100%; height: auto; }
 .fw-nodes { position: absolute; inset: 0; pointer-events: none; }
 
-/* Mathematically Exact Sub-Pixel Percentage Anchoring */
+/* Radar Ping & Morphing Animations */
+@keyframes radarPing {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+}
+
+@keyframes borderGlow {
+  0% { border-color: rgba(184,137,74,.25); box-shadow: 0 0 15px rgba(200,145,58,.05); }
+  50% { border-color: rgba(0,229,255,.45); box-shadow: 0 0 25px rgba(0,229,255,.12); }
+  100% { border-color: rgba(184,137,74,.25); box-shadow: 0 0 15px rgba(200,145,58,.05); }
+}
+
+/* Mathematically Exact Sub-Pixel Percentage Anchoring with Radar Waves */
 .fw-node { position: absolute; width: 0; height: 0; padding: 0; margin: 0; border: none; background: none; cursor: pointer; pointer-events: auto; }
 .fw-node-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 11px; height: 11px; border-radius: 50%; background: var(--gold-l); box-shadow: 0 0 0 5px rgba(232,184,112,.2); transition: all .25s var(--ease); flex-shrink: 0; }
+.fw-node-dot::before { content: ''; position: absolute; top: 50%; left: 50%; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid var(--gold-l); animation: radarPing 2.4s infinite cubic-bezier(0,0.2,0.8,1); pointer-events: none; }
 .fw-node-dot--secondary { width: 7px; height: 7px; background: rgba(232,184,112,.55); box-shadow: 0 0 0 3px rgba(232,184,112,.12); }
+.fw-node-dot--secondary::before { display: none; }
 .fw-node-label { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-family: var(--ff-c); font-size: .64rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.9); white-space: nowrap; opacity: 0; transition: all .25s var(--ease); text-shadow: 0 1px 8px rgba(0,0,0,.95); pointer-events: none; }
-.fw-node:hover .fw-node-label, .fw-node:focus-visible .fw-node-label, .fw-node.active .fw-node-label { opacity: 1; }
+.fw-node:hover .fw-node-label, .fw-node:focus-visible .fw-node-label, .fw-node.active .fw-node-label { opacity: 1; transform: translateY(-50%) translateX(4px); }
 .fw-node:hover .fw-node-dot, .fw-node:focus-visible .fw-node-dot, .fw-node.active .fw-node-dot { background: var(--white); box-shadow: 0 0 0 8px rgba(232,184,112,.45); }
 
-/* Port Nodes — Sub-Pixel Percentage Anchoring */
+/* Port Nodes — Sub-Pixel Percentage Anchoring with Radar Aura */
 .fw-port-node { position: absolute; width: 0; height: 0; padding: 0; margin: 0; border: none; background: none; cursor: pointer; pointer-events: auto; }
 .fw-port-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 16px; height: 16px; border-radius: 50%; background: #00e5ff; box-shadow: 0 0 0 5px rgba(0,229,255,.28); transition: all .25s var(--ease); flex-shrink: 0; display: grid; place-items: center; font-family: var(--ff-c); font-size: .56rem; font-weight: 800; color: #040a14; }
+.fw-port-dot::before { content: ''; position: absolute; top: 50%; left: 50%; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #00e5ff; animation: radarPing 2.6s infinite cubic-bezier(0,0.2,0.8,1); pointer-events: none; }
 .fw-port-label { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--ff-c); font-size: .64rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.95); white-space: nowrap; opacity: 0; transition: all .25s var(--ease); text-shadow: 0 1px 8px rgba(0,0,0,.95); pointer-events: none; }
+.fw-port-node:hover .fw-port-label, .fw-port-node:focus-visible .fw-port-label, .fw-port-node.active .fw-port-label { opacity: 1; transform: translateY(-50%) translateX(4px); }
+
+/* Glassmorphism & Shimmer Cards */
+.obs-chart-panel, .obs-card, .obs-kpi-card { transition: all .35s var(--ease); backdrop-filter: blur(8px); }
+.obs-chart-panel:hover, .obs-card:hover, .obs-kpi-card:hover { transform: translateY(-4px); animation: borderGlow 4s infinite ease-in-out; }
 .fw-port-node:hover .fw-port-label, .fw-port-node:focus-visible .fw-port-label, .fw-port-node.active .fw-port-label { opacity: 1; }
 .fw-port-node:hover .fw-port-dot, .fw-port-node:focus-visible .fw-port-dot, .fw-port-node.active .fw-port-dot { background: var(--white); color: #040a14; box-shadow: 0 0 0 8px rgba(0,229,255,.55); }
 
