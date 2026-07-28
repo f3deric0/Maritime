@@ -69,6 +69,40 @@
     return { lon: lon, lat: lat };
   }
 
+  // Strokes a lon/lat polyline, splitting it at the antimeridian (±180°)
+  // instead of drawing a straight line the "wrong way round" the globe —
+  // any consecutive pair whose raw longitude delta exceeds 180° gets cut
+  // at the map edge and resumed on the opposite edge, with the crossing
+  // latitude interpolated. Used for both coastline and trade-route lines.
+  function strokeGeoPolyline(ctx2d, points, w, h) {
+    if (!points.length) return;
+    ctx2d.beginPath();
+    var p0 = project(points[0][0], points[0][1], w, h);
+    ctx2d.moveTo(p0.x, p0.y);
+    for (var i = 1; i < points.length; i++) {
+      var lonA = points[i - 1][0], latA = points[i - 1][1];
+      var lonB = points[i][0], latB = points[i][1];
+      var rawDelta = lonB - lonA;
+      if (rawDelta > 180 || rawDelta < -180) {
+        var exitLon = rawDelta > 180 ? -180 : 180;
+        var enterLon = rawDelta > 180 ? 180 : -180;
+        var unwrappedB = rawDelta > 180 ? lonB - 360 : lonB + 360;
+        var f = (exitLon - lonA) / (unwrappedB - lonA);
+        var latCross = latA + f * (latB - latA);
+        var pExit = project(exitLon, latCross, w, h);
+        ctx2d.lineTo(pExit.x, pExit.y);
+        var pEnter = project(enterLon, latCross, w, h);
+        ctx2d.moveTo(pEnter.x, pEnter.y);
+        var pB = project(lonB, latB, w, h);
+        ctx2d.lineTo(pB.x, pB.y);
+      } else {
+        var p = project(lonB, latB, w, h);
+        ctx2d.lineTo(p.x, p.y);
+      }
+    }
+    ctx2d.stroke();
+  }
+
   function fetchJSON(url) {
     return fetch(url, { cache: 'no-store' }).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
@@ -335,37 +369,23 @@
       sctx.strokeStyle = 'rgba(239,242,241,.4)';
       sctx.lineWidth = 1.1;
       coastline.polylines.forEach(function (line) {
-        sctx.beginPath();
-        line.forEach(function (pt, i) {
-          var p = project(pt[0], pt[1], w, h);
-          if (i === 0) sctx.moveTo(p.x, p.y); else sctx.lineTo(p.x, p.y);
-        });
-        sctx.stroke();
+        strokeGeoPolyline(sctx, line, w, h);
       });
 
       routes.forEach(function (rt) {
         var active = rt.id === selectedRouteId;
-        sctx.beginPath();
-        rt.waypoints.forEach(function (pt, i) {
-          var p = project(pt[0], pt[1], w, h);
-          if (i === 0) sctx.moveTo(p.x, p.y); else sctx.lineTo(p.x, p.y);
-        });
         sctx.setLineDash(active ? [] : [3, 4]);
         sctx.strokeStyle = active ? 'rgba(232,184,112,.9)' : 'rgba(232,184,112,.22)';
         sctx.lineWidth = active ? 2 : 1;
-        sctx.stroke();
+        strokeGeoPolyline(sctx, rt.waypoints, w, h);
         sctx.setLineDash([]);
       });
 
-      chokepoints.forEach(function (cp) {
-        var p = project(cp.lon, cp.lat, w, h);
-        var major = cp.tier !== 'secondary';
-        sctx.beginPath();
-        sctx.arc(p.x, p.y, major ? 16 : 10, 0, Math.PI * 2);
-        sctx.strokeStyle = major ? 'rgba(232,184,112,.4)' : 'rgba(200,145,58,.28)';
-        sctx.lineWidth = major ? 1.2 : 1;
-        sctx.stroke();
-      });
+      // Chokepoints get exactly one marker each — the DOM dot
+      // (.fw-node-dot, positioned by positionNodeButtons()), which already
+      // carries its own hover/focus/active ring via CSS. No canvas ring
+      // here anymore — an always-on stroked circle behind every dot read
+      // as a second, separate marker at world-map zoom.
     }
 
     // Per-frame draw: blit the cached static layer, then the live ships.
