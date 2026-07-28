@@ -1,51 +1,120 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Maritime Insights — Data, Live Vessel Map & EU Freight Observatory</title>
-  <meta name="description" content="Live world maritime AIS vessel tracking, EU short-sea freight observatory, 20 world container ports, 13 submarine fiber cables, and marine economy statistics.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico">
+<link rel="apple-touch-icon" href="./assets/images/Logo-maritimes.png">
+
+<title>Maritime Insights — Data, Live Vessel Map & EU Freight Observatory</title>
+<meta name="description" content="Live world maritime AIS vessel tracking, EU short-sea freight observatory, 20 world container ports, 13 submarine fiber cables, and marine economy statistics.">
+<meta name="theme-color" content="#050c15">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Barlow+Condensed:wght@300;400;500;600;700;800&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
 </head>
+
 <body class="page-insights">
 
-<header class="site-header" id="header">
-  <div class="wrap header-inner">
-    <a href="index.html" class="brand">
-      <span class="brand-mark">⚓</span>
-      <span class="brand-text">MARITIME AFFAIRS</span>
+<a class="skip-link" href="#obs-hero">Skip to content</a>
+
+<!-- COMPASS CURSOR -->
+<div id="compass-cursor">
+  <svg viewBox="0 0 56 56" fill="none">
+    <circle cx="28" cy="28" r="26" stroke="rgba(200,145,58,.35)" stroke-width="1"/>
+    <line x1="28" y1="2"  x2="28" y2="8"  stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="28" y1="48" x2="28" y2="54" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="2"  y1="28" x2="8"  y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <line x1="48" y1="28" x2="54" y2="28" stroke="rgba(200,145,58,.5)" stroke-width="1.5"/>
+    <g class="needle">
+      <polygon points="28,6 30.5,26 28,32 25.5,26" fill="rgba(200,145,58,.9)"/>
+      <polygon points="28,50 30.5,30 28,24 25.5,30" fill="rgba(255,255,255,.25)"/>
+    </g>
+    <circle cx="28" cy="28" r="2.5" fill="rgba(200,145,58,.8)"/>
+  </svg>
+</div>
+
+<div id="cursor-dot"></div>
+<div id="bar"></div>
+
+<!-- NAV -->
+<nav id="nav" class="dark">
+    <a href="index.html" class="logo">
+        <div class="logo-pill">
+            <img src="./assets/images/Logo-maritimes-nav.png" alt="Maritime Affairs" width="44" height="44" style="height:44px;width:auto;display:block;">
+            <div class="logo-text">
+                <div class="logo-name">Maritime <em>Affairs</em></div>
+                <span class="logo-sub">EU Blue Economy Do-Tank</span>
+            </div>
+        </div>
     </a>
-    <nav class="main-nav" aria-label="Main Navigation">
-      <a href="index.html">Home</a>
-      <a href="article.html">Articles</a>
-      <a href="insights.html" class="active">Insights</a>
-    </nav>
+
+    <div class="ocean-pill" data-ocean-pill>
+        <video class="ocean-pill-video" muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true">
+          <source src="./assets/video/onde.mp4" type="video/mp4">
+        </video>
+        <ul class="ocean-pill-links">
+            <li><a href="index.html#mission">Mission</a></li>
+            <li><a href="index.html#units">Units</a></li>
+            <li><a href="index.html#network">Network</a></li>
+            <li><a href="insights.html" class="active">Insights</a></li>
+            <li><a href="publications.html">Publications</a></li>
+            <li><a href="index.html#contact">Join</a></li>
+        </ul>
+    </div>
+
+    <div class="nav-r">
+        <div class="nav-pulse"><div class="pulse-dot"></div>EU NGO</div>
+        <a href="index.html#contact" class="nav-btn">Join Us</a>
+        <button id="menu-toggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+          <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- MOBILE DRAWER -->
+<div id="drawer" class="drawer" aria-hidden="true">
+  <svg class="drawer-rose" viewBox="0 0 200 200" fill="none" aria-hidden="true">
+    <circle cx="100" cy="100" r="96" stroke="rgba(200,145,58,.5)" stroke-width="1"/>
+    <circle cx="100" cy="100" r="70" stroke="rgba(200,145,58,.3)" stroke-width="1"/>
+    <line x1="100" y1="4" x2="100" y2="196" stroke="rgba(200,145,58,.25)"/>
+    <line x1="4" y1="100" x2="196" y2="100" stroke="rgba(200,145,58,.25)"/>
+    <polygon points="100,18 106,96 100,112 94,96" fill="rgba(200,145,58,.6)"/>
+  </svg>
+  <ul class="drawer-links">
+    <li><a href="index.html#mission"><span class="dl-n">01</span><span class="dl-t">Mission</span></a></li>
+    <li><a href="index.html#units"><span class="dl-n">02</span><span class="dl-t">Units</span></a></li>
+    <li><a href="index.html#network"><span class="dl-n">03</span><span class="dl-t">Network</span></a></li>
+    <li><a href="insights.html"><span class="dl-n">04</span><span class="dl-t">Insights</span></a></li>
+    <li><a href="publications.html"><span class="dl-n">05</span><span class="dl-t">Publications</span></a></li>
+    <li><a href="index.html#contact"><span class="dl-n">06</span><span class="dl-t">Join Us</span></a></li>
+  </ul>
+  <div class="drawer-foot">
+    <a href="mailto:info@maritime-affairs.eu">info@maritime-affairs.eu</a>
+    <span class="df-tag">Brussels · European NGO · EU Transparency Register</span>
   </div>
-</header>
+</div>
 
 <main>
 
-<!-- HERO -->
-<section class="sec-hero hero-insights">
+<!-- OBSERVATORY HERO -->
+<section class="obs-hero" id="obs-hero">
   <div class="wrap">
-    <div class="hero-content">
-      <div class="eyebrow light" data-r="left">Data & Observatory</div>
-      <h1 class="h1 headline-engraved" data-r="up" data-rd="100">
-        European & Global<br><em>Maritime Insights</em>
-      </h1>
-      <p class="body-text lead on-dark" data-r="up" data-rd="200" style="max-width:720px">
-        Live AIS vessel tracking, 15 maritime chokepoints, 20 top container ports, 13 submarine fiber trunks, and official Eurostat maritime freight statistics.
-      </p>
-    </div>
+    <div class="eyebrow light" data-r="left">Blue Economy Observatory</div>
+    <h1 class="h2 on-dark" data-r="up" data-rd="100">Europe's maritime economy,<br><em>in real numbers</em></h1>
+    <p class="body-text on-dark" style="max-width:640px;margin-top:1.2rem" data-r="up" data-rd="200">
+      Live figures on EU short-sea shipping and port freight — pulled directly from Eurostat's
+      open dissemination API alongside real-time AIS vessel tracking across 15 global chokepoints.
+    </p>
   </div>
 </section>
 
-<!-- HEADLINE NUMBERS -->
-<section class="sec obs-numbers" aria-label="Headline Eurostat maritime metrics">
-  <div class="wrap">
+<!-- HEADLINE STATS -->
+<section class="sec-nums obs-stats" id="obs-stats-grid" aria-label="Headline maritime statistics">
+  <div class="wrap" style="position:relative;z-index:1">
     <div class="obs-num-grid">
       <div class="obs-num-cell" data-r="up" data-rd="0">
         <span class="num-val" data-obs-stat="total-goods" data-count="837.1" data-suffix=" Mt">837.1 Mt</span>
@@ -75,7 +144,7 @@
 </section>
 
 <!-- SHORT-SEA CHARTS -->
-<section class="sec obs-charts" aria-label="Short-Sea Shipping Data Charts">
+<section class="sec obs-charts" aria-label="Maritime data charts">
   <div class="wrap">
     <div class="obs-chart-grid">
 
@@ -285,14 +354,21 @@
 
 <footer style="padding:3rem 5vw;background:var(--ink);border-top:1px solid rgba(255,255,255,.06)">
   <div class="ft-bottom" style="max-width:1200px;margin:0 auto">
-    <p>© 2026 Maritime Affairs. Independent journalism on European maritime strategy, policy & geopolitical trade.</p>
+    <span>© 2026 Maritime Affairs — European NGO</span>
+    <div class="ft-links">
+      <a href="index.html">Home</a>
+      <a href="insights.html">Insights</a>
+      <a href="publications.html">Publications</a>
+      <a href="mailto:info@maritime-affairs.eu">Contact</a>
+    </div>
   </div>
 </footer>
 
 </main>
 
-<script src="js/main.js"></script>
+<script src="js/ocean-nav.js"></script>
 <script src="js/observatory.js"></script>
 <script src="js/fleetwatch.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
