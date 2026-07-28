@@ -469,41 +469,63 @@
   /* ── Sea Basins Freight Horizontal Bar Chart ── */
   function drawBasinsChart(canvas, basinsData) {
     if (!basinsData || !basinsData.items) return;
-    var dim = sizeCanvas(canvas, 360 / 640), ctx = dim.ctx, w = dim.w, h = dim.h;
+    var dim = sizeCanvas(canvas, 340 / 640), ctx = dim.ctx, w = dim.w, h = dim.h;
     var items = basinsData.items;
-    var padL = 130, padR = 80, padT = 20, padB = 25;
+    var padL = 148, padR = 10, padT = 14, padB = 14;
     var chartW = w - padL - padR;
     var rowH = (h - padT - padB) / items.length;
-    var maxVal = 1450;
+    var barH = Math.min(22, rowH * 0.55);
+    var maxVal = Math.max.apply(null, items.map(function (i) { return i.tonnesMt; })) * 1.05;
 
     function frame(progress) {
       ctx.clearRect(0, 0, w, h);
-      drawGraticule(ctx, w, h);
+
+      /* subtle background grid lines */
+      ctx.strokeStyle = 'rgba(200,145,58,.07)';
+      ctx.lineWidth = 1;
+      [0.25, 0.5, 0.75, 1].forEach(function (f) {
+        var x = padL + chartW * f;
+        ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, h - padB); ctx.stroke();
+      });
 
       items.forEach(function (item, i) {
-        var y = padT + i * rowH + rowH / 2;
+        var cy = padT + i * rowH + rowH / 2;
         var barW = (item.tonnesMt / maxVal) * chartW * progress;
 
-        ctx.fillStyle = 'rgba(239,242,241,.95)';
-        ctx.font = '700 13px Barlow Condensed,sans-serif';
+        /* basin label */
+        ctx.fillStyle = 'rgba(239,242,241,.9)';
+        ctx.font = '600 12px Barlow Condensed, sans-serif';
         ctx.textAlign = 'right';
-        ctx.fillText(item.basin, padL - 12, y + 4);
+        ctx.fillText(item.basin, padL - 10, cy + 4);
 
+        /* bar body */
         var grad = ctx.createLinearGradient(padL, 0, padL + barW, 0);
-        grad.addColorStop(0, 'rgba(0,229,255,0.15)');
+        grad.addColorStop(0, 'rgba(0,229,255,0.12)');
         grad.addColorStop(1, item.color || '#00e5ff');
         ctx.fillStyle = grad;
-        ctx.fillRect(padL, y - 10, barW, 20);
+        ctx.fillRect(padL, cy - barH / 2, barW, barH);
 
+        /* bar border */
         ctx.strokeStyle = item.color || '#00e5ff';
-        ctx.lineWidth = 1;
-        ctx.strokeRect(padL, y - 10, barW, 20);
+        ctx.lineWidth = 0.8;
+        ctx.strokeRect(padL, cy - barH / 2, barW, barH);
 
-        if (progress > 0.8) {
-          ctx.fillStyle = '#ffffff';
-          ctx.textAlign = 'left';
-          ctx.font = '700 13px Cormorant Garamond,serif';
-          ctx.fillText(item.tonnesMt + ' Mt (' + item.sharePct + '%)', padL + barW + 10, y + 4);
+        /* value label — inside bar if wide enough, otherwise right side */
+        if (progress > 0.75) {
+          var label = item.tonnesMt + ' Mt · ' + item.sharePct + '%';
+          ctx.font = '700 11px Barlow Condensed, sans-serif';
+          var labelW = ctx.measureText(label).width;
+          if (barW > labelW + 20) {
+            /* inside bar, right-aligned */
+            ctx.fillStyle = '#040a14';
+            ctx.textAlign = 'right';
+            ctx.fillText(label, padL + barW - 8, cy + 4);
+          } else {
+            /* outside bar, right of bar */
+            ctx.fillStyle = 'rgba(239,242,241,.85)';
+            ctx.textAlign = 'left';
+            ctx.fillText(label, padL + barW + 6, cy + 4);
+          }
         }
       });
     }
