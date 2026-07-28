@@ -485,11 +485,13 @@ const cObs = new IntersectionObserver(entries => {
     const end = parseFloat(el.dataset.count);
     const sfx = el.dataset.suffix || '';
     if (!end) return;
-    const dur = 1800, s = performance.now();
+    const isFloat = end % 1 !== 0;
+    const dec = isFloat ? (String(end).split('.')[1] || '').length : 0;
     const step = n => {
       const t    = Math.min((n - s) / dur, 1);
       const ease = 1 - Math.pow(1 - t, 4);
-      el.textContent = Math.floor(ease * end).toLocaleString('en-US') + sfx;
+      const val  = ease * end;
+      el.textContent = isFloat ? val.toFixed(dec) + sfx : Math.floor(val).toLocaleString('en-US') + sfx;
       if (t < 1) requestAnimationFrame(step);
       else el.textContent = end.toLocaleString('en-US', { maximumFractionDigits: 2 }) + sfx;
     };
