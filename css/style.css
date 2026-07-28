@@ -517,6 +517,18 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-detail-source { font-family: var(--ff-c); font-size: .64rem; letter-spacing: .06em; color: rgba(200,145,58,.7); }
 .fw-detail-source:hover { color: var(--gold-l); }
 
+.news-list { list-style: none; margin: 2rem 0 0; padding: 0; }
+.news-item { border-bottom: 1px solid rgba(184,137,74,.15); }
+.news-item a { display: flex; align-items: baseline; gap: 1.2rem; padding: 1rem 0; text-decoration: none; color: inherit; }
+.news-source { flex-shrink: 0; width: 84px; font-family: var(--ff-c); font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-l); }
+.news-title { flex: 1; font-family: var(--ff-d); font-size: 1.05rem; color: rgba(239,242,241,.85); transition: color .2s var(--ease); }
+.news-item a:hover .news-title, .news-item a:focus-visible .news-title { color: var(--white); }
+.news-date { flex-shrink: 0; font-family: var(--ff-c); font-size: .6rem; letter-spacing: .04em; color: rgba(255,255,255,.35); }
+.news-item-empty { padding: 1rem 0; font-size: .85rem; color: rgba(255,255,255,.4); font-style: italic; list-style: none; }
+.news-attribution { margin-top: 1.4rem; font-size: .72rem; color: rgba(255,255,255,.35); }
+.news-attribution a { color: rgba(200,145,58,.8); }
+.news-attribution a:hover { color: var(--gold-l); }
+
 /* insights.html — sourcing line */
 .obs-source { padding: 2.5rem 0 4rem; border-top: 1px solid rgba(255,255,255,.06); margin-top: 3rem; }
 .obs-source p { text-align: center; font-size: .74rem; color: rgba(255,255,255,.4); font-family: var(--ff-b); line-height: 1.8; }

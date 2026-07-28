@@ -23,6 +23,11 @@ Thumbs.db
 assets/data/fleet-live.json
 assets/data/fleet-live.json.tmp
 
+# Maritime news — generated on the VPS by scripts/fetch-maritime-news.py
+# via cron every ~20-30 min. Never commit generated data.
+assets/data/maritime-news.json
+assets/data/maritime-news.json.tmp
+
 # Python
 __pycache__/
 *.pyc

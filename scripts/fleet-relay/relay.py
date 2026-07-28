@@ -171,7 +171,7 @@ async def stream_loop(chokepoints):
 
 def handle_message(msg, chokepoints):
     msg_type = msg.get("MessageType")
-    meta = msg.get("Metadata", {})
+    meta = msg.get("MetaData", {})
 
     if msg_type == "PositionReport":
         pr = msg.get("Message", {}).get("PositionReport", {})
