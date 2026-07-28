@@ -491,7 +491,8 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 /* insights.html — chart panels */
 .obs-charts { padding-top: 90px; }
 .obs-chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-.obs-chart-panel { background: var(--deep); border: 1px solid rgba(184,137,74,.2); border-radius: 16px; padding: 1.9rem 1.9rem 1.4rem; }
+.obs-chart-panel { background: rgba(5,12,21,.6); border: 1.5px solid rgba(184,137,74,.3); border-radius: 16px; padding: 2rem; position: relative; overflow: hidden; }
+.obs-chart-panel::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg width='120' height='60' viewBox='0 0 120 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30 Q30 15 60 30 T120 30 M0 45 Q30 30 60 45 T120 45' fill='none' stroke='rgba(0,229,255,0.035)' stroke-width='1.5'/%3E%3C/svg%3E"); pointer-events: none; opacity: 0.8; }
 .obs-chart-panel h3 { font-family: var(--ff-c); font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(239,242,241,.75); margin-bottom: 1.2rem; }
 .obs-chart-panel canvas { width: 100%; height: auto; display: block; }
 .obs-chart-note { margin-top: 1rem; font-size: .82rem; font-weight: 300; color: rgba(255,255,255,.5); line-height: 1.6; }
@@ -575,10 +576,33 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-legend-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold-l); box-shadow: 0 0 0 3px rgba(232,184,112,.18); flex-shrink: 0; }
 .fw-legend-dot--secondary { width: 5px; height: 5px; background: rgba(232,184,112,.5); box-shadow: 0 0 0 2px rgba(232,184,112,.1); }
 .fw-legend-line { width: 16px; height: 0; border-top: 1px dashed rgba(232,184,112,.6); display: inline-block; flex-shrink: 0; }
-.fw-routes { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: 1.2rem; }
-.fw-route-chip { font-family: var(--ff-c); font-size: .62rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.65); background: rgba(184,137,74,.08); border: 1px solid rgba(184,137,74,.25); border-radius: 999px; padding: .5rem 1.1rem; cursor: pointer; transition: all .2s var(--ease); }
-.fw-route-chip:hover, .fw-route-chip:focus-visible { color: var(--white); border-color: rgba(232,184,112,.5); background: rgba(184,137,74,.16); outline: none; }
-.fw-route-chip.active { color: var(--ink); background: var(--gold-l); border-color: var(--gold-l); }
+/* Ports "Bouncing Boats" Wave Selector */
+@keyframes boatRock {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(3deg); }
+}
+
+.fw-port-boats { display: flex; gap: 1rem; overflow-x: auto; padding: 1.2rem .5rem; margin-top: 1.5rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; border-top: 1px solid rgba(184,137,74,.2); }
+.fw-port-boats::-webkit-scrollbar { height: 6px; }
+.fw-port-boats::-webkit-scrollbar-thumb { background: rgba(200,145,58,.3); border-radius: 3px; }
+
+.fw-boat-btn { flex: 0 0 auto; scroll-snap-align: start; display: inline-flex; flex-direction: column; align-items: center; gap: .5rem; background: rgba(6,18,36,.8); border: 1px solid rgba(0,229,255,.3); border-radius: 14px; padding: 1rem 1.2rem; cursor: pointer; transition: all .35s var(--ease); animation: boatRock 3.2s infinite ease-in-out; }
+.fw-boat-btn:hover, .fw-boat-btn.active { background: rgba(0,229,255,.15); border-color: #00e5ff; box-shadow: 0 0 20px rgba(0,229,255,.3); transform: translateY(-4px); }
+.fw-boat-svg { width: 32px; height: 28px; fill: none; stroke: #00e5ff; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 2px 6px rgba(0,229,255,.4)); }
+.fw-boat-name { font-family: var(--ff-c); font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.9); white-space: nowrap; }
+.fw-boat-teu { font-family: var(--ff-d); font-size: .85rem; font-weight: 700; color: var(--gold-l); }
+
+/* Fullscreen Toggle & Map Controls */
+.fw-map-controls { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
+.fw-ctrl-btn { width: 40px; height: 40px; border-radius: 10px; background: rgba(6,18,36,.85); border: 1px solid rgba(184,137,74,.35); color: var(--gold-l); font-size: 1.2rem; display: grid; place-items: center; cursor: pointer; transition: all .25s var(--ease); backdrop-filter: blur(8px); }
+.fw-ctrl-btn:hover { background: rgba(200,145,58,.25); border-color: var(--gold-l); color: var(--white); box-shadow: 0 0 16px rgba(200,145,58,.3); }
+
+.fw-side-news { position: absolute; top: 16px; left: 16px; bottom: 16px; width: 280px; background: rgba(4,10,20,.92); border: 1px solid rgba(184,137,74,.3); border-radius: 12px; padding: 1.2rem; display: flex; flex-direction: column; z-index: 9; backdrop-filter: blur(12px); transform: translateX(-110%); transition: transform .35s var(--ease); }
+.fw-map-wrap.news-open .fw-side-news, .fw-map-wrap:fullscreen .fw-side-news { transform: translateX(0); }
+.fw-side-news h4 { font-family: var(--ff-c); font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-l); margin-bottom: .8rem; }
+.fw-side-news-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; display: flex; flex-direction: column; gap: .8rem; }
+.fw-side-news-list a { font-size: .78rem; color: rgba(239,242,241,.85); text-decoration: none; line-height: 1.4; transition: color .2s; }
+.fw-side-news-list a:hover { color: #00e5ff; }
 
 .fw-detail { margin-top: 1.5rem; background: var(--deep); border: 1px solid rgba(184,137,74,.2); border-radius: 16px; padding: 1.8rem 2rem; min-height: 92px; }
 .fw-detail-empty { font-size: .85rem; color: rgba(255,255,255,.4); font-style: italic; }

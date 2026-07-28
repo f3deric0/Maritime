@@ -239,10 +239,18 @@
         var x = padL + barGap * i + (barGap - barW) / 2;
         var y = h - padB - barH;
         var grad = ctx.createLinearGradient(0, y, 0, h - padB);
-        grad.addColorStop(0, '#e8b870');
-        grad.addColorStop(1, '#b8894a');
+        grad.addColorStop(0, '#00e5ff');
+        grad.addColorStop(0.35, '#4fc3f7');
+        grad.addColorStop(1, '#e8b870');
         ctx.fillStyle = grad;
         ctx.fillRect(x, y, barW, barH);
+
+        // Glowing cyan cap
+        ctx.fillStyle = '#00e5ff';
+        ctx.shadowColor = '#00e5ff';
+        ctx.shadowBlur = 6;
+        ctx.fillRect(x, y - 2, barW, 3);
+        ctx.shadowBlur = 0;
 
         ctx.fillStyle = 'rgba(239,242,241,.85)';
         ctx.textAlign = 'center';
