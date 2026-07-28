@@ -177,9 +177,22 @@
         </p>
       </div>
       <div class="fw-livestats">
-        <div class="fw-stat"><span class="fw-stat-val" id="fw-vessel-count">—</span><span class="fw-stat-lbl">Vessels tracked now</span></div>
-        <div class="fw-stat"><span class="fw-stat-val fw-stat-val--sm" id="fw-busiest">—</span><span class="fw-stat-lbl">Busiest chokepoint</span></div>
+        <div class="fw-stat"><span class="fw-stat-val" id="fw-vessel-count">—</span><span class="fw-stat-lbl" id="fw-stat-lbl-1">Vessels tracked now</span></div>
+        <div class="fw-stat"><span class="fw-stat-val fw-stat-val--sm" id="fw-busiest">—</span><span class="fw-stat-lbl" id="fw-stat-lbl-2">Busiest chokepoint</span></div>
       </div>
+    </div>
+
+    <!-- MAP VIEW SWITCHER TABS -->
+    <div class="fw-view-tabs" id="fw-view-tabs" data-r="up" aria-label="Map View Selector">
+      <button type="button" class="fw-tab active" data-view="fleetwatch" aria-label="Fleet Watch and Live AIS map">
+        <span class="fw-tab-icon">🌐</span> Fleet Watch & Live AIS
+      </button>
+      <button type="button" class="fw-tab" data-view="ports" aria-label="Top 20 World Container Ports map">
+        <span class="fw-tab-icon">⚓</span> Top 20 Porti Mondiali
+      </button>
+      <button type="button" class="fw-tab" data-view="cables" aria-label="Critical Submarine Fiber-Optic Cables map">
+        <span class="fw-tab-icon">📡</span> Cavi Sottomarini Critici
+      </button>
     </div>
 
     <div class="fw-map-wrap" id="fw-map-wrap" data-r="up" data-rd="100">

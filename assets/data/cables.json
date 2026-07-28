@@ -1,0 +1,229 @@
+{
+  "meta": {
+    "title": "Critical Global Submarine Telecom Cables",
+    "updatedAt": "2026-07-28",
+    "source": "Submarine Cable Map / TeleGeography / ITU Data",
+    "unit": "Terabits per second (Tbps) / Kilometers (km)"
+  },
+  "items": [
+    {
+      "id": "cable-marea",
+      "name": "MAREA Transatlantic Cable",
+      "tag": "Record-Capacity Transatlantic Fiber Trunk",
+      "lengthKm": 6600,
+      "capacityTbps": 200,
+      "yearInstalled": 2018,
+      "landingStations": ["Virginia Beach (USA)", "Sopelana / Bilbao (Spain)"],
+      "summary": "One of the highest-capacity transatlantic submarine cables in history, jointly built by Microsoft, Meta, and Telxius, crossing the North Atlantic south of traditional cable routes to provide resilient high-bandwidth cloud infrastructure.",
+      "waypoints": [
+        [-75.97, 36.85],
+        [-65.00, 38.50],
+        [-45.00, 41.00],
+        [-25.00, 43.50],
+        [-10.00, 44.50],
+        [-2.98, 43.38]
+      ],
+      "source": "https://www.submarinenetworks.com/en/systems/trans-atlantic/marea",
+      "sourceLabel": "Submarine Networks — MAREA"
+    },
+    {
+      "id": "cable-seamewe5",
+      "name": "SEA-ME-WE 5",
+      "tag": "Asia–Middle East–Europe Digital Spine",
+      "lengthKm": 20000,
+      "capacityTbps": 24,
+      "yearInstalled": 2016,
+      "landingStations": ["Singapore", "Malacca", "Colombo (Sri Lanka)", "Djibouti", "Suez / Alexandria (Egypt)", "Marseille (France)"],
+      "summary": "A 20,000km multiregional undersea cable system connecting Southeast Asia to Western Europe through the strategic choke points of the Malacca Strait, Bab-el-Mandeb, and the Suez Canal.",
+      "waypoints": [
+        [103.84, 1.28],
+        [95.00, 5.00],
+        [79.84, 6.95],
+        [65.00, 14.00],
+        [43.15, 11.59],
+        [42.50, 15.00],
+        [33.50, 27.50],
+        [32.30, 31.20],
+        [25.00, 34.00],
+        [15.00, 37.00],
+        [5.37, 43.30]
+      ],
+      "source": "https://www.seamewe5.com",
+      "sourceLabel": "SEA-ME-WE 5 Consortium"
+    },
+    {
+      "id": "cable-seamewe6",
+      "name": "SEA-ME-WE 6",
+      "tag": "Next-Gen Eurasia High-Speed Cable",
+      "lengthKm": 19200,
+      "capacityTbps": 126,
+      "yearInstalled": 2025,
+      "landingStations": ["Tuas (Singapore)", "Chennai (India)", "Karachi (Pakistan)", "Djibouti", "Port Said (Egypt)", "Marseille (France)"],
+      "summary": "Next-generation ultra-high-capacity submarine system connecting Asia and Europe with over 100 Tbps bandwidth, providing one of the lowest-latency fiber routes between East and West.",
+      "waypoints": [
+        [103.65, 1.30],
+        [80.30, 13.08],
+        [67.00, 24.80],
+        [43.15, 11.59],
+        [32.30, 31.20],
+        [18.00, 36.00],
+        [5.37, 43.30]
+      ],
+      "source": "https://www.submarinenetworks.com/en/systems/asia-europe-africa/smw6",
+      "sourceLabel": "Submarine Networks — SMW6"
+    },
+    {
+      "id": "cable-2africa",
+      "name": "2Africa Submarine Cable",
+      "tag": "Pan-African & Global Maritime Loop",
+      "lengthKm": 45000,
+      "capacityTbps": 180,
+      "yearInstalled": 2024,
+      "landingStations": ["Genoa / Marseille (Europe)", "Suez (Egypt)", "Mombasa (Kenya)", "Cape Town (South Africa)", "Lagos (Nigeria)", "Lisbon (Portugal)"],
+      "summary": "The longest submarine cable system ever deployed worldwide (45,000 km), encircling the entire continent of Africa and connecting 33 countries across Africa, the Middle East, and Europe.",
+      "waypoints": [
+        [8.93, 44.40],
+        [5.37, 43.30],
+        [-5.35, 36.14],
+        [-9.14, 38.72],
+        [-17.47, 14.69],
+        [3.38, 6.45],
+        [8.78, 3.73],
+        [18.42, -33.92],
+        [39.66, -4.04],
+        [43.15, 11.59],
+        [32.54, 29.97],
+        [20.00, 35.00],
+        [8.93, 44.40]
+      ],
+      "source": "https://www.2africacable.net",
+      "sourceLabel": "2Africa Cable Consortium"
+    },
+    {
+      "id": "cable-tpe",
+      "name": "Trans-Pacific Express (TPE)",
+      "tag": "Transpacific Digital Highway",
+      "lengthKm": 18000,
+      "capacityTbps": 10,
+      "yearInstalled": 2008,
+      "landingStations": ["Chongming / Qingdao (China)", "Geoje (South Korea)", "Toucheng (Taiwan)", "Chikura (Japan)", "Nedonna Beach (USA)"],
+      "summary": "A high-capacity submarine cable ring across the Pacific Ocean directly linking mainland China, South Korea, Taiwan, Japan, and the United States with diverse landing routes.",
+      "waypoints": [
+        [121.80, 31.50],
+        [128.70, 34.85],
+        [121.82, 24.85],
+        [139.96, 34.96],
+        [170.00, 40.00],
+        [-160.00, 43.00],
+        [-123.96, 45.75]
+      ],
+      "source": "https://www.submarinenetworks.com/en/systems/trans-pacific/tpe",
+      "sourceLabel": "Submarine Networks — TPE"
+    },
+    {
+      "id": "cable-dunant",
+      "name": "Dunant Transatlantic Cable",
+      "tag": "Google Transatlantic Private Fiber",
+      "lengthKm": 6400,
+      "capacityTbps": 250,
+      "yearInstalled": 2020,
+      "landingStations": ["Virginia Beach (USA)", "Saint-Hilaire-de-Riez (France)"],
+      "summary": "Google's 250 Tbps private transatlantic cable utilizing 12 fiber pairs and space-division multiplexing (SDM) tech to interconnect US and European data centers.",
+      "waypoints": [
+        [-75.97, 36.85],
+        [-60.00, 39.00],
+        [-40.00, 42.50],
+        [-20.00, 45.00],
+        [-1.94, 46.72]
+      ],
+      "source": "https://cloud.google.com/blog/products/infrastructure/honoring-dunant-our-new-subsea-cable",
+      "sourceLabel": "Google Cloud Infrastructure"
+    },
+    {
+      "id": "cable-fla",
+      "name": "FLAG Europe-Asia (FEA)",
+      "tag": "Historic Intercontinental Fiber Link",
+      "lengthKm": 28000,
+      "capacityTbps": 10,
+      "yearInstalled": 1997,
+      "landingStations": ["Porthcurno (UK)", "Gibraltar", "Palermo (Italy)", "Alexandria / Suez (Egypt)", "Mumbai (India)", "Penang (Malaysia)", "Hong Kong", "Yokohama (Japan)"],
+      "summary": "The pioneer 28,000km submarine cable system connecting the UK to Japan via the Mediterranean, Red Sea, Indian Ocean, Strait of Malacca, and South China Sea.",
+      "waypoints": [
+        [-5.67, 50.04],
+        [-5.35, 36.14],
+        [13.36, 38.12],
+        [29.91, 31.20],
+        [32.54, 29.97],
+        [43.15, 11.59],
+        [72.87, 19.07],
+        [100.33, 5.41],
+        [114.17, 22.32],
+        [139.65, 35.44]
+      ],
+      "source": "https://www.submarinenetworks.com/en/systems/asia-europe-africa/fea",
+      "sourceLabel": "Submarine Networks — FEA"
+    },
+    {
+      "id": "cable-equiano",
+      "name": "Equiano Atlantic Cable",
+      "tag": "Europe to South Africa Western Route",
+      "lengthKm": 15000,
+      "capacityTbps": 144,
+      "yearInstalled": 2022,
+      "landingStations": ["Sesimbra (Portugal)", "Lomé (Togo)", "Lagos (Nigeria)", "Swakopmund (Namibia)", "Melkbosstrand (South Africa)"],
+      "summary": "Google's West Coast Africa cable running from Portugal to South Africa, introducing state-of-the-art optical switching at the fiber pair level.",
+      "waypoints": [
+        [-11.43, 38.44],
+        [-17.47, 14.69],
+        [1.22, 6.13],
+        [3.38, 6.45],
+        [14.53, -22.68],
+        [18.44, -33.72]
+      ],
+      "source": "https://cloud.google.com/blog/products/infrastructure/introducing-equiano-subsea-cable-network-connect-africa-to-europe",
+      "sourceLabel": "Google Cloud Infrastructure"
+    },
+    {
+      "id": "cable-peace",
+      "name": "Peace Cable (Pakistan & East Africa)",
+      "tag": "Sino-African-European Fiber Corridor",
+      "lengthKm": 15000,
+      "capacityTbps": 96,
+      "yearInstalled": 2022,
+      "landingStations": ["Gwadar / Karachi (Pakistan)", "Mombasa (Kenya)", "Djibouti", "Port Said (Egypt)", "Marseille (France)"],
+      "summary": "An open subsea cable system delivering high-speed connectivity across South Asia, East Africa, and Southern Europe via Djibouti and Egypt.",
+      "waypoints": [
+        [62.33, 25.12],
+        [67.00, 24.80],
+        [39.66, -4.04],
+        [43.15, 11.59],
+        [32.30, 31.20],
+        [15.00, 36.00],
+        [5.37, 43.30]
+      ],
+      "source": "http://www.peacecable.net",
+      "sourceLabel": "Peace Cable International"
+    },
+    {
+      "id": "cable-blueraman",
+      "name": "Blue-Raman Submarine Cable",
+      "tag": "India–Middle East–Mediterranean Bypass",
+      "lengthKm": 8000,
+      "capacityTbps": 160,
+      "yearInstalled": 2024,
+      "landingStations": ["Mumbai (India)", "Salalah (Oman)", "Aqaba (Jordan)", "Tel Aviv (Israel)", "Genoa (Italy)"],
+      "summary": "Jointly developed by Google and Sparkle, Blue-Raman connects India to Italy via an innovative terrestrial route through Jordan and Israel, avoiding the congested Red Sea bottleneck.",
+      "waypoints": [
+        [72.87, 19.07],
+        [54.09, 17.01],
+        [35.00, 29.52],
+        [34.78, 32.08],
+        [25.00, 35.00],
+        [15.00, 38.00],
+        [8.93, 44.40]
+      ],
+      "source": "https://cloud.google.com/blog/products/infrastructure/building-blue-and-raman-subsea-cable-systems",
+      "sourceLabel": "Google Cloud Infrastructure"
+    }
+  ]
+}

@@ -480,12 +480,19 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 
 /* insights.html — Fleet Watch: live AIS map + six maritime chokepoints */
 .obs-fleetwatch { padding-top: 30px; }
-.fw-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.fw-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
 .fw-livestats { display: flex; gap: 2.2rem; flex-shrink: 0; }
 .fw-stat { text-align: right; }
 .fw-stat-val { display: block; font-family: var(--ff-d); font-size: 2.2rem; font-weight: 700; color: var(--gold-l); line-height: 1; }
 .fw-stat-val--sm { font-size: 1.15rem; }
 .fw-stat-lbl { display: block; margin-top: .4rem; font-family: var(--ff-c); font-size: .58rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+
+/* Multi-Map View Switcher Tabs */
+.fw-view-tabs { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.fw-tab { font-family: var(--ff-c); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.65); background: rgba(5,12,21,.6); border: 1px solid rgba(184,137,74,.25); border-radius: 10px; padding: .65rem 1.2rem; cursor: pointer; transition: all .25s var(--ease); display: inline-flex; align-items: center; gap: 8px; }
+.fw-tab:hover, .fw-tab:focus-visible { color: var(--white); border-color: rgba(232,184,112,.6); background: rgba(184,137,74,.18); outline: none; }
+.fw-tab.active { color: var(--ink); background: var(--gold-l); border-color: var(--gold-l); box-shadow: 0 4px 18px rgba(200,145,58,.25); }
+.fw-tab-icon { font-size: .95rem; line-height: 1; }
 
 .fw-map-wrap { position: relative; background: var(--deep); border: 1px solid rgba(184,137,74,.2); border-radius: 16px; overflow: hidden; }
 .fw-map-wrap canvas { display: block; width: 100%; }
@@ -496,6 +503,13 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-node-label { font-family: var(--ff-c); font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.7); white-space: nowrap; opacity: 0; transform: translateX(-4px); transition: all .25s var(--ease); text-shadow: 0 1px 6px rgba(5,9,13,.9); }
 .fw-node:hover .fw-node-label, .fw-node:focus-visible .fw-node-label, .fw-node.active .fw-node-label { opacity: 1; transform: none; }
 .fw-node:hover .fw-node-dot, .fw-node:focus-visible .fw-node-dot, .fw-node.active .fw-node-dot { background: var(--white); box-shadow: 0 0 0 6px rgba(232,184,112,.3); }
+
+/* Port Nodes */
+.fw-port-node { position: absolute; transform: translate(-50%,-50%); pointer-events: auto; display: flex; align-items: center; gap: 6px; background: none; border: none; padding: 6px; cursor: pointer; }
+.fw-port-dot { width: 14px; height: 14px; border-radius: 50%; background: #00e5ff; box-shadow: 0 0 0 4px rgba(0,229,255,.2); transition: all .25s var(--ease); flex-shrink: 0; display: grid; place-items: center; font-family: var(--ff-c); font-size: .52rem; font-weight: 800; color: #050c15; }
+.fw-port-node:hover .fw-port-dot, .fw-port-node:focus-visible .fw-port-dot, .fw-port-node.active .fw-port-dot { background: var(--white); color: #050c15; box-shadow: 0 0 0 6px rgba(0,229,255,.45); }
+.fw-port-label { font-family: var(--ff-c); font-size: .62rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: rgba(239,242,241,.85); white-space: nowrap; opacity: 0; transform: translateX(-4px); transition: all .25s var(--ease); text-shadow: 0 1px 6px rgba(5,9,13,.9); }
+.fw-port-node:hover .fw-port-label, .fw-port-node:focus-visible .fw-port-label, .fw-port-node.active .fw-port-label { opacity: 1; transform: none; }
 .fw-node:focus-visible { outline: none; }
 .fw-hud { position: absolute; bottom: 14px; right: 16px; font-family: var(--ff-c); font-size: .62rem; letter-spacing: .1em; color: rgba(232,184,112,.75); opacity: 0; transition: opacity .2s; pointer-events: none; }
 .fw-live-note { position: absolute; top: 14px; left: 16px; right: 16px; margin: 0; padding: 8px 14px; background: rgba(5,9,13,.85); border: 1px solid rgba(200,145,58,.3); border-radius: 8px; font-family: var(--ff-c); font-size: .64rem; letter-spacing: .04em; color: rgba(232,184,112,.85); }

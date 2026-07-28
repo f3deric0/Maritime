@@ -28,7 +28,7 @@ import math
 import urllib.request
 import os
 
-SRC_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_coastline.geojson"
+SRC_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_coastline.geojson"
 OUT = os.path.join(os.path.dirname(__file__), "..", "assets", "data", "coastline.json")
 
 # World scale — trimmed at the poles (nothing chokepoint-relevant happens
@@ -37,11 +37,9 @@ LON_MIN, LON_MAX = -180.0, 180.0
 LAT_MIN, LAT_MAX = -62.0, 78.0
 MARGIN = 1.0  # degrees kept just outside the crop so lines don't dead-end abruptly
 
-# Douglas-Peucker tolerance, in degrees (~1.7km at the equator). Only
-# thins out nearly-straight runs of points on a single coastline feature —
-# it can't close a strait, since that gap is the empty space *between* two
-# separate features, not a matter of point density on one of them.
-SIMPLIFY_EPSILON_DEG = 0.04
+# Douglas-Peucker tolerance, in degrees (~1.3km at the equator). Thinout
+# nearly-straight runs of points while keeping crisp bays, gulfs, and straits.
+SIMPLIFY_EPSILON_DEG = 0.012
 
 
 def in_bounds(lon, lat, margin=MARGIN):
