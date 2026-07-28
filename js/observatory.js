@@ -82,6 +82,7 @@
       modeShare: j.modeShare || HARDCODED_FALLBACK.modeShare,
       blueEconomySectors: j.blueEconomySectors || HARDCODED_FALLBACK.blueEconomySectors,
       seaBasins: j.seaBasins || HARDCODED_FALLBACK.seaBasins,
+      topCarriers: j.topCarriers,
       decarbonization: j.decarbonization,
       retrieved: j.meta && j.meta.retrieved
     };

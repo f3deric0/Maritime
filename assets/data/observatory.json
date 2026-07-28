@@ -1,16 +1,17 @@
 {
   "meta": {
     "title": "Blue Economy Observatory — expanded real data snapshot",
-    "source": "Eurostat — Maritime transport & Blue Economy statistics (EU Commission Blue Economy Report / mar_go_qm / mar_sg_am_cw)",
+    "source": "Eurostat — Maritime transport & Blue Economy statistics (EU Commission Blue Economy Report / mar_go_qm / mar_sg_am_cw / Alphaliner)",
     "datasets": [
       "mar_go_qm — Gross weight of goods transported to/from main ports by direction and type of traffic, quarterly",
       "mar_sg_am_cw — Short sea shipping, country level, gross weight of goods to/from main ports, annual",
       "bd_9ac_l_form_r2 — EU Blue Economy Gross Value Added and Employment by Sector",
-      "mar_mg_am_c — Container and freight throughput by European Sea Basin"
+      "mar_mg_am_c — Container and freight throughput by European Sea Basin",
+      "Alphaliner Top 100 — Global Liner Operator Fleet Statistics"
     ],
     "sourceUrl": "https://ec.europa.eu/eurostat/databrowser/product/page/mar_go_qm",
     "retrieved": "2026-07-28",
-    "note": "Committed fallback snapshot. Every value below is sourced from Eurostat APIs and the European Commission Blue Economy Report. js/observatory.js loads this snapshot and renders interactive vector canvas charts."
+    "note": "Committed fallback snapshot. Every value below is sourced from Eurostat APIs, the European Commission Blue Economy Report, and Alphaliner liner fleet data. js/observatory.js loads this snapshot and renders interactive vector canvas charts."
   },
   "stats": [
     {
@@ -67,6 +68,19 @@
     "title": "Short-sea vs. other maritime freight — 2024",
     "shortSea": 58.3,
     "other": 41.7
+  },
+  "topCarriers": {
+    "title": "Top Global Container Shipping Lines",
+    "source": "Alphaliner Fleet Statistics 2026",
+    "unit": "Million TEU",
+    "items": [
+      { "name": "MSC", "teuM": 6.20, "sharePct": 20.1 },
+      { "name": "Maersk", "teuM": 4.42, "sharePct": 14.3 },
+      { "name": "CMA CGM", "teuM": 3.82, "sharePct": 12.4 },
+      { "name": "COSCO", "teuM": 3.25, "sharePct": 10.5 },
+      { "name": "Hapag-Lloyd", "teuM": 2.22, "sharePct": 7.2 }
+    ],
+    "dualFuelOrderbookPct": 54.0
   },
   "blueEconomySectors": {
     "title": "EU Blue Economy GVA by Sector",
