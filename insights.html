@@ -235,23 +235,35 @@
         aria-label="Live world map of ships, maritime chokepoints and major trade routes"></canvas>
       <div class="fw-nodes" id="fw-nodes" aria-label="Maritime chokepoints"></div>
       
-      <!-- MAP CONTROLS & SIDE NEWS -->
+      <!-- MAP CONTROLS (zoom + fullscreen only) -->
       <div class="fw-map-controls">
         <button type="button" class="fw-ctrl-btn" id="fw-zoom-in" title="Zoom In" aria-label="Zoom In">+</button>
         <button type="button" class="fw-ctrl-btn" id="fw-zoom-out" title="Zoom Out" aria-label="Zoom Out">−</button>
         <button type="button" class="fw-ctrl-btn" id="fw-reset-btn" title="Reset Map View" aria-label="Reset Map View">↺</button>
         <button type="button" class="fw-ctrl-btn" id="fw-fullscreen-btn" title="Toggle Fullscreen Map" aria-label="Toggle Fullscreen Map">⛶</button>
-        <button type="button" class="fw-ctrl-btn" id="fw-news-toggle" title="Toggle Side Maritime News" aria-label="Toggle Side Maritime News" aria-pressed="false">📰</button>
       </div>
 
-      <div class="fw-side-news" id="fw-side-news">
-        <div class="fw-side-news-head">
-          <h4>Live Maritime Headlines</h4>
-          <button type="button" class="fw-side-news-close" id="fw-side-news-close" aria-label="Close news panel">✕</button>
+      <!-- FULLSCREEN RIGHT INFO PANEL
+           Auto-opens from the right ONLY when the map is in fullscreen.
+           Contains mirrors of: selected detail, route/cable chips, vessel cards.
+           Populated and kept in sync by syncFsPanel() in fleetwatch.js. -->
+      <div class="fw-fs-panel" id="fw-fs-panel" aria-label="Map information panel" aria-hidden="true">
+        <div class="fw-fs-panel-hd">
+          <span class="fw-fs-panel-eyebrow">Map Info</span>
+          <div class="fw-fs-live-row" id="fw-fs-live-row">
+            <span class="fw-stat-val" id="fw-fs-vessel-count">—</span>
+            <span class="fw-stat-lbl" id="fw-fs-stat-lbl">Vessels tracked</span>
+          </div>
         </div>
-        <ul class="fw-side-news-list" id="fw-side-news-list">
-          <li class="fw-side-news-empty">Loading headlines…</li>
-        </ul>
+        <div class="fw-fs-panel-chips" id="fw-fs-chips"></div>
+        <div class="fw-fs-panel-boats" id="fw-fs-boats"></div>
+        <div class="fw-fs-panel-detail" id="fw-fs-detail">
+          <p class="fw-detail-empty">Select a point on the map.</p>
+        </div>
+        <div class="fw-fs-panel-news">
+          <h4 class="fw-fs-news-title">Live Headlines</h4>
+          <ul class="fw-side-news-list" id="fw-fs-news-list"></ul>
+        </div>
       </div>
 
       <div class="fw-hud" id="fw-hud" aria-hidden="true"></div>

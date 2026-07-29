@@ -155,9 +155,18 @@
     var zoomOutBtn       = document.getElementById('fw-zoom-out');
     var resetBtn         = document.getElementById('fw-reset-btn');
     var fullscreenBtn    = document.getElementById('fw-fullscreen-btn');
-    var newsToggleBtn    = document.getElementById('fw-news-toggle');
-    var sideNewsList     = document.getElementById('fw-side-news-list');
-    var sideNewsCloseBtn = document.getElementById('fw-side-news-close');
+    var newsToggleBtn    = null;   /* removed — no toggle in small map view */
+    var sideNewsList     = null;   /* old panel retired */
+    var sideNewsCloseBtn = null;   /* old panel retired */
+
+    /* Fullscreen right info panel */
+    var fsPanel          = document.getElementById('fw-fs-panel');
+    var fsFsChips        = document.getElementById('fw-fs-chips');
+    var fsFsBoats        = document.getElementById('fw-fs-boats');
+    var fsFsDetail       = document.getElementById('fw-fs-detail');
+    var fsFsNewsList     = document.getElementById('fw-fs-news-list');
+    var fsFsVesselCount  = document.getElementById('fw-fs-vessel-count');
+    var fsFsStatLbl      = document.getElementById('fw-fs-stat-lbl');
 
     if (!canvas || !nodesLayer) return;
 
@@ -381,6 +390,7 @@
       routesContainer.querySelectorAll('.fw-route-chip').forEach(function (btn) {
         btn.addEventListener('click', function () { selectRoute(btn.dataset.routeId); });
       });
+      syncFsPanel();
     }
 
     function buildCableChips() {
@@ -393,6 +403,7 @@
       routesContainer.querySelectorAll('.fw-route-chip').forEach(function (btn) {
         btn.addEventListener('click', function () { selectCable(btn.dataset.cableId); });
       });
+      syncFsPanel();
     }
 
     /* ── Selection handlers ── */
@@ -415,6 +426,7 @@
       }
       render();
       buildChokeButtons();
+      syncFsPanel();
     }
 
     function selectPort(id) {
@@ -439,6 +451,7 @@
       render();
       buildPortNodeButtons();
       buildPortBoats();
+      syncFsPanel();
     }
 
     function selectRoute(id) {
@@ -457,6 +470,7 @@
       }
       render();
       buildRouteChips();
+      // syncFsPanel already called inside buildRouteChips()
     }
 
     function selectCable(id) {
@@ -477,6 +491,7 @@
       }
       render();
       buildCableChips();
+      // syncFsPanel already called inside buildCableChips()
     }
 
     /* ── View switcher ── */
@@ -514,6 +529,7 @@
 
     function setDetail(msg) {
       if (detailPanel) detailPanel.innerHTML = '<p class="fw-detail-empty">' + msg + '</p>';
+      syncFsPanel();
     }
 
     /* ── Zoom controls ── */
@@ -563,48 +579,67 @@
       document.addEventListener(evt, function () {
         var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
         if (fsEl === root) {
-          // Entering map fullscreen — suspend custom cursor
+          // Entering map fullscreen — suspend custom cursor, open info panel
           _cursorWasOn = document.body.classList.contains('cursor-on');
           if (_cursorWasOn) document.body.classList.remove('cursor-on');
+          if (fsPanel) fsPanel.setAttribute('aria-hidden', 'false');
+          syncFsPanel();
         } else {
-          // Exiting map fullscreen — restore custom cursor if it was active
+          // Exiting map fullscreen — restore custom cursor, hide info panel
           if (_cursorWasOn) document.body.classList.add('cursor-on');
           _cursorWasOn = false;
+          if (fsPanel) fsPanel.setAttribute('aria-hidden', 'true');
         }
         // Resize canvas to new container dimensions and redraw
         render(); updateNodes();
       });
     });
 
-    /* ── Side news ──
-       Always leaves the panel in a visible state (headlines, "no
-       headlines" or "unavailable") — never stuck on the static
-       "Loading headlines…" placeholder from the HTML. */
-    function setNewsOpen(open) {
-      root.classList.toggle('news-open', open);
-      if (newsToggleBtn) newsToggleBtn.setAttribute('aria-pressed', open ? 'true' : 'false');
-    }
-    if (newsToggleBtn) {
-      newsToggleBtn.addEventListener('click', function () {
-        setNewsOpen(!root.classList.contains('news-open'));
+    /* ── fs-panel event delegation ──
+       Clicks on chips/boats inside the fs-panel are handled here via
+       delegation, so syncFsPanel() can do a simple innerHTML copy without
+       needing to re-attach individual listeners each sync. */
+    if (fsPanel) {
+      fsPanel.addEventListener('click', function (e) {
+        var chip = e.target.closest('.fw-route-chip');
+        if (chip) {
+          if (chip.dataset.routeId) selectRoute(chip.dataset.routeId);
+          if (chip.dataset.cableId) selectCable(chip.dataset.cableId);
+          return;
+        }
+        var boat = e.target.closest('.fw-boat-btn');
+        if (boat) { selectPort(boat.dataset.portId); return; }
       });
     }
-    if (sideNewsCloseBtn) {
-      sideNewsCloseBtn.addEventListener('click', function () { setNewsOpen(false); });
+
+    /* ── syncFsPanel — mirror current content into the fullscreen panel ──
+       Called on fullscreen entry and after every content change so the
+       panel always reflects the current state. Uses innerHTML copy: fast
+       and safe because event delegation is already in place above. */
+    function syncFsPanel() {
+      if (!fsPanel) return;
+      if (fsFsDetail && detailPanel)   fsFsDetail.innerHTML  = detailPanel.innerHTML;
+      if (fsFsChips  && routesContainer) fsFsChips.innerHTML = routesContainer.innerHTML;
+      if (fsFsBoats  && portBoats)     fsFsBoats.innerHTML   = portBoats.innerHTML;
+      // mirror live stat
+      if (fsFsVesselCount && vesselCountEl) fsFsVesselCount.textContent = vesselCountEl.textContent;
+      if (fsFsStatLbl && statLbl1)          fsFsStatLbl.textContent     = statLbl1.textContent;
     }
 
+    /* ── News: fetch once, write directly into the fs-panel list ── */
     fetchJSON(NEWS_URL).then(function (d) {
-      if (!sideNewsList) return;
+      var html;
       if (d && d.items && d.items.length) {
-        sideNewsList.innerHTML = d.items.slice(0, 12).map(function (it) {
+        html = d.items.slice(0, 12).map(function (it) {
           return '<li><a href="' + it.link + '" target="_blank" rel="noopener">' +
             '<strong>[' + it.source + ']</strong> ' + it.title + '</a></li>';
         }).join('');
       } else {
-        sideNewsList.innerHTML = '<li class="fw-side-news-empty">No headlines available right now.</li>';
+        html = '<li class="fw-side-news-empty">No headlines available right now.</li>';
       }
+      if (fsFsNewsList) fsFsNewsList.innerHTML = html;
     }).catch(function () {
-      if (sideNewsList) sideNewsList.innerHTML = '<li class="fw-side-news-empty">News feed temporarily unavailable.</li>';
+      if (fsFsNewsList) fsFsNewsList.innerHTML = '<li class="fw-side-news-empty">News feed temporarily unavailable.</li>';
     });
 
     /* ── Drag pan ── */

@@ -636,16 +636,143 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-ctrl-btn { width: 40px; height: 40px; border-radius: 10px; background: rgba(6,18,36,.85); border: 1px solid rgba(184,137,74,.35); color: var(--gold-l); font-size: 1.2rem; display: grid; place-items: center; cursor: pointer; transition: all .25s var(--ease); backdrop-filter: blur(8px); }
 .fw-ctrl-btn:hover { background: rgba(200,145,58,.25); border-color: var(--gold-l); color: var(--white); box-shadow: 0 0 16px rgba(200,145,58,.3); }
 
-.fw-side-news { position: absolute; top: 16px; left: 16px; bottom: 16px; width: 280px; background: rgba(4,10,20,.92); border: 1px solid rgba(184,137,74,.3); border-radius: 12px; padding: 1.2rem; display: flex; flex-direction: column; z-index: 9; backdrop-filter: blur(12px); transform: translateX(-110%); transition: transform .35s var(--ease); }
-.fw-map-wrap.news-open .fw-side-news, .fw-map-wrap:fullscreen .fw-side-news { transform: translateX(0); }
-.fw-side-news-head { display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin-bottom: .8rem; }
-.fw-side-news h4 { font-family: var(--ff-c); font-size: .74rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-l); margin: 0; }
-.fw-side-news-close { flex-shrink: 0; width: 26px; height: 26px; border-radius: 7px; background: none; border: 1px solid rgba(184,137,74,.3); color: rgba(239,242,241,.6); font-size: .7rem; line-height: 1; display: grid; place-items: center; cursor: pointer; transition: all .2s var(--ease); }
-.fw-side-news-close:hover, .fw-side-news-close:focus-visible { color: var(--white); border-color: var(--gold-l); background: rgba(200,145,58,.2); outline: none; }
-.fw-side-news-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; display: flex; flex-direction: column; gap: .8rem; }
-.fw-side-news-list a { font-size: .78rem; color: rgba(239,242,241,.85); text-decoration: none; line-height: 1.4; transition: color .2s; }
-.fw-side-news-list a:hover { color: var(--chart-accent); }
-.fw-side-news-empty { font-size: .78rem; color: rgba(239,242,241,.4); font-style: italic; }
+/* OLD fw-side-news panel removed — replaced by .fw-fs-panel (right side, fullscreen only) */
+.fw-side-news { display: none; } /* keep selector to avoid JS reference errors, but panel is retired */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   FULLSCREEN RIGHT INFO PANEL
+   Sits inside #fw-map-wrap at z-index 8.
+   Invisible + pointer-events:none in normal view.
+   Slides in from the right automatically when the browser enters fullscreen
+   for #fw-map-wrap — no user toggle needed.
+   ───────────────────────────────────────────────────────────────────────── */
+.fw-fs-panel {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 320px;
+  background: rgba(4,10,20,.94);
+  border-left: 1.5px solid rgba(184,137,74,.3);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 8;
+  pointer-events: none;
+  transform: translateX(100%);
+  transition: transform .4s var(--ease);
+}
+/* Auto-open in fullscreen — no JS class toggle needed */
+.fw-map-wrap:fullscreen .fw-fs-panel,
+.fw-map-wrap:-webkit-full-screen .fw-fs-panel {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+/* aria-hidden toggled by JS, but also use CSS visibility so screen readers
+   and tab order are correct when the panel is off-screen */
+.fw-fs-panel[aria-hidden="true"] { visibility: hidden; }
+.fw-map-wrap:fullscreen .fw-fs-panel[aria-hidden="true"],
+.fw-map-wrap:-webkit-full-screen .fw-fs-panel[aria-hidden="true"] { visibility: visible; }
+
+/* Panel header */
+.fw-fs-panel-hd {
+  padding: 1.4rem 1.4rem .8rem;
+  border-bottom: 1px solid rgba(184,137,74,.18);
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  flex-shrink: 0;
+}
+.fw-fs-panel-eyebrow {
+  font-family: var(--ff-c);
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+}
+.fw-fs-live-row {
+  display: flex;
+  align-items: baseline;
+  gap: .5rem;
+}
+.fw-fs-live-row .fw-stat-val { font-size: 1.6rem; }
+.fw-fs-live-row .fw-stat-lbl { font-size: .7rem; color: rgba(239,242,241,.55); }
+
+/* Chips strip inside panel */
+.fw-fs-panel-chips {
+  padding: .8rem 1.4rem;
+  border-bottom: 1px solid rgba(184,137,74,.12);
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  flex-shrink: 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.fw-fs-panel-chips:empty { display: none; }
+/* Reuse .fw-route-chip — override to full-width vertical list */
+.fw-fs-panel-chips .fw-route-chip {
+  width: 100%;
+  text-align: left;
+  white-space: normal;
+  scroll-snap-align: none;
+}
+
+/* Boats strip inside panel */
+.fw-fs-panel-boats {
+  padding: .8rem 1.4rem;
+  border-bottom: 1px solid rgba(184,137,74,.12);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  max-height: 220px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+.fw-fs-panel-boats:empty { display: none; }
+/* Compact boat cards inside panel */
+.fw-fs-panel-boats .fw-boat-btn {
+  padding: .6rem .8rem;
+  flex: 0 0 auto;
+  animation: none; /* no rocking inside panel */
+}
+
+/* Detail section inside panel */
+.fw-fs-panel-detail {
+  padding: 1.2rem 1.4rem;
+  flex: 1;
+  border-bottom: 1px solid rgba(184,137,74,.12);
+  overflow-y: auto;
+}
+/* Reuse .fw-detail sub-rules but smaller font inside panel */
+.fw-fs-panel-detail .fw-detail-tag { font-size: .54rem; }
+.fw-fs-panel-detail h4 { font-size: 1.1rem; margin-bottom: .4rem; }
+.fw-fs-panel-detail p { font-size: .82rem; line-height: 1.6; }
+
+/* News section at the bottom of panel */
+.fw-fs-panel-news {
+  padding: 1rem 1.4rem 1.4rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.fw-fs-news-title {
+  font-family: var(--ff-c);
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+  margin: 0;
+  flex-shrink: 0;
+}
+
 
 .fw-detail { margin-top: 1.5rem; background: var(--deep); border: 1px solid rgba(184,137,74,.2); border-radius: 16px; padding: 1.8rem 2rem; min-height: 92px; }
 .fw-detail-empty { font-size: .85rem; color: rgba(255,255,255,.4); font-style: italic; }
