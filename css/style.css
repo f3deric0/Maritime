@@ -621,15 +621,80 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-boat-teu { font-family: var(--ff-d); font-size: .85rem; font-weight: 700; color: var(--gold-l); }
 
 /* Trade Route & Submarine Cable Chips — same horizontal scrollable-strip
-   language as the port boats above, so all three map views (Fleet Watch,
-   Ports, Cables) present their selector row identically. */
-.fw-routes { display: flex; gap: .7rem; overflow-x: auto; padding: 1.2rem .5rem; margin-top: 1.5rem; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; border-top: 1px solid rgba(184,137,74,.2); }
+/* ── BOTTOM MINI MENU (routes / cables selector) ──
+   Visible below the map in every view that has selectable items.
+   Has a title row injected by JS (buildRouteChips / buildCableChips).
+   Hidden when empty (view has no selectable items). */
+.fw-routes {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 1.2rem;
+  background: rgba(4,10,20,.6);
+  border: 1px solid rgba(184,137,74,.22);
+  border-radius: 16px;
+  overflow: hidden;
+}
 .fw-routes:empty { display: none; }
-.fw-routes::-webkit-scrollbar { height: 6px; }
-.fw-routes::-webkit-scrollbar-thumb { background: rgba(200,145,58,.3); border-radius: 3px; }
-.fw-route-chip { flex: 0 0 auto; scroll-snap-align: start; font-family: var(--ff-c); font-size: .68rem; font-weight: 700; letter-spacing: .06em; white-space: nowrap; color: rgba(239,242,241,.75); background: rgba(6,18,36,.8); border: 1px solid rgba(184,137,74,.3); border-radius: 12px; padding: .7rem 1.1rem; cursor: pointer; transition: all .25s var(--ease); }
-.fw-route-chip:hover, .fw-route-chip:focus-visible { color: var(--white); border-color: rgba(232,184,112,.6); background: rgba(184,137,74,.18); outline: none; }
-.fw-route-chip.active { color: var(--ink); background: var(--gold-l); border-color: var(--gold-l); box-shadow: 0 4px 18px rgba(200,145,58,.25); }
+.fw-routes-hd {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .9rem 1.4rem .5rem;
+  border-bottom: 1px solid rgba(184,137,74,.14);
+}
+.fw-routes-hd-label {
+  font-family: var(--ff-c);
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-l);
+}
+.fw-routes-hd-count {
+  font-family: var(--ff-c);
+  font-size: .58rem;
+  letter-spacing: .06em;
+  color: rgba(239,242,241,.4);
+}
+.fw-routes-strip {
+  display: flex;
+  gap: .6rem;
+  overflow-x: auto;
+  padding: .9rem 1.2rem 1rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.fw-routes-strip::-webkit-scrollbar { height: 5px; }
+.fw-routes-strip::-webkit-scrollbar-thumb { background: rgba(200,145,58,.25); border-radius: 3px; }
+.fw-route-chip {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  font-family: var(--ff-c);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  color: rgba(239,242,241,.7);
+  background: rgba(6,18,36,.9);
+  border: 1px solid rgba(184,137,74,.28);
+  border-radius: 10px;
+  padding: .6rem 1rem;
+  cursor: pointer;
+  transition: all .22s var(--ease);
+}
+.fw-route-chip:hover, .fw-route-chip:focus-visible {
+  color: var(--white);
+  border-color: rgba(232,184,112,.6);
+  background: rgba(184,137,74,.18);
+  outline: none;
+}
+.fw-route-chip.active {
+  color: var(--ink);
+  background: var(--gold-l);
+  border-color: var(--gold-l);
+  box-shadow: 0 3px 14px rgba(200,145,58,.3);
+}
 
 /* Fullscreen Toggle & Map Controls */
 .fw-map-controls { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
@@ -648,10 +713,10 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
    ───────────────────────────────────────────────────────────────────────── */
 .fw-fs-panel {
   position: absolute;
-  top: 0; right: 0; bottom: 0;
+  top: 0; left: 0; bottom: 0;   /* LEFT side */
   width: 320px;
   background: rgba(4,10,20,.94);
-  border-left: 1.5px solid rgba(184,137,74,.3);
+  border-right: 1.5px solid rgba(184,137,74,.3);  /* border on right edge */
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   display: flex;
@@ -661,10 +726,10 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
   overflow-x: hidden;
   z-index: 8;
   pointer-events: none;
-  transform: translateX(100%);
+  transform: translateX(-100%);   /* slide out to the LEFT */
   transition: transform .4s var(--ease);
 }
-/* Auto-open in fullscreen — no JS class toggle needed */
+/* Auto-open in fullscreen — slides in from the LEFT */
 .fw-map-wrap:fullscreen .fw-fs-panel,
 .fw-map-wrap:-webkit-full-screen .fw-fs-panel {
   transform: translateX(0);
@@ -703,22 +768,34 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 
 /* Chips strip inside panel */
 .fw-fs-panel-chips {
-  padding: .8rem 1.4rem;
   border-bottom: 1px solid rgba(184,137,74,.12);
-  display: flex;
-  flex-direction: column;
-  gap: .45rem;
   flex-shrink: 0;
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
 }
 .fw-fs-panel-chips:empty { display: none; }
-/* Reuse .fw-route-chip — override to full-width vertical list */
+/* Inside the panel the routes-hd becomes a compact header */
+.fw-fs-panel-chips .fw-routes-hd {
+  padding: .7rem 1.2rem .4rem;
+  border-bottom: 1px solid rgba(184,137,74,.1);
+}
+/* The routes-strip becomes a vertical column */
+.fw-fs-panel-chips .fw-routes-strip {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+  padding: .6rem 1.2rem .8rem;
+  overflow-x: visible;
+  overflow-y: visible;
+  scroll-snap-type: none;
+}
+/* Full-width chips in the panel */
 .fw-fs-panel-chips .fw-route-chip {
   width: 100%;
   text-align: left;
   white-space: normal;
   scroll-snap-align: none;
+  line-height: 1.35;
 }
 
 /* Boats strip inside panel */

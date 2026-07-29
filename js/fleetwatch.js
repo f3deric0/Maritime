@@ -382,11 +382,17 @@
 
     function buildRouteChips() {
       if (!routesContainer) return;
-      routesContainer.innerHTML = routes.map(function (rt) {
+      var chips = routes.map(function (rt) {
         var isAct = rt.id === activeRouteId;
         return '<button type="button" class="fw-route-chip' + (isAct ? ' active' : '') +
           '" data-route-id="' + rt.id + '">' + rt.name + '</button>';
       }).join('');
+      routesContainer.innerHTML =
+        '<div class="fw-routes-hd">' +
+          '<span class="fw-routes-hd-label">Trade Routes</span>' +
+          '<span class="fw-routes-hd-count">' + routes.length + ' routes</span>' +
+        '</div>' +
+        '<div class="fw-routes-strip">' + chips + '</div>';
       routesContainer.querySelectorAll('.fw-route-chip').forEach(function (btn) {
         btn.addEventListener('click', function () { selectRoute(btn.dataset.routeId); });
       });
@@ -395,11 +401,17 @@
 
     function buildCableChips() {
       if (!routesContainer) return;
-      routesContainer.innerHTML = cables.map(function (cab) {
+      var chips = cables.map(function (cab) {
         var isAct = cab.id === activeCableId;
         return '<button type="button" class="fw-route-chip' + (isAct ? ' active' : '') +
-          '" data-cable-id="' + cab.id + '">' + cab.name + ' · ' + cab.capacityTbps + ' Tbps</button>';
+          '" data-cable-id="' + cab.id + '">' + cab.name + '<br><span style="font-size:.6rem;font-weight:400;opacity:.65">' + cab.capacityTbps + ' Tbps &middot; ' + (cab.lengthKm || '—').toLocaleString() + ' km</span></button>';
       }).join('');
+      routesContainer.innerHTML =
+        '<div class="fw-routes-hd">' +
+          '<span class="fw-routes-hd-label">Submarine Cables</span>' +
+          '<span class="fw-routes-hd-count">' + cables.length + ' cables</span>' +
+        '</div>' +
+        '<div class="fw-routes-strip">' + chips + '</div>';
       routesContainer.querySelectorAll('.fw-route-chip').forEach(function (btn) {
         btn.addEventListener('click', function () { selectCable(btn.dataset.cableId); });
       });
