@@ -818,37 +818,21 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 }
 
 /* Detail section inside panel */
+/* Detail at the TOP of the panel — primary content, expands to show full text */
 .fw-fs-panel-detail {
-  padding: 1.2rem 1.4rem;
-  flex: 1;
-  border-bottom: 1px solid rgba(184,137,74,.12);
+  padding: 1.2rem 1.4rem 1rem;
+  flex-shrink: 0;                           /* don't compress — show in full */
+  border-bottom: 1px solid rgba(184,137,74,.18);
   overflow-y: auto;
+  max-height: 55%;                          /* cap height so chips stay visible */
 }
-/* Reuse .fw-detail sub-rules but smaller font inside panel */
+/* Sub-rules inherit from .fw-detail; override size for panel context */
 .fw-fs-panel-detail .fw-detail-tag { font-size: .54rem; }
-.fw-fs-panel-detail h4 { font-size: 1.1rem; margin-bottom: .4rem; }
-.fw-fs-panel-detail p { font-size: .82rem; line-height: 1.6; }
+.fw-fs-panel-detail h4 { font-size: 1.05rem; margin-bottom: .35rem; color: var(--white); }
+.fw-fs-panel-detail p  { font-size: .82rem; line-height: 1.62; color: rgba(239,242,241,.72); margin-bottom: .5rem; }
+.fw-fs-panel-detail .fw-detail-source { font-size: .62rem; }
 
-/* News section at the bottom of panel */
-.fw-fs-panel-news {
-  padding: 1rem 1.4rem 1.4rem;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: .6rem;
-  max-height: 240px;
-  overflow-y: auto;
-}
-.fw-fs-news-title {
-  font-family: var(--ff-c);
-  font-size: .62rem;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--gold-l);
-  margin: 0;
-  flex-shrink: 0;
-}
+/* News section removed — no longer rendered in the fs-panel */
 
 
 .fw-detail { margin-top: 1.5rem; background: var(--deep); border: 1px solid rgba(184,137,74,.2); border-radius: 16px; padding: 1.8rem 2rem; min-height: 92px; }

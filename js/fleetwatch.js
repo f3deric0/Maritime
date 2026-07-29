@@ -159,12 +159,11 @@
     var sideNewsList     = null;   /* old panel retired */
     var sideNewsCloseBtn = null;   /* old panel retired */
 
-    /* Fullscreen right info panel */
+    /* Fullscreen left info panel */
     var fsPanel          = document.getElementById('fw-fs-panel');
     var fsFsChips        = document.getElementById('fw-fs-chips');
     var fsFsBoats        = document.getElementById('fw-fs-boats');
     var fsFsDetail       = document.getElementById('fw-fs-detail');
-    var fsFsNewsList     = document.getElementById('fw-fs-news-list');
     var fsFsVesselCount  = document.getElementById('fw-fs-vessel-count');
     var fsFsStatLbl      = document.getElementById('fw-fs-stat-lbl');
 
@@ -638,21 +637,7 @@
       if (fsFsStatLbl && statLbl1)          fsFsStatLbl.textContent     = statLbl1.textContent;
     }
 
-    /* ── News: fetch once, write directly into the fs-panel list ── */
-    fetchJSON(NEWS_URL).then(function (d) {
-      var html;
-      if (d && d.items && d.items.length) {
-        html = d.items.slice(0, 12).map(function (it) {
-          return '<li><a href="' + it.link + '" target="_blank" rel="noopener">' +
-            '<strong>[' + it.source + ']</strong> ' + it.title + '</a></li>';
-        }).join('');
-      } else {
-        html = '<li class="fw-side-news-empty">No headlines available right now.</li>';
-      }
-      if (fsFsNewsList) fsFsNewsList.innerHTML = html;
-    }).catch(function () {
-      if (fsFsNewsList) fsFsNewsList.innerHTML = '<li class="fw-side-news-empty">News feed temporarily unavailable.</li>';
-    });
+    /* News feed removed from fs-panel — no fetch needed */
 
     /* ── Drag pan ── */
     canvas.addEventListener('mousedown', function (e) {
