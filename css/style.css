@@ -766,27 +766,24 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .fw-fs-live-row .fw-stat-val { font-size: 1.6rem; }
 .fw-fs-live-row .fw-stat-lbl { font-size: .7rem; color: rgba(239,242,241,.55); }
 
-/* Chips strip inside panel */
+/* Chips strip inside panel — flows naturally without inner scrollbar */
 .fw-fs-panel-chips {
-  border-bottom: 1px solid rgba(184,137,74,.12);
+  border-bottom: none;
   flex-shrink: 0;
-  max-height: 220px;
-  overflow-y: auto;
 }
 .fw-fs-panel-chips:empty { display: none; }
 /* Inside the panel the routes-hd becomes a compact header */
 .fw-fs-panel-chips .fw-routes-hd {
-  padding: .7rem 1.2rem .4rem;
+  padding: 1rem 1.4rem .4rem;
   border-bottom: 1px solid rgba(184,137,74,.1);
 }
 /* The routes-strip becomes a vertical column */
 .fw-fs-panel-chips .fw-routes-strip {
   display: flex;
   flex-direction: column;
-  gap: .35rem;
-  padding: .6rem 1.2rem .8rem;
-  overflow-x: visible;
-  overflow-y: visible;
+  gap: .45rem;
+  padding: .8rem 1.4rem 1.4rem;
+  overflow: visible;
   scroll-snap-type: none;
 }
 /* Full-width chips in the panel */
@@ -798,15 +795,13 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
   line-height: 1.35;
 }
 
-/* Boats strip inside panel */
+/* Boats strip inside panel — flows naturally without inner scrollbar */
 .fw-fs-panel-boats {
-  padding: .8rem 1.4rem;
-  border-bottom: 1px solid rgba(184,137,74,.12);
+  padding: .8rem 1.4rem 1.4rem;
+  border-bottom: none;
   display: flex;
   flex-wrap: wrap;
   gap: .5rem;
-  max-height: 220px;
-  overflow-y: auto;
   flex-shrink: 0;
 }
 .fw-fs-panel-boats:empty { display: none; }
@@ -817,14 +812,11 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
   animation: none; /* no rocking inside panel */
 }
 
-/* Detail section inside panel */
-/* Detail at the TOP of the panel — primary content, expands to show full text */
+/* Detail section inside panel — flows naturally at top of panel */
 .fw-fs-panel-detail {
   padding: 1.2rem 1.4rem 1rem;
-  flex-shrink: 0;                           /* don't compress — show in full */
+  flex-shrink: 0;
   border-bottom: 1px solid rgba(184,137,74,.18);
-  overflow-y: auto;
-  max-height: 55%;                          /* cap height so chips stay visible */
 }
 /* Sub-rules inherit from .fw-detail; override size for panel context */
 .fw-fs-panel-detail .fw-detail-tag { font-size: .54rem; }
