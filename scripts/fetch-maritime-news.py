@@ -8,12 +8,17 @@ trade-press RSS feeds (stdlib only, no dependencies): headline + link
 back to the original article + source + publish date. No full-article
 scraping — this is aggregation-with-attribution, not republishing.
 
-Sources (checked this session — both are real, standard WordPress RSS
-feeds, currently live):
-  - gCaptain      https://gcaptain.com/feed/
-  - Splash247     https://splash247.com/feed/
+Sources (checked this session — all are real, standard WordPress RSS
+feeds, currently live and returning fresh same-day items):
+  - gCaptain               https://gcaptain.com/feed/
+  - Splash247               https://splash247.com/feed/
+  - Hellenic Shipping News https://www.hellenicshippingnews.com/feed/
+  - Container News         https://container-news.com/feed/
+  - Offshore Energy        https://www.offshore-energy.biz/feed/
 Ruled out: Lloyd's List (RSS feed page is subscriber-gated), Maritime
-Executive (their /rss.xml just redirects to the homepage, not a feed).
+Executive (their /rss.xml just redirects to the homepage, not a feed),
+Safety4Sea (/feed/ returns an HTML page, not RSS, as of this check),
+Riviera Maritime Media (/rss returns HTML, not RSS, as of this check).
 
 Run on the VPS via cron every ~20-30 min (see deploy.md) — this is a
 one-shot fetch-and-write, not a persistent process like fleet-relay.py.
@@ -31,9 +36,12 @@ from email.utils import parsedate_to_datetime
 FEEDS = [
     {"url": "https://gcaptain.com/feed/", "source": "gCaptain"},
     {"url": "https://splash247.com/feed/", "source": "Splash247"},
+    {"url": "https://www.hellenicshippingnews.com/feed/", "source": "Hellenic Shipping News"},
+    {"url": "https://container-news.com/feed/", "source": "Container News"},
+    {"url": "https://www.offshore-energy.biz/feed/", "source": "Offshore Energy"},
 ]
 
-MAX_ITEMS = 12
+MAX_ITEMS = 18
 PER_FEED_LIMIT = 10
 REQUEST_TIMEOUT_SEC = 15
 UA = "Mozilla/5.0 (compatible; MaritimeAffairsNewsFetcher/1.0; +https://maritime-affairs.eu)"

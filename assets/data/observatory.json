@@ -51,6 +51,14 @@
       "suffix": " Million",
       "label": "Direct EU Maritime Employment",
       "source": "EU Blue Economy Report / Eurostat Employment Statistics"
+    },
+    {
+      "id": "eu-fleet-share",
+      "value": 34.5,
+      "suffix": "%",
+      "label": "European-controlled share of the world merchant fleet — by tonnage",
+      "delta": "+2.6% fleet growth in 2025",
+      "source": "ECSA — The Economic Value of European Shipping, 2026 update"
     }
   ],
   "countries": {
@@ -87,12 +95,12 @@
     "totalGvaBillion": 183.5,
     "totalJobsMillion": 3.58,
     "items": [
-      { "sector": "Marine Transport", "gvaBillion": 51.4, "sharePct": 28.0, "jobsThousands": 485, "color": "#e8b870" },
-      { "sector": "Coastal Tourism", "gvaBillion": 44.0, "sharePct": 24.0, "jobsThousands": 1820, "color": "#00e5ff" },
-      { "sector": "Port Activities", "gvaBillion": 33.0, "sharePct": 18.0, "jobsThousands": 570, "color": "#4fc3f7" },
-      { "sector": "Offshore Energy & Wind", "gvaBillion": 25.7, "sharePct": 14.0, "jobsThousands": 145, "color": "#69f0ae" },
-      { "sector": "Shipbuilding & Repair", "gvaBillion": 20.2, "sharePct": 11.0, "jobsThousands": 310, "color": "#ffd740" },
-      { "sector": "Living Resources & Aquaculture", "gvaBillion": 9.2, "sharePct": 5.0, "jobsThousands": 250, "color": "#ff8a80" }
+      { "sector": "Marine Transport", "gvaBillion": 51.4, "sharePct": 28.0, "jobsThousands": 485 },
+      { "sector": "Coastal Tourism", "gvaBillion": 44.0, "sharePct": 24.0, "jobsThousands": 1820 },
+      { "sector": "Port Activities", "gvaBillion": 33.0, "sharePct": 18.0, "jobsThousands": 570 },
+      { "sector": "Offshore Energy & Wind", "gvaBillion": 25.7, "sharePct": 14.0, "jobsThousands": 145 },
+      { "sector": "Shipbuilding & Repair", "gvaBillion": 20.2, "sharePct": 11.0, "jobsThousands": 310 },
+      { "sector": "Living Resources & Aquaculture", "gvaBillion": 9.2, "sharePct": 5.0, "jobsThousands": 250 }
     ]
   },
   "seaBasins": {
@@ -100,11 +108,11 @@
     "unit": "Million Tonnes (Mt)",
     "source": "Eurostat mar_mg_am_c / Sea Basin Port Data",
     "items": [
-      { "basin": "Mediterranean Sea", "tonnesMt": 1340.0, "sharePct": 38.2, "color": "#00e5ff" },
-      { "basin": "North Sea", "tonnesMt": 1050.0, "sharePct": 29.9, "color": "#e8b870" },
-      { "basin": "Atlantic Coast", "tonnesMt": 540.0, "sharePct": 15.4, "color": "#69f0ae" },
-      { "basin": "Baltic Sea", "tonnesMt": 490.0, "sharePct": 14.0, "color": "#4fc3f7" },
-      { "basin": "Black Sea", "tonnesMt": 88.0, "sharePct": 2.5, "color": "#ffd740" }
+      { "basin": "Mediterranean Sea", "tonnesMt": 1340.0, "sharePct": 38.2 },
+      { "basin": "North Sea", "tonnesMt": 1050.0, "sharePct": 29.9 },
+      { "basin": "Atlantic Coast", "tonnesMt": 540.0, "sharePct": 15.4 },
+      { "basin": "Baltic Sea", "tonnesMt": 490.0, "sharePct": 14.0 },
+      { "basin": "Black Sea", "tonnesMt": 88.0, "sharePct": 2.5 }
     ]
   },
   "decarbonization": {

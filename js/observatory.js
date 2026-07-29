@@ -19,7 +19,8 @@
       'shortsea-share':  { value: 58.3,  suffix: '%',     label: 'Share of EU maritime freight carried by short-sea shipping — 2024', delta: '+1.8pp vs 2023 (56.5%)' },
       'shortsea-volume': { value: 1.65,  suffix: ' Bn t',  label: 'EU short-sea shipping volume — 2024', delta: null },
       'blue-gva':        { value: 183.5, suffix: ' Bn €', label: 'EU Blue Economy Gross Value Added (GVA)', delta: '+4.2% annual growth' },
-      'blue-jobs':       { value: 3.58,  suffix: ' Million', label: 'Direct EU Maritime Employment', delta: null }
+      'blue-jobs':       { value: 3.58,  suffix: ' Million', label: 'Direct EU Maritime Employment', delta: null },
+      'eu-fleet-share':  { value: 34.5,  suffix: '%',     label: 'European-controlled share of the world merchant fleet — by tonnage', delta: '+2.6% fleet growth in 2025' }
     },
     countries: {
       title: 'Top short-sea shipping nations, 2024',
@@ -32,22 +33,24 @@
     },
     modeShare: { shortSea: 58.3, other: 41.7 },
     blueEconomySectors: {
+      totalGvaBillion: 183.5,
+      totalJobsMillion: 3.58,
       items: [
-        { sector: 'Marine Transport', gvaBillion: 51.4, sharePct: 28.0, color: '#e8b870' },
-        { sector: 'Coastal Tourism', gvaBillion: 44.0, sharePct: 24.0, color: '#00e5ff' },
-        { sector: 'Port Activities', gvaBillion: 33.0, sharePct: 18.0, color: '#4fc3f7' },
-        { sector: 'Offshore Energy & Wind', gvaBillion: 25.7, sharePct: 14.0, color: '#69f0ae' },
-        { sector: 'Shipbuilding & Repair', gvaBillion: 20.2, sharePct: 11.0, color: '#ffd740' },
-        { sector: 'Living Resources & Aquaculture', gvaBillion: 9.2, sharePct: 5.0, color: '#ff8a80' }
+        { sector: 'Marine Transport', gvaBillion: 51.4, sharePct: 28.0 },
+        { sector: 'Coastal Tourism', gvaBillion: 44.0, sharePct: 24.0 },
+        { sector: 'Port Activities', gvaBillion: 33.0, sharePct: 18.0 },
+        { sector: 'Offshore Energy & Wind', gvaBillion: 25.7, sharePct: 14.0 },
+        { sector: 'Shipbuilding & Repair', gvaBillion: 20.2, sharePct: 11.0 },
+        { sector: 'Living Resources & Aquaculture', gvaBillion: 9.2, sharePct: 5.0 }
       ]
     },
     seaBasins: {
       items: [
-        { basin: 'Mediterranean Sea', tonnesMt: 1340.0, sharePct: 38.2, color: '#00e5ff' },
-        { basin: 'North Sea', tonnesMt: 1050.0, sharePct: 29.9, color: '#e8b870' },
-        { basin: 'Atlantic Coast', tonnesMt: 540.0, sharePct: 15.4, color: '#69f0ae' },
-        { basin: 'Baltic Sea', tonnesMt: 490.0, sharePct: 14.0, color: '#4fc3f7' },
-        { basin: 'Black Sea', tonnesMt: 88.0, sharePct: 2.5, color: '#ffd740' }
+        { basin: 'Mediterranean Sea', tonnesMt: 1340.0, sharePct: 38.2 },
+        { basin: 'North Sea', tonnesMt: 1050.0, sharePct: 29.9 },
+        { basin: 'Atlantic Coast', tonnesMt: 540.0, sharePct: 15.4 },
+        { basin: 'Baltic Sea', tonnesMt: 490.0, sharePct: 14.0 },
+        { basin: 'Black Sea', tonnesMt: 88.0, sharePct: 2.5 }
       ]
     },
     topCarriers: {
@@ -181,7 +184,7 @@
     }
     if (fuelList && d.fuelEuTargets) {
       fuelList.innerHTML = d.fuelEuTargets.map(function (t) {
-        return '<li><strong style="color:#00e5ff">' + t.year + ':</strong> -' + t.reductionPct + '% GHG intensity vs 2020 baseline</li>';
+        return '<li><strong style="color:' + CHART_ACCENT + '">' + t.year + ':</strong> -' + t.reductionPct + '% GHG intensity vs 2020 baseline</li>';
       }).join('');
     }
     if (sourceEl && d.source) sourceEl.textContent = d.source;
@@ -207,6 +210,14 @@
     for (var y = 0; y < h; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
   }
 
+  /* Chart palette — see css/style.css :root for the validated source of
+     truth (the --chart-gold-100..600 steps and --chart-accent token).
+     Canvas fillStyle cannot read CSS custom properties, so the same hex
+     values are hardcoded here; keep both in sync if the ramp changes. */
+  var CHART_GOLD_100 = '#f5dcae', CHART_GOLD_200 = '#e8b870', CHART_GOLD_300 = '#c8913a';
+  var CHART_GOLD_400 = '#a8752a', CHART_GOLD_500 = '#815a1c', CHART_GOLD_600 = '#6b4816';
+  var CHART_ACCENT = '#4fc3b0';
+
   function drawBarChart(canvas, items) {
     var dim = sizeCanvas(canvas), ctx = dim.ctx, w = dim.w, h = dim.h;
     var padL = 46, padR = 16, padT = 16, padB = 34;
@@ -214,6 +225,8 @@
     var max = Math.max.apply(null, items.map(function (i) { return i.value; })) * 1.15;
     var barGap = chartW / items.length;
     var barW = Math.min(70, barGap * 0.5);
+    var hoverIndex = null;
+    var bars = []; // hit-test rects, rebuilt every frame — x/w are progress-independent
 
     function frame(progress) {
       ctx.clearRect(0, 0, w, h);
@@ -234,34 +247,74 @@
         ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(w - padR, y); ctx.stroke();
       }
 
+      bars = [];
       items.forEach(function (item, i) {
         var barH = (item.value / max) * chartH * progress;
         var x = padL + barGap * i + (barGap - barW) / 2;
         var y = h - padB - barH;
+        var isHover = hoverIndex === i;
+
         var grad = ctx.createLinearGradient(0, y, 0, h - padB);
-        grad.addColorStop(0, '#00e5ff');
-        grad.addColorStop(0.35, '#4fc3f7');
-        grad.addColorStop(1, '#e8b870');
+        grad.addColorStop(0, CHART_GOLD_100);
+        grad.addColorStop(1, CHART_GOLD_300);
         ctx.fillStyle = grad;
         ctx.fillRect(x, y, barW, barH);
 
-        // Glowing cyan cap
-        ctx.fillStyle = '#00e5ff';
-        ctx.shadowColor = '#00e5ff';
-        ctx.shadowBlur = 6;
+        // Cap — gold normally, accent teal on hover
+        ctx.fillStyle = isHover ? CHART_ACCENT : CHART_GOLD_200;
+        ctx.shadowColor = isHover ? CHART_ACCENT : 'transparent';
+        ctx.shadowBlur = isHover ? 8 : 0;
         ctx.fillRect(x, y - 2, barW, 3);
         ctx.shadowBlur = 0;
 
-        ctx.fillStyle = 'rgba(239,242,241,.85)';
+        ctx.fillStyle = isHover ? CHART_ACCENT : 'rgba(239,242,241,.85)';
         ctx.textAlign = 'center';
-        ctx.font = '600 12px Cormorant Garamond,serif';
+        ctx.font = (isHover ? '700' : '600') + ' 12px Cormorant Garamond,serif';
         if (progress > 0.85) ctx.fillText(item.value.toFixed(1), x + barW / 2, y - 8);
 
         ctx.font = '10px Barlow Condensed,sans-serif';
-        ctx.fillStyle = 'rgba(239,242,241,.55)';
+        ctx.fillStyle = isHover ? 'rgba(239,242,241,.9)' : 'rgba(239,242,241,.55)';
         ctx.fillText(item.name, x + barW / 2, h - padB + 16);
+
+        bars.push({ x: x, w: barW, y: y, item: item });
       });
+
+      if (hoverIndex !== null && bars[hoverIndex]) {
+        var b = bars[hoverIndex];
+        var text = b.item.name + ' · ' + b.item.value.toFixed(1) + ' Mt';
+        ctx.font = '700 11px Barlow Condensed,sans-serif';
+        var tw = ctx.measureText(text).width + 16, th = 24;
+        var tx = Math.min(Math.max(b.x + b.w / 2 - tw / 2, 2), w - tw - 2);
+        var ty = Math.max(b.y - th - 10, 2);
+        ctx.fillStyle = 'rgba(4,10,20,.92)';
+        ctx.strokeStyle = CHART_ACCENT;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        if (ctx.roundRect) { ctx.roundRect(tx, ty, tw, th, 6); } else { ctx.rect(tx, ty, tw, th); }
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#eff2f1';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, tx + tw / 2, ty + th / 2 + 4);
+      }
     }
+
+    canvas.onmousemove = function (e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = e.clientX - rect.left, my = e.clientY - rect.top;
+      var found = null;
+      for (var i = 0; i < bars.length; i++) {
+        var b = bars[i];
+        if (mx >= b.x && mx <= b.x + b.w && my >= padT && my <= h - padB) { found = i; break; }
+      }
+      if (found !== hoverIndex) {
+        hoverIndex = found;
+        canvas.style.cursor = found !== null ? 'pointer' : 'default';
+        frame(1);
+      }
+    };
+    canvas.onmouseleave = function () {
+      if (hoverIndex !== null) { hoverIndex = null; canvas.style.cursor = 'default'; frame(1); }
+    };
 
     if (REDUCED_MOTION || LITE) { frame(1); return; }
     var start = null, dur = 850;
@@ -331,6 +384,22 @@
     if (!sectorsData || !sectorsData.items) return;
     var dim = sizeCanvas(canvas, 380 / 640), ctx = dim.ctx, w = dim.w, h = dim.h;
     var items = sectorsData.items;
+    var totalGva = sectorsData.totalGvaBillion != null
+      ? sectorsData.totalGvaBillion
+      : items.reduce(function (s, it) { return s + it.gvaBillion; }, 0);
+    // Items arrive pre-sorted by descending share. Assign the lightest
+    // (most luminant) gold step to the biggest slice so it stays
+    // prominent against the dark panel, darkest to the smallest — colors
+    // come from rank, not a per-sector field, so there's one ramp to
+    // update instead of six hand-picked hexes drifting out of sync.
+    var GOLD_STEPS = [CHART_GOLD_100, CHART_GOLD_200, CHART_GOLD_300, CHART_GOLD_400, CHART_GOLD_500, CHART_GOLD_600];
+    function sliceColor(i) { return GOLD_STEPS[Math.min(i, GOLD_STEPS.length - 1)]; }
+    function truncate(text, maxWidth) {
+      if (ctx.measureText(text).width <= maxWidth) return text;
+      var t = text;
+      while (t.length > 1 && ctx.measureText(t + '…').width > maxWidth) t = t.slice(0, -1);
+      return t + '…';
+    }
     var cx = w < 500 ? w / 2 : w * 0.35;
     var cy = h / 2;
     var outerR = Math.min(cx, cy) * 0.76;
@@ -361,7 +430,7 @@
         ctx.arc(cx, cy, outerR, startAngle, endAngle);
         ctx.arc(cx, cy, innerR, endAngle, startAngle, true);
         ctx.closePath();
-        ctx.fillStyle = item.color || '#e8b870';
+        ctx.fillStyle = isSel ? CHART_ACCENT : sliceColor(i);
         ctx.fill();
         ctx.strokeStyle = isSel ? '#ffffff' : '#040a14';
         ctx.lineWidth = isSel ? 3 : 1.5;
@@ -376,7 +445,7 @@
       ctx.textAlign = 'center';
       if (selectedIndex !== null && items[selectedIndex]) {
         var selItem = items[selectedIndex];
-        ctx.fillStyle = '#00e5ff';
+        ctx.fillStyle = CHART_ACCENT;
         ctx.font = '700 11px Barlow Condensed,sans-serif';
         ctx.fillText(selItem.sector.toUpperCase(), cx, cy - 14);
 
@@ -390,21 +459,23 @@
       } else {
         ctx.fillStyle = '#ffffff';
         ctx.font = '700 22px Cormorant Garamond,serif';
-        ctx.fillText('€183.5B', cx, cy - 2);
+        ctx.fillText('€' + totalGva.toFixed(1) + 'B', cx, cy - 2);
         ctx.font = '600 11px Barlow Condensed,sans-serif';
         ctx.fillStyle = 'rgba(239,242,241,.6)';
         ctx.fillText('TOTAL EU GVA', cx, cy + 16);
       }
 
-      // Legend
+      // Legend — truncated with an ellipsis so labels never run past the
+      // canvas edge, however long the sector name is
       if (w >= 500) {
         var legX = w * 0.62;
         var legY = 24;
+        var legMaxW = Math.max(40, w - legX - 22 - 12);
         items.forEach(function (item, i) {
           var y = legY + i * 28;
           var isSel = selectedIndex === i;
 
-          ctx.fillStyle = item.color || '#e8b870';
+          ctx.fillStyle = isSel ? CHART_ACCENT : sliceColor(i);
           ctx.fillRect(legX, y, 14, 14);
           if (isSel) {
             ctx.strokeStyle = '#ffffff';
@@ -412,10 +483,10 @@
             ctx.strokeRect(legX, y, 14, 14);
           }
 
-          ctx.fillStyle = isSel ? '#00e5ff' : 'rgba(239,242,241,.9)';
+          ctx.fillStyle = isSel ? CHART_ACCENT : 'rgba(239,242,241,.9)';
           ctx.font = (isSel ? '700' : '600') + ' 12px Barlow Condensed,sans-serif';
           ctx.textAlign = 'left';
-          ctx.fillText(item.sector + ' (' + item.sharePct + '%)', legX + 22, y + 11);
+          ctx.fillText(truncate(item.sector + ' (' + item.sharePct + '%)', legMaxW), legX + 22, y + 11);
         });
       }
     }
@@ -471,6 +542,12 @@
     if (!basinsData || !basinsData.items) return;
     var dim = sizeCanvas(canvas, 340 / 640), ctx = dim.ctx, w = dim.w, h = dim.h;
     var items = basinsData.items;
+    // One hue, ranked by tonnage (items arrive pre-sorted descending) —
+    // replaces the old five-color rainbow (each basin its own hex) that
+    // made the chart harder to scan at a glance than the single ordered
+    // ramp used everywhere else in the redesign.
+    var GOLD_STEPS = [CHART_GOLD_100, CHART_GOLD_200, CHART_GOLD_300, CHART_GOLD_400, CHART_GOLD_500, CHART_GOLD_600];
+    function barColor(i) { return GOLD_STEPS[Math.min(i, GOLD_STEPS.length - 1)]; }
     var padL = 148, padR = 10, padT = 14, padB = 14;
     var chartW = w - padL - padR;
     var rowH = (h - padT - padB) / items.length;
@@ -491,6 +568,7 @@
       items.forEach(function (item, i) {
         var cy = padT + i * rowH + rowH / 2;
         var barW = (item.tonnesMt / maxVal) * chartW * progress;
+        var color = barColor(i);
 
         /* basin label */
         ctx.fillStyle = 'rgba(239,242,241,.9)';
@@ -500,13 +578,13 @@
 
         /* bar body */
         var grad = ctx.createLinearGradient(padL, 0, padL + barW, 0);
-        grad.addColorStop(0, 'rgba(0,229,255,0.12)');
-        grad.addColorStop(1, item.color || '#00e5ff');
+        grad.addColorStop(0, 'rgba(200,145,58,0.12)');
+        grad.addColorStop(1, color);
         ctx.fillStyle = grad;
         ctx.fillRect(padL, cy - barH / 2, barW, barH);
 
         /* bar border */
-        ctx.strokeStyle = item.color || '#00e5ff';
+        ctx.strokeStyle = color;
         ctx.lineWidth = 0.8;
         ctx.strokeRect(padL, cy - barH / 2, barW, barH);
 
@@ -565,6 +643,12 @@
     var shareCanvas = document.getElementById('obs-share-canvas');
     var sectorsCanvas = document.getElementById('obs-sectors-canvas');
     var basinsCanvas = document.getElementById('obs-basins-canvas');
+    var basinsTotalEl = document.getElementById('obs-basins-total');
+
+    if (basinsTotalEl && data.seaBasins && data.seaBasins.items) {
+      var totalMt = data.seaBasins.items.reduce(function (s, b) { return s + b.tonnesMt; }, 0);
+      basinsTotalEl.textContent = fmt(totalMt) + ' Mt handled across ' + data.seaBasins.items.length + ' EU sea basins';
+    }
 
     observeChart(barCanvas, function () { drawBarChart(barCanvas, data.countries.items); });
     observeChart(shareCanvas, function () { drawShareChart(shareCanvas, data.modeShare.shortSea, data.modeShare.other); });

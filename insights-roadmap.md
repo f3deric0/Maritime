@@ -3,19 +3,22 @@
 *Documento di handoff: cosa è stato fatto, perché, e cosa resta da fare. Scritto per essere
 ripreso da chiunque (umano o agente) senza dover rileggere l'intera conversazione.*
 
-Ultimo aggiornamento: 28 luglio 2026.
+Ultimo aggiornamento: 29 luglio 2026.
 
 ---
 
 ## 1. Contesto
 
 Dopo una fase di audit generale della pagina Insights (vedi `data-section.md` per lo stato
-strutturale dei dati), è emerso un elenco di miglioramenti da fare in tre ondate, per tenere
+strutturale dei dati), è emerso un elenco di miglioramenti da fare in ondate, per tenere
 sotto controllo rischio e costo di ogni sessione:
 
 - **Fase 1** (piccola, basso rischio) — nav, testi, spostamento contenuti, sfondi. **COMPLETATA.**
 - **Fase 2** (media) — restyle grafico Italy/Netherlands/Spain, passata di fluidità mobile. **COMPLETATA.**
-- **Fase 3** (grossa) — mappa Fleet Watch interattiva (pan/zoom/fullscreen/news laterali) + selettore porti "barche che ondeggiano". **COMPLETATA.**
+- **Fase 3** (grossa) — mappa Fleet Watch interattiva (pan/zoom/fullscreen/news laterali) + selettore porti "barche che ondeggiano". **COMPLETATA** (implementata; vedi Fase 4 per i fix di affidabilità/dimensione emersi dopo l'uso reale).
+- **Fase 4** (correttiva + estetica) — fix funzionali su mappa/cavi/notizie/mobile, sesta
+  statistica, restyle palette dei 3 grafici canvas, prima fila di articoli animata.
+  **In corso**, vedi sezione 6.
 
 ---
 
@@ -98,7 +101,7 @@ conferma per procedere (vedi sessione in corso).
 
 ---
 
-## 3. Fase 2 — da fare (non iniziata)
+## 3. Fase 2 — completata
 
 ### E. Restyle grafico "Top short-sea shipping nations" (Italy/Netherlands/Spain)
 Approvato: **barre con gradiente teal→oro + watermark di onde/linee nautiche** dietro il pannello.
@@ -124,7 +127,7 @@ Approvato: **barre con gradiente teal→oro + watermark di onde/linee nautiche**
 
 ---
 
-## 4. Fase 3 — da fare (non iniziata, è un progetto a sé)
+## 4. Fase 3 — completata
 
 ### F. Mappa Fleet Watch — rework interattivo completo
 File principale: `js/fleetwatch.js` (+ markup `#fw-map-wrap` in `insights.html`).
@@ -182,7 +185,42 @@ Sostituisce l'idea di 20 tastini piatti o marker generici, per la vista **Ports*
 
 ---
 
-## 6. Note generali per chi riprende questo lavoro
+## 6. Fase 4 — correzioni funzionali + restyle (in corso, 29 luglio 2026)
+
+Emersa dopo un audit d'uso reale della pagina: Fase 2/3 avevano introdotto le funzionalità, ma
+uso e revisione hanno fatto emergere bug di affidabilità e una palette fuori dal design system.
+
+### Fix funzionali
+- **Mappa troppo bassa**: `size()` in `js/fleetwatch.js` forzava l'altezza a `w*140/360`
+  (~373px). Portata a un'altezza immersiva basata sul contenitore (`~65vh`, con fullscreen
+  reale via Fullscreen API già presente).
+- **Tab/barche fragili**: tutta l'inizializzazione (tab, filtro tier, barche porti) era agganciata
+  dentro un unico `Promise.all` di 5 fetch — un solo file mancante disattivava tutto in silenzio.
+  Sostituito con gestione tollerante ai fallimenti parziali. Aggiunto un file placeholder per
+  `assets/data/fleet-live.json`, che non esisteva (404 in loop, ingoiato).
+- **Toggle notizie mappa**: apriva un pannello laterale spesso vuoto (fetch con errori ingoiati,
+  nessuno stato di fallback). Reso affidabile: sempre uno stato visibile (lista o messaggio),
+  nessun marker "atomo" sulla mappa (mai esistiti — decisione: solo pannello laterale).
+- **Cavi sottomarini incoerenti**: `#fw-routes`/`.fw-route-chip` non avevano *nessun* CSS proprio
+  (bottoni grezzi di default) mentre il conteggio "13 cavi" è una livestat separata in alto a
+  destra — da qui la sensazione di posizioni diverse tra viste. Uniformato lo schema per le 3
+  viste (Fleet Watch / Ports / Cables).
+- **Box a due colonne non impilati su mobile**: `.obs-grid` (usata da "Global Container Shipping
+  Lines" ed "ETS & FuelEU") non aveva alcuna media query. Aggiunta la regola di stack sotto 700px.
+
+### Restyle
+- **Sesta statistica** in testa pagina (quota UE della flotta mercantile mondiale), a completare
+  la griglia 3×2.
+- **Palette dei 3 grafici canvas** (barre IT/NL/ES, doughnut Blue Economy, barre Sea Basin):
+  sostituito il set neon/arcobaleno hardcoded (`#00e5ff`, `#69f0ae`, `#ffd740`…, mai legato ai
+  token del sito) con una rampa oro sequenziale + un solo accento teal, coerente con `--gold`/
+  `--gold-l`/`--salt`. Corretto anche l'overflow delle etichette legenda nel doughnut.
+- **Articoli**: prima fila con i 3 titoli principali in card "a barca" con leggero ondeggiamento
+  (variante di `boatRock`), disattivata sotto `prefers-reduced-motion`.
+
+---
+
+## 7. Note generali per chi riprende questo lavoro
 
 - Tutti i colori/font usati devono venire da `:root` in `css/style.css` — non introdurre nuovi
   valori hardcoded. `--chart` (`#f2ead8`) è il token "sfondo chiaro" già in uso; `--ink`

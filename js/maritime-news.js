@@ -24,8 +24,28 @@
     }
   }
 
+  var BOAT_SVG = '<svg class="news-boat-svg" viewBox="0 0 36 32" aria-hidden="true">' +
+    '<path d="M4 20 L32 20 L27 27 L9 27 Z" />' +
+    '<line x1="18" y1="4" x2="18" y2="20" />' +
+    '<path d="M18 5 L28 13 L18 13 Z" /></svg>';
+
+  function renderFeatured(el, items) {
+    if (!el) return;
+    el.innerHTML = items.map(function (it, idx) {
+      var dateStr = formatDate(it.publishedAt);
+      return '<a class="news-boat-card" style="animation-delay:' + (idx * 0.5).toFixed(2) + 's" ' +
+        'href="' + it.link + '" target="_blank" rel="noopener">' +
+        BOAT_SVG +
+        '<span class="news-boat-source">' + escapeHtml(it.source) + '</span>' +
+        '<span class="news-boat-title">' + escapeHtml(it.title) + '</span>' +
+        (dateStr ? '<span class="news-boat-date">' + dateStr + '</span>' : '') +
+        '</a>';
+    }).join('');
+  }
+
   function init() {
     var list = document.getElementById('news-list');
+    var featured = document.getElementById('news-featured');
     if (!list) return; // not on this page
 
     fetch(NEWS_URL, { cache: 'no-store' })
@@ -35,7 +55,11 @@
       })
       .then(function (data) {
         if (!data.items || !data.items.length) throw new Error('no items');
-        list.innerHTML = data.items.map(function (it) {
+        // Top 3 headlines get the "front row" boat-card treatment; the
+        // rest render as the plain list below, as before.
+        renderFeatured(featured, data.items.slice(0, 3));
+        var rest = data.items.slice(3);
+        list.innerHTML = rest.map(function (it) {
           var dateStr = formatDate(it.publishedAt);
           return '<li class="news-item"><a href="' + it.link + '" target="_blank" rel="noopener">' +
             '<span class="news-source">' + escapeHtml(it.source) + '</span>' +
@@ -45,6 +69,7 @@
         }).join('');
       })
       .catch(function () {
+        if (featured) featured.innerHTML = '';
         list.innerHTML = '<li class="news-item-empty">Latest headlines temporarily unavailable.</li>';
       });
   }

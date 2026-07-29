@@ -157,6 +157,11 @@
         <span class="num-val" data-obs-stat="blue-jobs" data-count="3.58" data-suffix=" Million">3.58 Million</span>
         <span class="num-lbl">Direct EU Maritime Employment</span>
       </div>
+      <div class="obs-num-cell" data-r="up" data-rd="500">
+        <span class="num-val" data-obs-stat="eu-fleet-share" data-count="34.5" data-suffix="%">34.5%</span>
+        <span class="num-lbl">European-controlled share of the world merchant fleet, by tonnage</span>
+        <span class="num-delta" data-obs-delta="eu-fleet-share">+2.6% fleet growth in 2025</span>
+      </div>
     </div>
   </div>
 </section>
@@ -236,13 +241,16 @@
         <button type="button" class="fw-ctrl-btn" id="fw-zoom-out" title="Zoom Out" aria-label="Zoom Out">−</button>
         <button type="button" class="fw-ctrl-btn" id="fw-reset-btn" title="Reset Map View" aria-label="Reset Map View">↺</button>
         <button type="button" class="fw-ctrl-btn" id="fw-fullscreen-btn" title="Toggle Fullscreen Map" aria-label="Toggle Fullscreen Map">⛶</button>
-        <button type="button" class="fw-ctrl-btn" id="fw-news-toggle" title="Toggle Side Maritime News" aria-label="Toggle Side Maritime News">📰</button>
+        <button type="button" class="fw-ctrl-btn" id="fw-news-toggle" title="Toggle Side Maritime News" aria-label="Toggle Side Maritime News" aria-pressed="false">📰</button>
       </div>
 
       <div class="fw-side-news" id="fw-side-news">
-        <h4>Live Maritime Headlines</h4>
+        <div class="fw-side-news-head">
+          <h4>Live Maritime Headlines</h4>
+          <button type="button" class="fw-side-news-close" id="fw-side-news-close" aria-label="Close news panel">✕</button>
+        </div>
         <ul class="fw-side-news-list" id="fw-side-news-list">
-          <li>Loading news ticker…</li>
+          <li class="fw-side-news-empty">Loading headlines…</li>
         </ul>
       </div>
 
@@ -304,7 +312,7 @@
 
       <div class="obs-card" data-r="up" data-rd="150">
         <h4>Dual-Fuel Orderbook Transition</h4>
-        <div id="obs-dualfuel-pct" style="font-size:2.4rem;font-family:'Cormorant Garamond',serif;font-weight:700;color:#00e5ff;margin-top:.8rem">—</div>
+        <div id="obs-dualfuel-pct" style="font-size:2.4rem;font-family:'Cormorant Garamond',serif;font-weight:700;color:var(--chart-accent);margin-top:.8rem">—</div>
         <p style="font-size:.88rem;color:rgba(239,242,241,.75);margin-top:.4rem">of all container vessel capacity currently on order at shipyards globally is equipped with alternative green propulsion (LNG, Methanol, or Ammonia dual-fuel engines).</p>
       </div>
     </div>
@@ -324,6 +332,7 @@
     <div class="obs-grid" style="margin-top:2.5rem">
       <div class="obs-chart-panel" data-r="up" data-rd="200" style="grid-column: span 2;">
         <h3>EU Freight Volume by Sea Basin (Million Tonnes / yr)</h3>
+        <p class="obs-chart-total" id="obs-basins-total"></p>
         <canvas id="obs-basins-canvas" width="640" height="360" role="img"
           aria-label="Horizontal bar chart: Mediterranean 1340 Mt (38.2%), North Sea 1050 Mt (29.9%), Atlantic 540 Mt (15.4%), Baltic 490 Mt (14.0%), Black Sea 88 Mt (2.5%)"></canvas>
         <p class="obs-chart-note">Eurostat dataset mar_mg_am_c. The Mediterranean and North Sea together process over 68% of all maritime cargo entering or leaving EU ports.</p>
@@ -361,6 +370,7 @@
   <div class="wrap">
     <div class="eyebrow light" data-r="left">Latest maritime news</div>
     <h2 class="h2 on-dark" data-r="up" data-rd="100">What's moving,<br><em>right now</em></h2>
+    <div class="news-featured" id="news-featured" data-r="up" data-rd="120" aria-label="Top headlines"></div>
     <ul class="news-list" id="news-list" data-r="up" data-rd="150">
       <li class="news-item-empty">Loading latest headlines…</li>
     </ul>

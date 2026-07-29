@@ -24,16 +24,29 @@
   var NEWS_URL        = 'assets/data/maritime-news.json';
   var STALE_AFTER_MS  = 120000;
 
-  /* ── Route palette (no color/dashed fields in JSON) ── */
+  /* ── Route palette (no color/dashed fields in JSON) ──
+     Muted maritime tones, not the neon set the rest of the redesign
+     dropped — multiple routes/cables overlap on screen at once here, so
+     (unlike the single-series canvas charts) this genuinely needs several
+     distinguishable hues rather than one gold ramp. The clicked/active
+     route always resolves to the accent teal (see render()), so that hue
+     is deliberately left out of this base set. Named chips remain the
+     primary way to identify a route — color here is a secondary cue. */
   var ROUTE_COLORS = [
-    'rgba(0,229,255,.55)',
-    'rgba(232,184,112,.55)',
-    'rgba(105,240,174,.55)',
-    'rgba(79,195,247,.55)',
-    'rgba(255,215,64,.45)',
-    'rgba(255,138,128,.45)',
-    'rgba(156,39,176,.45)'
+    'rgba(200,145,58,.55)',   // gold
+    'rgba(90,143,168,.55)',   // steel blue
+    'rgba(214,168,104,.5)',   // brass-light
+    'rgba(143,168,184,.5)',   // fog
+    'rgba(168,122,143,.45)',  // muted mauve
+    'rgba(143,157,110,.45)',  // muted sage
+    'rgba(184,137,74,.45)'    // brass
   ];
+
+  /* Same accent as --chart-accent in css/style.css :root and CHART_ACCENT
+     in js/observatory.js — canvas can't read CSS custom properties, so
+     it's hardcoded here too. Used for the active route/cable and live
+     ship dots ("this is live/selected"), replacing the old raw #00e5ff. */
+  var ACCENT = '#4fc3b0';
 
   var LITE = (function () {
     var c = navigator.connection || {};
@@ -52,11 +65,21 @@
   /**
    * Project (lon, lat) → canvas pixel (x, y) using current panX/Y/zoomScale.
    * Assumes panX = panY = 0 for the "base" position.
+   *
+   * Uses a single "cover" scale (max of the two axis scales) so the map
+   * never stretches when the container's aspect ratio no longer matches
+   * LON_SPAN/LAT_SPAN (the container height is now independent of its
+   * width — see size()). This keeps coastlines/routes/cables geometrically
+   * correct at any container shape; the world map is centered on the
+   * container and the wider axis is cropped rather than squeezed.
    */
   function project(lon, lat, w, h) {
+    var s = Math.max(w / LON_SPAN, h / LAT_SPAN);
+    var mapW = LON_SPAN * s, mapH = LAT_SPAN * s;
+    var offX = (w - mapW) / 2, offY = (h - mapH) / 2;
     var cx = w / 2, cy = h / 2;
-    var bx = (lon - MAP_BOUNDS.lonMin) / LON_SPAN * w;
-    var by = (MAP_BOUNDS.latMax - lat) / LAT_SPAN * h;
+    var bx = offX + (lon - MAP_BOUNDS.lonMin) * s;
+    var by = offY + (MAP_BOUNDS.latMax - lat) * s;
     return {
       x: (bx - cx) * zoomScale + cx + panX,
       y: (by - cy) * zoomScale + cy + panY
@@ -134,6 +157,7 @@
     var fullscreenBtn    = document.getElementById('fw-fullscreen-btn');
     var newsToggleBtn    = document.getElementById('fw-news-toggle');
     var sideNewsList     = document.getElementById('fw-side-news-list');
+    var sideNewsCloseBtn = document.getElementById('fw-side-news-close');
 
     if (!canvas || !nodesLayer) return;
 
@@ -159,7 +183,10 @@
     function size() {
       var dpr = window.devicePixelRatio || 1;
       var w = root.clientWidth || 960;
-      var h = Math.round(w * 140 / 360);
+      // Container height is now driven by CSS (immersive .fw-map-wrap /
+      // fullscreen), not derived from width — fall back to the old aspect
+      // ratio only if the container hasn't laid out yet (clientHeight 0).
+      var h = root.clientHeight || Math.round(w * 140 / 360);
       canvas.style.height = h + 'px';
       canvas.width  = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
@@ -186,18 +213,14 @@
       for (var gx = 0; gx <= w; gx += Math.round(w / 12)) { ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke(); }
       for (var gy = 0; gy <= h; gy += Math.round(h / 6))  { ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke(); }
 
-      /* coastline */
-      if (coastline && coastline.features) {
+      /* coastline — assets/data/coastline.json is { meta, bbox, polylines },
+         not a GeoJSON FeatureCollection: polylines is a flat array of
+         [lon,lat] point arrays, one per coastline segment. (Pre-existing
+         mismatch found via live verification: the old .features check
+         silently matched nothing, so the coastline never rendered.) */
+      if (coastline && coastline.polylines) {
         ctx.beginPath();
-        coastline.features.forEach(function (feat) {
-          if (!feat.geometry) return;
-          var coords = feat.geometry.coordinates;
-          if (feat.geometry.type === 'LineString') {
-            addGeoPath(ctx, coords, w, h);
-          } else if (feat.geometry.type === 'MultiLineString') {
-            coords.forEach(function (line) { addGeoPath(ctx, line, w, h); });
-          }
-        });
+        coastline.polylines.forEach(function (line) { addGeoPath(ctx, line, w, h); });
         ctx.strokeStyle = 'rgba(232,184,112,.32)';
         ctx.lineWidth = 0.8;
         ctx.stroke();
@@ -209,7 +232,7 @@
           var isAct = rt.id === activeRouteId;
           ctx.beginPath();
           addGeoPath(ctx, rt.waypoints, w, h);
-          ctx.strokeStyle = isAct ? '#00e5ff' : (ROUTE_COLORS[idx % ROUTE_COLORS.length]);
+          ctx.strokeStyle = isAct ? ACCENT : (ROUTE_COLORS[idx % ROUTE_COLORS.length]);
           ctx.lineWidth   = isAct ? 2.5 : 1.2;
           ctx.setLineDash(isAct ? [] : [5, 5]);
           ctx.stroke();
@@ -223,9 +246,9 @@
           var isAct = cab.id === activeCableId;
           ctx.beginPath();
           addGeoPath(ctx, cab.waypoints, w, h);
-          ctx.strokeStyle = isAct ? '#00e5ff' : (ROUTE_COLORS[idx % ROUTE_COLORS.length]);
+          ctx.strokeStyle = isAct ? ACCENT : (ROUTE_COLORS[idx % ROUTE_COLORS.length]);
           ctx.lineWidth   = isAct ? 3.0 : 1.5;
-          ctx.shadowColor = '#00e5ff';
+          ctx.shadowColor = ACCENT;
           ctx.shadowBlur  = isAct ? 14 : 5;
           ctx.stroke();
           ctx.shadowBlur  = 0;
@@ -238,7 +261,7 @@
         ships.forEach(function (shp) {
           var pt = project(shp.lon, shp.lat, w, h);
           var stale = now - shp.lastSeen * 1000 > STALE_AFTER_MS;
-          ctx.fillStyle = stale ? 'rgba(0,229,255,.3)' : 'rgba(0,229,255,.8)';
+          ctx.fillStyle = stale ? 'rgba(79,195,176,.3)' : 'rgba(79,195,176,.8)';
           ctx.beginPath();
           ctx.arc(pt.x, pt.y, 2.2, 0, Math.PI * 2);
           ctx.fill();
@@ -498,20 +521,44 @@
         }
       });
     }
+    // Container size changes immediately on entering/exiting fullscreen —
+    // redraw so canvas + DOM markers pick up the new clientWidth/Height.
+    ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (evt) {
+      document.addEventListener(evt, function () {
+        render(); updateNodes();
+      });
+    });
 
-    /* ── Side news ── */
+    /* ── Side news ──
+       Always leaves the panel in a visible state (headlines, "no
+       headlines" or "unavailable") — never stuck on the static
+       "Loading headlines…" placeholder from the HTML. */
+    function setNewsOpen(open) {
+      root.classList.toggle('news-open', open);
+      if (newsToggleBtn) newsToggleBtn.setAttribute('aria-pressed', open ? 'true' : 'false');
+    }
     if (newsToggleBtn) {
-      newsToggleBtn.addEventListener('click', function () { root.classList.toggle('news-open'); });
+      newsToggleBtn.addEventListener('click', function () {
+        setNewsOpen(!root.classList.contains('news-open'));
+      });
+    }
+    if (sideNewsCloseBtn) {
+      sideNewsCloseBtn.addEventListener('click', function () { setNewsOpen(false); });
     }
 
     fetchJSON(NEWS_URL).then(function (d) {
-      if (sideNewsList && d.items && d.items.length) {
-        sideNewsList.innerHTML = d.items.map(function (it) {
+      if (!sideNewsList) return;
+      if (d && d.items && d.items.length) {
+        sideNewsList.innerHTML = d.items.slice(0, 12).map(function (it) {
           return '<li><a href="' + it.link + '" target="_blank" rel="noopener">' +
             '<strong>[' + it.source + ']</strong> ' + it.title + '</a></li>';
         }).join('');
+      } else {
+        sideNewsList.innerHTML = '<li class="fw-side-news-empty">No headlines available right now.</li>';
       }
-    }).catch(function () {});
+    }).catch(function () {
+      if (sideNewsList) sideNewsList.innerHTML = '<li class="fw-side-news-empty">News feed temporarily unavailable.</li>';
+    });
 
     /* ── Drag pan ── */
     canvas.addEventListener('mousedown', function (e) {
@@ -556,21 +603,30 @@
       render(); updateNodes();
     }, { passive: false });
 
-    /* ── Load data ── */
-    Promise.all([
-      fetchJSON(CHOKEPOINTS_URL),
-      fetchJSON(COASTLINE_URL),
-      fetchJSON(ROUTES_URL),
-      fetchJSON(PORTS_URL),
-      fetchJSON(CABLES_URL)
-    ]).then(function (results) {
-      chokepoints = results[0].items || [];
-      coastline   = results[1];
-      routes      = results[2].items || [];
-      ports       = results[3].items || [];
-      cables      = results[4].items || [];
+    /* ── Load data ──
+       Promise.allSettled (not Promise.all): a single missing/failing data
+       file must never disable the tab switcher or the ports boats — it
+       should just render with whatever data did load. */
+    var DATA_URLS = [CHOKEPOINTS_URL, COASTLINE_URL, ROUTES_URL, PORTS_URL, CABLES_URL];
+    Promise.allSettled(DATA_URLS.map(fetchJSON)).then(function (results) {
+      function val(r) { return r.status === 'fulfilled' ? r.value : null; }
+      results.forEach(function (r, i) {
+        if (r.status === 'rejected') console.warn('[fleetwatch] failed to load', DATA_URLS[i], r.reason);
+      });
 
-      /* tab switcher */
+      var chokeRes = val(results[0]);
+      var coastRes = val(results[1]);
+      var routeRes = val(results[2]);
+      var portRes  = val(results[3]);
+      var cableRes = val(results[4]);
+
+      chokepoints = (chokeRes && chokeRes.items) || [];
+      coastline   = coastRes || null;
+      routes      = (routeRes && routeRes.items) || [];
+      ports       = (portRes && portRes.items) || [];
+      cables      = (cableRes && cableRes.items) || [];
+
+      /* tab switcher — bound unconditionally, regardless of which fetches failed */
       document.querySelectorAll('#fw-view-tabs .fw-tab').forEach(function (tab) {
         tab.addEventListener('click', function () {
           document.querySelectorAll('#fw-view-tabs .fw-tab').forEach(function (t) { t.classList.remove('active'); });
@@ -589,18 +645,19 @@
         });
       });
 
-      /* live ship poll */
+      /* live ship poll — fleet-live.json may legitimately be empty (no
+         live feed wired up yet), so show an em dash rather than a
+         misleading "0" both on success-with-no-ships and on fetch failure */
       function pollShips() {
         fetchJSON(FLEET_URL).then(function (d) {
-          ships = d.ships || d.items || [];
-          if (statLbl1 && activeView === 'fleetwatch') {
-            if (vesselCountEl) vesselCountEl.textContent = String(ships.length);
-            var busiest = ships.reduce(function (acc, shp) {
-              return acc; /* placeholder */
-            }, null);
+          ships = (d && (d.ships || d.items)) || [];
+          if (activeView === 'fleetwatch') {
+            if (vesselCountEl) vesselCountEl.textContent = ships.length ? String(ships.length) : '—';
+            render();
           }
-          if (activeView === 'fleetwatch') render();
-        }).catch(function () {});
+        }).catch(function () {
+          if (vesselCountEl && activeView === 'fleetwatch') vesselCountEl.textContent = '—';
+        });
         setTimeout(pollShips, 9000);
       }
       pollShips();
