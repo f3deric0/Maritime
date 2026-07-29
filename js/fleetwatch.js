@@ -504,6 +504,9 @@
     function setView(view) {
       activeView = view;
 
+      var filterToggle = document.getElementById('fw-filter-toggle');
+      if (filterToggle) filterToggle.style.display = view === 'fleetwatch' ? 'inline-flex' : 'none';
+
       if (portBoats) portBoats.style.display = view === 'ports' ? 'flex' : 'none';
       if (routesContainer) routesContainer.style.display = (view === 'fleetwatch' || view === 'cables') ? 'flex' : 'none';
 
