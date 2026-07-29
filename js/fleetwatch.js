@@ -144,8 +144,8 @@
 
     var canvas           = document.getElementById('fw-canvas');
     var nodesLayer       = document.getElementById('fw-nodes');
-    var routesContainer  = null;  /* #fw-routes removed from HTML */
-    var portBoats        = null;  /* #fw-port-boats removed from HTML */
+    var routesContainer  = document.getElementById('fw-routes');
+    var portBoats        = document.getElementById('fw-port-boats');
     var detailPanel      = document.getElementById('fw-detail');
     var vesselCountEl    = document.getElementById('fw-vessel-count');
     var busiestEl        = document.getElementById('fw-busiest');
@@ -156,8 +156,10 @@
     var resetBtn         = document.getElementById('fw-reset-btn');
     var fullscreenBtn    = document.getElementById('fw-fullscreen-btn');
 
-    /* Fullscreen left info panel — header + detail only */
+    /* Fullscreen left info panel */
     var fsPanel          = document.getElementById('fw-fs-panel');
+    var fsFsChips        = document.getElementById('fw-fs-chips');
+    var fsFsBoats        = document.getElementById('fw-fs-boats');
     var fsFsDetail       = document.getElementById('fw-fs-detail');
     var fsFsVesselCount  = document.getElementById('fw-fs-vessel-count');
     var fsFsStatLbl      = document.getElementById('fw-fs-stat-lbl');
@@ -475,7 +477,7 @@
           (rt.sourceLabel ? '<a class="fw-detail-source" href="' + rt.source + '" target="_blank" rel="noopener">Source: ' + rt.sourceLabel + '</a>' : '');
       }
       render();
-      syncFsPanel();
+      buildRouteChips();
     }
 
     function selectCable(id) {
@@ -495,32 +497,38 @@
           (cab.sourceLabel ? '<a class="fw-detail-source" href="' + cab.source + '" target="_blank" rel="noopener">Source: ' + cab.sourceLabel + '</a>' : '');
       }
       render();
-      syncFsPanel();
+      buildCableChips();
     }
 
     /* ── View switcher ── */
     function setView(view) {
       activeView = view;
 
+      if (portBoats) portBoats.style.display = view === 'ports' ? 'flex' : 'none';
+      if (routesContainer) routesContainer.style.display = (view === 'fleetwatch' || view === 'cables') ? 'flex' : 'none';
+
       if (view === 'fleetwatch') {
         if (statLbl1) statLbl1.textContent = 'Vessels tracked';
         if (statLbl2) statLbl2.textContent = 'Busiest chokepoint';
         buildChokeButtons();
-        setDetail('Click a chokepoint or trade route on the map to explore it.');
+        buildRouteChips();
+        setDetail('Select a chokepoint or trade route on the map for details.');
       } else if (view === 'ports') {
         if (statLbl1) statLbl1.textContent = 'Top Container Ports';
         if (statLbl2) statLbl2.textContent = 'Combined throughput';
         if (vesselCountEl) vesselCountEl.textContent = '20';
         if (busiestEl) busiestEl.textContent = '389.7M TEU';
         buildPortNodeButtons();
-        setDetail('Click a port on the map to see its trade data.');
+        buildPortBoats();
+        setDetail('Select a port on the map or click a vessel card below to view trade data.');
       } else if (view === 'cables') {
         if (statLbl1) statLbl1.textContent = 'Submarine Cables';
         if (statLbl2) statLbl2.textContent = 'Total Capacity';
         if (vesselCountEl) vesselCountEl.textContent = String(cables.length || 13);
         if (busiestEl) busiestEl.textContent = '~1.8 Pbps';
         nodesLayer.innerHTML = '';
-        setDetail('Click a submarine cable on the map to highlight its route and landing stations.');
+        buildCableChips();
+        setDetail('Select a submarine cable to highlight its ocean route, bandwidth, and landing stations.');
       }
       render();
     }
@@ -593,13 +601,26 @@
       });
     });
 
-    /* fs-panel click — no chips/boats inside the panel any more,
-       but keep the listener stub in case we add interactions later */
+    /* ── fs-panel event delegation ── */
+    if (fsPanel) {
+      fsPanel.addEventListener('click', function (e) {
+        var chip = e.target.closest('.fw-route-chip');
+        if (chip) {
+          if (chip.dataset.routeId) selectRoute(chip.dataset.routeId);
+          if (chip.dataset.cableId) selectCable(chip.dataset.cableId);
+          return;
+        }
+        var boat = e.target.closest('.fw-boat-btn');
+        if (boat) { selectPort(boat.dataset.portId); return; }
+      });
+    }
 
-    /* ── syncFsPanel — detail + stat only ── */
+    /* ── syncFsPanel — detail + selectors + stat ── */
     function syncFsPanel() {
       if (!fsPanel) return;
-      if (fsFsDetail && detailPanel) fsFsDetail.innerHTML = detailPanel.innerHTML;
+      if (fsFsDetail && detailPanel)     fsFsDetail.innerHTML  = detailPanel.innerHTML;
+      if (fsFsChips  && routesContainer) fsFsChips.innerHTML   = routesContainer.innerHTML;
+      if (fsFsBoats  && portBoats)       fsFsBoats.innerHTML   = portBoats.innerHTML;
       if (fsFsVesselCount && vesselCountEl) fsFsVesselCount.textContent = vesselCountEl.textContent;
       if (fsFsStatLbl && statLbl1)          fsFsStatLbl.textContent     = statLbl1.textContent;
     }

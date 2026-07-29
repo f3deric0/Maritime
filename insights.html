@@ -243,9 +243,7 @@
         <button type="button" class="fw-ctrl-btn" id="fw-fullscreen-btn" title="Toggle Fullscreen Map" aria-label="Toggle Fullscreen Map">⛶</button>
       </div>
 
-      <!-- FULLSCREEN LEFT INFO PANEL
-           Header + detail only. Chips/selector rows removed —
-           interaction is purely map-driven (click a node on canvas). -->
+      <!-- FULLSCREEN LEFT INFO PANEL -->
       <div class="fw-fs-panel" id="fw-fs-panel" aria-label="Map information panel" aria-hidden="true">
         <div class="fw-fs-panel-hd">
           <span class="fw-fs-panel-eyebrow">Map Info</span>
@@ -257,6 +255,9 @@
         <div class="fw-fs-panel-detail" id="fw-fs-detail">
           <p class="fw-detail-empty">Click a chokepoint, port, route or cable on the map to explore it.</p>
         </div>
+        <!-- Selectors at the bottom of the panel -->
+        <div class="fw-fs-panel-chips" id="fw-fs-chips"></div>
+        <div class="fw-fs-panel-boats" id="fw-fs-boats"></div>
       </div>
 
       <div class="fw-hud" id="fw-hud" aria-hidden="true"></div>
@@ -268,9 +269,12 @@
       <p class="fw-live-note" id="fw-live-note" style="display:none">Live feed temporarily unavailable — chokepoint data below is still current.</p>
     </div>
 
+    <!-- BOTTOM SELECTORS FOR PORTS, ROUTES & CABLES -->
+    <div class="fw-port-boats" id="fw-port-boats" style="display:none;" aria-label="Top 20 Container Ports Boat Selector"></div>
+    <div class="fw-routes" id="fw-routes" aria-label="Major global trade routes and cables"></div>
 
     <div class="fw-detail" id="fw-detail" data-r="up" data-rd="150">
-      <p class="fw-detail-empty">Select a chokepoint or trade route on the map for the current situation there.</p>
+      <p class="fw-detail-empty">Select a chokepoint, trade route, port, or cable on the map for details.</p>
     </div>
 
   </div>
