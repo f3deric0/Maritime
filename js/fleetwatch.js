@@ -180,16 +180,37 @@
     var isDragging = false, startX = 0, startY = 0, initPanX = 0, initPanY = 0;
 
     /* ── Canvas sizing ── */
+
+    /**
+     * size() — destructive: sets canvas.width/height (clears the bitmap)
+     * and canvas.style.height. Called ONLY from render(), which redraws
+     * the cleared bitmap immediately after. Must NOT be called from any
+     * function that only repositions DOM nodes without redrawing.
+     */
     function size() {
       var dpr = window.devicePixelRatio || 1;
       var w = root.clientWidth || 960;
-      // Container height is now driven by CSS (immersive .fw-map-wrap /
-      // fullscreen), not derived from width — fall back to the old aspect
-      // ratio only if the container hasn't laid out yet (clientHeight 0).
+      // Container height is driven by CSS (65vh or fullscreen 100vh).
+      // Fall back to 140/360 aspect only when the container hasn't laid
+      // out yet (clientHeight === 0).
       var h = root.clientHeight || Math.round(w * 140 / 360);
       canvas.style.height = h + 'px';
       canvas.width  = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
+      return { w: w, h: h, dpr: dpr };
+    }
+
+    /**
+     * measure() — non-destructive: reads the same layout dimensions as
+     * size() but never touches canvas.width / canvas.height, so the
+     * current bitmap is preserved. Use for any code that only needs w/h
+     * for geometry (e.g. project() calls in updateNodes()) but does not
+     * redraw the canvas itself.
+     */
+    function measure() {
+      var dpr = window.devicePixelRatio || 1;
+      var w = root.clientWidth || 960;
+      var h = root.clientHeight || Math.round(w * 140 / 360);
       return { w: w, h: h, dpr: dpr };
     }
 
@@ -269,9 +290,15 @@
       }
     }
 
-    /* ── Update DOM node positions ── */
+    /* ── Update DOM node positions ──
+       Uses measure() (not size()) so the canvas bitmap is NEVER cleared
+       here — only geometry math happens. This is the root fix for the
+       "map disappears after every interaction" bug: every handler called
+       render() followed by updateNodes(); render() drew the scene, then
+       updateNodes() called size() which reset canvas.width and wiped the
+       bitmap, leaving a blank canvas for the browser to paint. */
     function updateNodes() {
-      var s = size();
+      var s = measure();
       nodesLayer.querySelectorAll('[data-lon]').forEach(function (el) {
         var pt = project(parseFloat(el.dataset.lon), parseFloat(el.dataset.lat), s.w, s.h);
         el.style.left = pt.x + 'px';
@@ -521,10 +548,30 @@
         }
       });
     }
-    // Container size changes immediately on entering/exiting fullscreen —
-    // redraw so canvas + DOM markers pick up the new clientWidth/Height.
+    // Container size changes on entering/exiting fullscreen — redraw so
+    // the canvas and DOM markers pick up the new clientWidth/Height.
+    //
+    // Fix B — cursor visibility in fullscreen:
+    // The custom compass cursor (#compass-cursor / #cursor-dot) lives in
+    // <body> and is hidden by `body.cursor-on * { cursor: none }`. When
+    // #fw-map-wrap goes fullscreen the browser only renders its subtree,
+    // so the overlay elements are invisible but the CSS rule still hides
+    // the native cursor → no cursor at all. Fix: remove cursor-on while
+    // inside map fullscreen; restore it on exit.
+    var _cursorWasOn = false;
     ['fullscreenchange', 'webkitfullscreenchange'].forEach(function (evt) {
       document.addEventListener(evt, function () {
+        var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+        if (fsEl === root) {
+          // Entering map fullscreen — suspend custom cursor
+          _cursorWasOn = document.body.classList.contains('cursor-on');
+          if (_cursorWasOn) document.body.classList.remove('cursor-on');
+        } else {
+          // Exiting map fullscreen — restore custom cursor if it was active
+          if (_cursorWasOn) document.body.classList.add('cursor-on');
+          _cursorWasOn = false;
+        }
+        // Resize canvas to new container dimensions and redraw
         render(); updateNodes();
       });
     });
