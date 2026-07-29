@@ -532,11 +532,11 @@ body.menu-open .drawer-foot { opacity: 1; transform: none; }
 .obs-blue-economy, .obs-basins { background: var(--chart); color: var(--ink); position: relative; overflow: hidden; }
 .obs-blue-economy::before, .obs-basins::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .06; background-image: linear-gradient(rgba(9,21,36,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(9,21,36,.6) 1px, transparent 1px); background-size: 60px 60px; }
 .fw-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
-.fw-livestats { display: flex; gap: 2.2rem; flex-shrink: 0; align-items: flex-end; }
-.fw-stat { text-align: right; }
-.fw-stat-val { display: block; font-family: var(--ff-d); font-size: 2.2rem; font-weight: 700; color: var(--gold-l); line-height: 1; }
-.fw-stat-val--sm { font-size: 1.6rem; line-height: 1.1; }
-.fw-stat-lbl { display: block; margin-top: .4rem; font-family: var(--ff-c); font-size: .58rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+.fw-livestats { display: flex; gap: 2.2rem; flex-shrink: 0; align-items: flex-end; margin-left: auto; text-align: right; }
+.fw-stat { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
+.fw-stat-val { display: block; font-family: var(--ff-d); font-size: 2.2rem; font-weight: 700; color: var(--gold-l); line-height: 1; text-align: right; }
+.fw-stat-val--sm { font-size: 1.6rem; line-height: 1.1; text-align: right; }
+.fw-stat-lbl { display: block; margin-top: .4rem; font-family: var(--ff-c); font-size: .58rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.45); text-align: right; }
 
 /* Multi-Map View Switcher Tabs & Filter Toolbar */
 .fw-view-tabs { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
