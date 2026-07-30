@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Fleet Watch — maritime chokepoints",
-    "note": "Fifteen chokepoints worldwide, tiered major/secondary. Summaries are grounded in real, current reporting (retrieved via web research) — not decorative. Update as events develop; each item carries its own source.",
+    "title": "Fleet Watch, maritime chokepoints",
+    "note": "Fifteen chokepoints worldwide, tiered major/secondary. Summaries are grounded in real, current reporting (retrieved via web research), not decorative. Update as events develop; each item carries its own source.",
     "retrieved": "2026-07-28"
   },
   "items": [
@@ -13,9 +13,9 @@
       "bbox": { "latMin": 35.6, "latMax": 36.3, "lonMin": -6.1, "lonMax": -5.0 },
       "tier": "major",
       "tag": "Congestion · Migration",
-      "summary": "Over 300 vessels cross the 14km strait every day — roughly one every five minutes. Port congestion at Algeciras and Tanger Med causes recurring delays, and the strait is one of Europe's primary irregular-migration routes from Africa, with Morocco's control of departures giving it real leverage over Spain and the EU.",
+      "summary": "Over 300 vessels cross the 14km strait every day, roughly one every five minutes. Port congestion at Algeciras and Tanger Med causes recurring delays, and the strait is one of Europe's primary irregular-migration routes from Africa, with Morocco's control of departures giving it real leverage over Spain and the EU.",
       "source": "https://theworlddata.com/strait-of-gibraltar-statistics/",
-      "sourceLabel": "The World Data — Strait of Gibraltar Statistics"
+      "sourceLabel": "The World Data, Strait of Gibraltar Statistics"
     },
     {
       "id": "dover",
@@ -25,9 +25,9 @@
       "bbox": { "latMin": 50.7, "latMax": 51.3, "lonMin": 1.0, "lonMax": 1.9 },
       "tier": "secondary",
       "tag": "Busiest lane · Migration",
-      "summary": "The world's busiest shipping lane by vessel count — over 400 transits a day through a strait just 33km wide, demanding constant traffic management. The same narrow water carries a humanitarian crisis: around 41,000 people crossed by small boat in 2025, and a UK–France returns pilot has so far had limited effect.",
+      "summary": "The world's busiest shipping lane by vessel count, over 400 transits a day through a strait just 33km wide, demanding constant traffic management. The same narrow water carries a humanitarian crisis: around 41,000 people crossed by small boat in 2025, and a UK-France returns pilot has so far had limited effect.",
       "source": "https://content.ballastmarkets.com/chokepoints/dover-strait/",
-      "sourceLabel": "Ballast Markets — Dover Strait chokepoint brief"
+      "sourceLabel": "Ballast Markets, Dover Strait chokepoint brief"
     },
     {
       "id": "danish-straits",
@@ -37,9 +37,9 @@
       "bbox": { "latMin": 54.5, "latMax": 56.0, "lonMin": 9.5, "lonMax": 13.0 },
       "tier": "secondary",
       "tag": "Shadow fleet · Environmental risk",
-      "summary": "An estimated 90 Russian \"shadow fleet\" tankers a month transit the Great Belt and Øresund carrying sanctioned oil — often uninsured, flag-hopping, and running with AIS transponders switched off. Nordic-Baltic states are now demanding proof of insurance before transit, but the spill risk from aging, uncovered vessels remains high.",
+      "summary": "An estimated 90 Russian \"shadow fleet\" tankers a month transit the Great Belt and Øresund carrying sanctioned oil, often uninsured, flag-hopping, and running with AIS transponders switched off. Nordic-Baltic states are now demanding proof of insurance before transit, but the spill risk from aging, uncovered vessels remains high.",
       "source": "https://content.ballastmarkets.com/chokepoints/danish-straits/",
-      "sourceLabel": "Ballast Markets — Danish Straits shadow-fleet brief"
+      "sourceLabel": "Ballast Markets, Danish Straits shadow-fleet brief"
     },
     {
       "id": "bosphorus",
@@ -49,9 +49,9 @@
       "bbox": { "latMin": 40.9, "latMax": 41.3, "lonMin": 28.8, "lonMax": 29.2 },
       "tier": "secondary",
       "tag": "Treaty-bound · Congestion",
-      "summary": "Governed since 1936 by the Montreux Convention — marking 90 years in 2026 — the Bosphorus is a vital grain and energy corridor into and out of the Black Sea, and chronically congested. Turkey's proposed Istanbul Canal is pitched as a fix, but critics argue its real purpose is to let Ankara sidestep Montreux's traffic rules entirely.",
+      "summary": "Governed since 1936 by the Montreux Convention, marking 90 years in 2026, the Bosphorus is a vital grain and energy corridor into and out of the Black Sea, and chronically congested. Turkey's proposed Istanbul Canal is pitched as a fix, but critics argue its real purpose is to let Ankara sidestep Montreux's traffic rules entirely.",
       "source": "https://carnegieendowment.org/europe/research/2026/07/managing-montreux-turkey-and-the-russia-ukraine-war-in-the-black-sea",
-      "sourceLabel": "Carnegie Endowment — Managing Montreux"
+      "sourceLabel": "Carnegie Endowment, Managing Montreux"
     },
     {
       "id": "suez",
@@ -63,7 +63,7 @@
       "tag": "Recovering · Diversion",
       "summary": "Traffic remains roughly 60% below pre-crisis levels in early 2026, two years into Red Sea diversions around the Cape of Good Hope. Egypt's estimated revenue loss is near $10bn, though 2026 forecasts point to a gradual recovery as security conditions in the Red Sea slowly improve.",
       "source": "https://logfret.com/logfret-insights/suez-canal-traffic-remains-subdued-as-red-sea-rerouting-persists-into-2026/",
-      "sourceLabel": "Logfret Insights — Suez Canal traffic, 2026"
+      "sourceLabel": "Logfret Insights, Suez Canal traffic, 2026"
     },
     {
       "id": "bab-el-mandeb",
@@ -73,9 +73,9 @@
       "bbox": { "latMin": 12.2, "latMax": 13.0, "lonMin": 43.0, "lonMax": 43.6 },
       "tier": "major",
       "tag": "Active conflict · Rerouting",
-      "summary": "Around 8% of the world's seaborne oil passes this strait, and Houthi attacks and blockade threats against shipping continued into mid-2026, repeatedly pushing traffic to divert north into the Suez approach or turn back entirely — the direct cause of the Suez Canal's own extended slump.",
+      "summary": "Around 8% of the world's seaborne oil passes this strait, and Houthi attacks and blockade threats against shipping continued into mid-2026, repeatedly pushing traffic to divert north into the Suez approach or turn back entirely, the direct cause of the Suez Canal's own extended slump.",
       "source": "https://thehill.com/policy/international/5991796-houthi-saudi-arabia-attacks-bab-el-mandeb-strait/",
-      "sourceLabel": "The Hill — Red Sea shipping slows after Houthi attacks"
+      "sourceLabel": "The Hill, Red Sea shipping slows after Houthi attacks"
     },
     {
       "id": "hormuz",
@@ -85,9 +85,9 @@
       "bbox": { "latMin": 26.2, "latMax": 27.0, "lonMin": 55.8, "lonMax": 56.9 },
       "tier": "major",
       "tag": "Active conflict · Closed",
-      "summary": "Since Israeli and US strikes on Iran began in February 2026, Iranian forces have attacked vessels transiting the strait — the UK Maritime Trade Operations Centre logged 10 attacks by early March, killing five crew members — while war-risk insurance has become unavailable or prohibitively expensive, leaving the strait effectively closed to normal traffic. The US began a naval blockade of Iranian crude exports (previously around 2 million barrels/day) in April 2026, and Iran has since imposed its own tolls and a nationality-based tiered transit system on ships attempting passage. Roughly a fifth of global oil and LNG normally moves through this narrow channel, nearly all of it bound for Asia.",
+      "summary": "Since Israeli and US strikes on Iran began in February 2026, Iranian forces have attacked vessels transiting the strait, the UK Maritime Trade Operations Centre logged 10 attacks by early March, killing five crew members, while war-risk insurance has become unavailable or prohibitively expensive, leaving the strait effectively closed to normal traffic. The US began a naval blockade of Iranian crude exports (previously around 2 million barrels/day) in April 2026, and Iran has since imposed its own tolls and a nationality-based tiered transit system on ships attempting passage. Roughly a fifth of global oil and LNG normally moves through this narrow channel, nearly all of it bound for Asia.",
       "source": "https://www.congress.gov/crs-product/R45281",
-      "sourceLabel": "Congressional Research Service — Iran Conflict and the Strait of Hormuz, 2026"
+      "sourceLabel": "Congressional Research Service, Iran Conflict and the Strait of Hormuz, 2026"
     },
     {
       "id": "malacca",
@@ -97,9 +97,9 @@
       "bbox": { "latMin": 1.0, "latMax": 1.5, "lonMin": 103.0, "lonMax": 104.0 },
       "tier": "major",
       "tag": "Highest traffic · Congestion",
-      "summary": "The Strait of Malacca carries an estimated 94,000 vessel transits a year — roughly 250 ships a day — funnelling around 25-30% of global seaborne trade value through a channel that narrows sharply near the Philip Channel/Singapore Strait approach. Piracy has fallen well below its 2000s peak thanks to coordinated Malaysian-Indonesian-Singaporean patrols, but shallow depth and dense mixed traffic keep grounding and collision risk persistently high, and 2026 traffic is running at record levels.",
+      "summary": "The Strait of Malacca carries an estimated 94,000 vessel transits a year, roughly 250 ships a day, funnelling around 25-30% of global seaborne trade value through a channel that narrows sharply near the Philip Channel/Singapore Strait approach. Piracy has fallen well below its 2000s peak thanks to coordinated Malaysian-Indonesian-Singaporean patrols, but shallow depth and dense mixed traffic keep grounding and collision risk persistently high, and 2026 traffic is running at record levels.",
       "source": "https://shiptracker.seatospace.com/articles/malacca-strait-vessel-traffic-density-transit-patterns.html",
-      "sourceLabel": "Internet Ship Database — Malacca Strait vessel traffic density"
+      "sourceLabel": "Internet Ship Database, Malacca Strait vessel traffic density"
     },
     {
       "id": "panama-canal",
@@ -111,7 +111,7 @@
       "tag": "Climate risk · Trade tension",
       "summary": "After the severe 2023-24 El Niño drought forced draft restrictions and cut daily transit slots, heavy rainfall through 2025 restored Gatun Lake to healthier levels, though the Panama Canal Authority has begun tightening operations again in 2026 as forecasters warn of a fresh El Niño. A 2025 overhaul of the reservation/auction pricing system can add hundreds of thousands of dollars to a transit slot, and the canal remains a live flashpoint in US-Panama relations after repeated US claims of a right to reassert control over the waterway.",
       "source": "https://panamadaily.news/2026/05/15/panama-canal-drought-2026-shipping/",
-      "sourceLabel": "Panama Daily News — Panama Canal drought, 2026 shipping outlook"
+      "sourceLabel": "Panama Daily News, Panama Canal drought, 2026 shipping outlook"
     },
     {
       "id": "cape-of-good-hope",
@@ -121,9 +121,9 @@
       "bbox": { "latMin": -35.0, "latMax": -33.8, "lonMin": 17.8, "lonMax": 19.2 },
       "tier": "major",
       "tag": "Diversion route · Record traffic",
-      "summary": "Shipping volumes rounding the Cape surged as container lines abandoned the Red Sea after Houthi attacks began in late 2023, reaching a record roughly 24 million deadweight tonnes by April 2026, with around 80% of container liners still routing this way rather than through Suez. The diversion adds 6,000-11,000 nautical miles and 10-14 days per voyage and absorbs an estimated 5-7% of global container fleet capacity — by 2026 the Cape route looks less like a temporary detour and more like a structural rewiring of carriers' Asia-Europe strategy.",
+      "summary": "Shipping volumes rounding the Cape surged as container lines abandoned the Red Sea after Houthi attacks began in late 2023, reaching a record roughly 24 million deadweight tonnes by April 2026, with around 80% of container liners still routing this way rather than through Suez. The diversion adds 6,000-11,000 nautical miles and 10-14 days per voyage and absorbs an estimated 5-7% of global container fleet capacity. By 2026 the Cape route looks less like a temporary detour and more like a structural rewiring of carriers' Asia-Europe strategy.",
       "source": "https://euroluminant.com/news/cape-of-good-hope-shipping-record-2026/",
-      "sourceLabel": "Euroluminant — Cape Route Record: The Suez Isn't Coming Back, 2026"
+      "sourceLabel": "Euroluminant, Cape Route Record: The Suez Isn't Coming Back, 2026"
     },
     {
       "id": "tsushima-strait",
@@ -135,7 +135,7 @@
       "tag": "Naval activity · Trade gateway",
       "summary": "The Korea/Tsushima Strait is the only outlet for Russia's Pacific Fleet from Vladivostok and a key trade gateway South Korea and Japan both depend on, and it has become a stage for great-power signaling: a 10-ship Russian flotilla transited into the East China Sea in May 2026, continuing a pattern of annual China-Russia joint naval patrols through the channel. It is not a major cargo bottleneck in volume terms, but its dual role as trade artery and naval chokepoint keeps it under close watch by Japan's Maritime Self-Defense Force.",
       "source": "https://news.usni.org/2026/05/11/10-ship-russian-convoy-transits-japans-tsushima-strait",
-      "sourceLabel": "USNI News — Russian convoy transits Tsushima Strait, May 2026"
+      "sourceLabel": "USNI News, Russian convoy transits Tsushima Strait, May 2026"
     },
     {
       "id": "taiwan-strait",
@@ -147,7 +147,7 @@
       "tag": "Military tension · Gray-zone",
       "summary": "China ramped up military pressure around Taiwan through late 2025 and into 2026, including a single-day surge of over 100 aircraft sorties on December 29, 2025 and rocket fire from Fujian landing inside Taiwan's contiguous zone; the carrier Liaoning transited the strait in April 2026 and the US continues periodic freedom-of-navigation transits. The strait carries a meaningful share of East Asia-bound container traffic, and repeated PLA \"gray-zone\" exercises keep shipping insurers and carriers watching closely for any escalation that could force a wholesale rerouting of Asian trade.",
       "source": "https://www.visiontimes.com/2026/02/18/escalation-or-restraint-tensions-simmer-in-the-taiwan-strait-as-beijing-tests-red-lines.html",
-      "sourceLabel": "Vision Times — Tensions simmer in the Taiwan Strait, Feb 2026"
+      "sourceLabel": "Vision Times, Tensions simmer in the Taiwan Strait, Feb 2026"
     },
     {
       "id": "bering-strait",
@@ -157,9 +157,9 @@
       "bbox": { "latMin": 64.8, "latMax": 66.3, "lonMin": -170.0, "lonMax": -166.0 },
       "tier": "secondary",
       "tag": "Arctic shipping · Sanctions",
-      "summary": "Traffic through the Bering Strait tracks Russia's Northern Sea Route, which had processed 1,315 vessels carrying roughly 56 million tonnes of cargo by mid-2026, with 196 vessel applications for summer 2026 passage including 30 LNG carriers — a 50% year-on-year increase — though overall NSR cargo actually fell 2.3% in 2025 to 37 million tonnes, well short of Moscow's long-touted targets. Russia is expanding its Arctic military footprint as part of a broader pivot to Asia redirecting energy exports toward China ahead of the EU's January 2027 ban on Russian LNG imports.",
+      "summary": "Traffic through the Bering Strait tracks Russia's Northern Sea Route, which had processed 1,315 vessels carrying roughly 56 million tonnes of cargo by mid-2026, with 196 vessel applications for summer 2026 passage including 30 LNG carriers, a 50% year-on-year increase, though overall NSR cargo actually fell 2.3% in 2025 to 37 million tonnes, well short of Moscow's long-touted targets. Russia is expanding its Arctic military footprint as part of a broader pivot to Asia redirecting energy exports toward China ahead of the EU's January 2027 ban on Russian LNG imports.",
       "source": "https://euromaidanpress.com/2026/02/10/russia-arctic-shipping-route-decline/",
-      "sourceLabel": "Euromaidan Press — Russia's Arctic shipping route, 2026"
+      "sourceLabel": "Euromaidan Press, Russia's Arctic shipping route, 2026"
     },
     {
       "id": "torres-strait",
@@ -169,9 +169,9 @@
       "bbox": { "latMin": -10.9, "latMax": -10.2, "lonMin": 141.8, "lonMax": 143.2 },
       "tier": "secondary",
       "tag": "Compulsory pilotage · Reef hazard",
-      "summary": "Torres Strait has required compulsory coastal pilotage for vessels over 70m — and all loaded tankers, chemical and gas carriers regardless of size — since 2006, a rule Australia enforces to protect the surrounding reefs, though some maritime states argue it oversteps the right of transit passage through an international strait. Navigation is genuinely hazardous: the Prince of Wales and Great North East Channels force deep-draught ships through narrow gaps between coral reefs and shoals under a highly complex tidal regime, with only the southern channels off Cape York usable by large vessels.",
+      "summary": "Torres Strait has required compulsory coastal pilotage for vessels over 70m, and all loaded tankers, chemical and gas carriers regardless of size, since 2006, a rule Australia enforces to protect the surrounding reefs, though some maritime states argue it oversteps the right of transit passage through an international strait. Navigation is genuinely hazardous: the Prince of Wales and Great North East Channels force deep-draught ships through narrow gaps between coral reefs and shoals under a highly complex tidal regime, with only the southern channels off Cape York usable by large vessels.",
       "source": "https://www.rsis.edu.sg/rsis-publication/idss/880-australias-pilotage-system/",
-      "sourceLabel": "RSIS — Australia's Pilotage System in the Torres Strait"
+      "sourceLabel": "RSIS, Australia's Pilotage System in the Torres Strait"
     },
     {
       "id": "drake-passage",
@@ -181,9 +181,9 @@
       "bbox": { "latMin": -61.0, "latMax": -56.0, "lonMin": -68.0, "lonMax": -63.0 },
       "tier": "secondary",
       "tag": "Rough seas · Tourism route",
-      "summary": "Despite its fame as one of the world's roughest crossings, the Drake Passage is not a significant commercial shipping lane — large cargo vessels overwhelmingly favor the more sheltered Strait of Magellan instead. Drake traffic is dominated by around 40 Antarctic tourist-cruise transits a year (November-March), roughly 80% of them out of Ushuaia, Argentina, and sustained wave heights above 12 metres for several days at a time regularly push what limited traffic exists toward the Magellan alternative — the passage's reputation for danger, not its cargo volume, is what makes it notable.",
+      "summary": "Despite its fame as one of the world's roughest crossings, the Drake Passage is not a significant commercial shipping lane. Large cargo vessels overwhelmingly favor the more sheltered Strait of Magellan instead. Drake traffic is dominated by around 40 Antarctic tourist-cruise transits a year (November-March), roughly 80% of them out of Ushuaia, Argentina, and sustained wave heights above 12 metres for several days at a time regularly push what limited traffic exists toward the Magellan alternative. The passage's reputation for danger, not its cargo volume, is what makes it notable.",
       "source": "https://www.mygeoquest.com/navigating-the-drake-passage-current-conditions/",
-      "sourceLabel": "MyGeoQuest — Navigating the Drake Passage, current conditions"
+      "sourceLabel": "MyGeoQuest, Navigating the Drake Passage, current conditions"
     }
   ]
 }

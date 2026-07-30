@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Maritime Affairs — Editorial</title>
+<title>Maritime Affairs, Editorial</title>
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -108,7 +108,7 @@
   <div class="topbar">
     <h1>Editorial <em>Console</em></h1>
     <div class="right">
-      <span class="pill" id="user-email">—</span>
+      <span class="pill" id="user-email">…</span>
       <button class="btn ghost" id="signout-btn">Sign out</button>
     </div>
   </div>
@@ -184,7 +184,7 @@
             <div class="field">
               <label>Unit</label>
               <select id="f-unit">
-                <option value="">—</option>
+                <option value="">None</option>
                 <option>Defence &amp; Security</option>
                 <option>Blue Economy &amp; Logistics</option>
                 <option>Tech, Energy &amp; Resources</option>
@@ -360,10 +360,10 @@ function renderList(rows){
   $('list-tbody').innerHTML = rows.map(r => `
     <tr class="row" data-id="${r.id}">
       <td class="title">${esc(r.title || '(untitled)')}</td>
-      <td><span class="unit-tag">${esc(r.unit || '—')}</span></td>
-      <td>${esc(r.author || '—')}</td>
+      <td><span class="unit-tag">${esc(r.unit || 'N/A')}</span></td>
+      <td>${esc(r.author || 'N/A')}</td>
       <td>${r.published ? '<span class="pub-tag">Published</span>' : '<span class="draft-tag">Draft</span>'}</td>
-      <td style="opacity:.6">${r.updated_at ? new Date(r.updated_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+      <td style="opacity:.6">${r.updated_at ? new Date(r.updated_at).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : 'N/A'}</td>
     </tr>`).join('');
   document.querySelectorAll('tr.row').forEach(tr => {
     tr.addEventListener('click', () => openEditor(tr.dataset.id));
@@ -393,7 +393,7 @@ async function openEditor(id){
   currentArticleId = id;
   const { data, error } = await sb.from('articles').select('*').eq('id', id).single();
   if (error || !data){ toast('Failed to load article', true); showList(); return; }
-  $('editor-status').textContent = 'Editing — ' + (data.title || '(untitled)');
+  $('editor-status').textContent = 'Editing ' + (data.title || '(untitled)');
   $('f-title').value = data.title || '';
   $('f-slug').value = data.slug || '';
   $('f-summary').value = data.summary || '';
@@ -436,7 +436,7 @@ async function save(forcePublish){
   }
   if (res.error){ toast(res.error.message, true); return; }
   currentArticleId = res.data.id;
-  $('editor-status').textContent = 'Editing — ' + (res.data.title || '(untitled)');
+  $('editor-status').textContent = 'Editing ' + (res.data.title || '(untitled)');
   $('delete-btn').style.display = 'inline-block';
   toast(forcePublish ? 'Saved & published' : 'Saved');
 }

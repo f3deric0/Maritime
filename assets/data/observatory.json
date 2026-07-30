@@ -1,13 +1,13 @@
 {
   "meta": {
-    "title": "Blue Economy Observatory — expanded real data snapshot",
-    "source": "Eurostat — Maritime transport & Blue Economy statistics (EU Commission Blue Economy Report / mar_go_qm / mar_sg_am_cw / Alphaliner)",
+    "title": "Blue Economy Observatory, expanded real data snapshot",
+    "source": "Eurostat, Maritime transport & Blue Economy statistics (EU Commission Blue Economy Report / mar_go_qm / mar_sg_am_cw / Alphaliner)",
     "datasets": [
-      "mar_go_qm — Gross weight of goods transported to/from main ports by direction and type of traffic, quarterly",
-      "mar_sg_am_cw — Short sea shipping, country level, gross weight of goods to/from main ports, annual",
-      "bd_9ac_l_form_r2 — EU Blue Economy Gross Value Added and Employment by Sector",
-      "mar_mg_am_c — Container and freight throughput by European Sea Basin",
-      "Alphaliner Top 100 — Global Liner Operator Fleet Statistics"
+      "mar_go_qm, Gross weight of goods transported to/from main ports by direction and type of traffic, quarterly",
+      "mar_sg_am_cw, Short sea shipping, country level, gross weight of goods to/from main ports, annual",
+      "bd_9ac_l_form_r2, EU Blue Economy Gross Value Added and Employment by Sector",
+      "mar_mg_am_c, Container and freight throughput by European Sea Basin",
+      "Alphaliner Top 100, Global Liner Operator Fleet Statistics"
     ],
     "sourceUrl": "https://ec.europa.eu/eurostat/databrowser/product/page/mar_go_qm",
     "retrieved": "2026-07-28",
@@ -18,7 +18,7 @@
       "id": "total-goods",
       "value": 837.1,
       "suffix": " Mt",
-      "label": "Goods handled at EU main ports — 2025-Q4",
+      "label": "Goods handled at EU main ports, 2025-Q4",
       "delta": "+1.9% year-on-year",
       "source": "mar_go_qm, rep_mar=EU27_2020, unit=THS_T, direct=IN+OUT summed"
     },
@@ -26,7 +26,7 @@
       "id": "shortsea-share",
       "value": 58.3,
       "suffix": "%",
-      "label": "Share of EU maritime freight carried by short-sea shipping — 2024",
+      "label": "Share of EU maritime freight carried by short-sea shipping, 2024",
       "delta": "+1.8pp vs 2023 (56.5%)",
       "source": "mar_sg_am_cw, rep_mar=EU27_2020, seaship=SSS, unit=PC_TOT"
     },
@@ -34,7 +34,7 @@
       "id": "shortsea-volume",
       "value": 1.65,
       "suffix": " Bn t",
-      "label": "EU short-sea shipping volume — 2024",
+      "label": "EU short-sea shipping volume, 2024",
       "source": "mar_sg_am_cw, rep_mar=EU27_2020, seaship=SSS, unit=THS_T"
     },
     {
@@ -56,9 +56,9 @@
       "id": "eu-fleet-share",
       "value": 34.5,
       "suffix": "%",
-      "label": "European-controlled share of the world merchant fleet — by tonnage",
+      "label": "European-controlled share of the world merchant fleet, by tonnage",
       "delta": "+2.6% fleet growth in 2025",
-      "source": "ECSA — The Economic Value of European Shipping, 2026 update"
+      "source": "ECSA, The Economic Value of European Shipping, 2026 update"
     }
   ],
   "countries": {
@@ -73,7 +73,7 @@
     ]
   },
   "modeShare": {
-    "title": "Short-sea vs. other maritime freight — 2024",
+    "title": "Short-sea vs. other maritime freight, 2024",
     "shortSea": 58.3,
     "other": 41.7
   },

@@ -24,12 +24,12 @@
         [-2.98, 43.38]
       ],
       "source": "https://www.submarinenetworks.com/en/systems/trans-atlantic/marea",
-      "sourceLabel": "Submarine Networks — MAREA"
+      "sourceLabel": "Submarine Networks, MAREA"
     },
     {
       "id": "cable-grace-hopper",
       "name": "Grace Hopper Cable",
-      "tag": "US–UK–Spain High-Capacity Atlantic Trunk",
+      "tag": "US-UK-Spain High-Capacity Atlantic Trunk",
       "lengthKm": 6250,
       "capacityTbps": 350,
       "yearInstalled": 2022,
@@ -49,7 +49,7 @@
     {
       "id": "cable-seamewe5",
       "name": "SEA-ME-WE 5",
-      "tag": "Asia–Middle East–Europe Digital Spine",
+      "tag": "Asia-Middle East-Europe Digital Spine",
       "lengthKm": 20000,
       "capacityTbps": 24,
       "yearInstalled": 2016,
@@ -90,7 +90,7 @@
         [5.37, 43.30]
       ],
       "source": "https://www.submarinenetworks.com/en/systems/asia-europe-africa/smw6",
-      "sourceLabel": "Submarine Networks — SMW6"
+      "sourceLabel": "Submarine Networks, SMW6"
     },
     {
       "id": "cable-2africa",
@@ -172,12 +172,12 @@
         [-123.96, 45.75]
       ],
       "source": "https://www.submarinenetworks.com/en/systems/trans-pacific/tpe",
-      "sourceLabel": "Submarine Networks — TPE"
+      "sourceLabel": "Submarine Networks, TPE"
     },
     {
       "id": "cable-echo-bifrost",
       "name": "Echo & Bifrost Transpacific",
-      "tag": "SE Asia–US Direct Transpacific Route",
+      "tag": "SE Asia-US Direct Transpacific Route",
       "lengthKm": 15000,
       "capacityTbps": 120,
       "yearInstalled": 2024,
@@ -193,7 +193,7 @@
         [-122.40, 37.78]
       ],
       "source": "https://www.submarinenetworks.com/en/systems/trans-pacific/echo",
-      "sourceLabel": "Submarine Networks — Echo"
+      "sourceLabel": "Submarine Networks, Echo"
     },
     {
       "id": "cable-dunant",
@@ -256,7 +256,7 @@
         [139.65, 35.44]
       ],
       "source": "https://www.submarinenetworks.com/en/systems/asia-europe-africa/fea",
-      "sourceLabel": "Submarine Networks — FEA"
+      "sourceLabel": "Submarine Networks, FEA"
     },
     {
       "id": "cable-peace",
@@ -282,7 +282,7 @@
     {
       "id": "cable-blueraman",
       "name": "Blue-Raman Submarine Cable",
-      "tag": "India–Middle East–Mediterranean Bypass",
+      "tag": "India-Middle East-Mediterranean Bypass",
       "lengthKm": 8000,
       "capacityTbps": 160,
       "yearInstalled": 2024,

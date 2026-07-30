@@ -15,12 +15,12 @@
 
   var HARDCODED_FALLBACK = {
     stats: {
-      'total-goods':     { value: 837.1, suffix: ' Mt',   label: 'Goods handled at EU main ports — 2025-Q4', delta: '+1.9% year-on-year' },
-      'shortsea-share':  { value: 58.3,  suffix: '%',     label: 'Share of EU maritime freight carried by short-sea shipping — 2024', delta: '+1.8pp vs 2023 (56.5%)' },
-      'shortsea-volume': { value: 1.65,  suffix: ' Bn t',  label: 'EU short-sea shipping volume — 2024', delta: null },
+      'total-goods':     { value: 837.1, suffix: ' Mt',   label: 'Goods handled at EU main ports, 2025-Q4', delta: '+1.9% year-on-year' },
+      'shortsea-share':  { value: 58.3,  suffix: '%',     label: 'Share of EU maritime freight carried by short-sea shipping, 2024', delta: '+1.8pp vs 2023 (56.5%)' },
+      'shortsea-volume': { value: 1.65,  suffix: ' Bn t',  label: 'EU short-sea shipping volume, 2024', delta: null },
       'blue-gva':        { value: 183.5, suffix: ' Bn €', label: 'EU Blue Economy Gross Value Added (GVA)', delta: '+4.2% annual growth' },
       'blue-jobs':       { value: 3.58,  suffix: ' Million', label: 'Direct EU Maritime Employment', delta: null },
-      'eu-fleet-share':  { value: 34.5,  suffix: '%',     label: 'European-controlled share of the world merchant fleet — by tonnage', delta: '+2.6% fleet growth in 2025' }
+      'eu-fleet-share':  { value: 34.5,  suffix: '%',     label: 'European-controlled share of the world merchant fleet, by tonnage', delta: '+2.6% fleet growth in 2025' }
     },
     countries: {
       title: 'Top short-sea shipping nations, 2024',

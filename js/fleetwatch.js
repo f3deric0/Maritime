@@ -400,7 +400,7 @@
       var chips = cables.map(function (cab) {
         var isAct = cab.id === activeCableId;
         return '<button type="button" class="fw-route-chip' + (isAct ? ' active' : '') +
-          '" data-cable-id="' + cab.id + '">' + cab.name + '<br><span style="font-size:.6rem;font-weight:400;opacity:.65">' + cab.capacityTbps + ' Tbps &middot; ' + (cab.lengthKm || '—').toLocaleString() + ' km</span></button>';
+          '" data-cable-id="' + cab.id + '">' + cab.name + '<br><span style="font-size:.6rem;font-weight:400;opacity:.65">' + cab.capacityTbps + ' Tbps &middot; ' + (cab.lengthKm || 'N/A').toLocaleString() + ' km</span></button>';
       }).join('');
       routesContainer.innerHTML =
         '<div class="fw-routes-hd">' +
@@ -491,7 +491,7 @@
           '<h4>' + cab.name + ' · ' + cab.capacityTbps + ' Tbps</h4>' +
           '<p>' + cab.summary + '</p>' +
           '<div style="font-size:.82rem;color:rgba(239,242,241,.85);margin-top:.4rem">' +
-          '<strong>Length:</strong> ' + (cab.lengthKm || '—').toLocaleString() + ' km<br>' +
+          '<strong>Length:</strong> ' + (cab.lengthKm || 'N/A').toLocaleString() + ' km<br>' +
           '<strong>Landing Stations:</strong> ' + (cab.landingStations || []).join(' → ') +
           '</div>' +
           (cab.sourceLabel ? '<a class="fw-detail-source" href="' + cab.source + '" target="_blank" rel="noopener">Source: ' + cab.sourceLabel + '</a>' : '');
@@ -722,11 +722,11 @@
         fetchJSON(FLEET_URL).then(function (d) {
           ships = (d && (d.ships || d.items)) || [];
           if (activeView === 'fleetwatch') {
-            if (vesselCountEl) vesselCountEl.textContent = ships.length ? String(ships.length) : '—';
+            if (vesselCountEl) vesselCountEl.textContent = ships.length ? String(ships.length) : '…';
             render();
           }
         }).catch(function () {
-          if (vesselCountEl && activeView === 'fleetwatch') vesselCountEl.textContent = '—';
+          if (vesselCountEl && activeView === 'fleetwatch') vesselCountEl.textContent = '…';
         });
         setTimeout(pollShips, 9000);
       }

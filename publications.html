@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="./assets/images/favicon.ico">
     <meta name="description" content="Strategic briefs, policy explainers and in-depth reports from the European maritime expert network. Blue Economy, Security, Energy and Policy.">
-    <title>Publications — Maritime Affairs</title>
+    <title>Publications, Maritime Affairs</title>
     <meta name="theme-color" content="#050c15">
     <link rel="canonical" href="https://maritime-affairs.eu/publications.html">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Maritime Affairs">
-    <meta property="og:title" content="Publications — Maritime Affairs">
+    <meta property="og:title" content="Publications, Maritime Affairs">
     <meta property="og:description" content="Strategic briefs, policy explainers and in-depth reports from the European maritime expert network.">
     <meta property="og:url" content="https://maritime-affairs.eu/publications.html">
     <meta property="og:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
@@ -21,7 +21,7 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Publications — Maritime Affairs">
+    <meta name="twitter:title" content="Publications, Maritime Affairs">
     <meta name="twitter:description" content="Strategic briefs, policy explainers and in-depth reports from the European maritime expert network.">
     <meta name="twitter:image" content="https://maritime-affairs.eu/assets/images/og-image.jpg">
 
@@ -231,7 +231,7 @@
 
 <main class="wrap">
     <div id="featured-article" style="display:none; margin-top:2rem"></div>
-    <div id="draft-banner">⚠ Showing all articles — none are marked as published yet. Mark them as published in the admin to hide drafts.</div>
+    <div id="draft-banner">⚠ Showing all articles, none are marked as published yet. Mark them as published in the admin to hide drafts.</div>
     <div id="articles-grid" class="pub-grid"></div>
     <div id="empty-state" style="display:none; text-align: center; padding: 10rem 0; opacity: 0.3;">
          No articles found in this category.
@@ -277,7 +277,7 @@ function renderGrid() {
             <div class="pub-featured-body">
               <div class="pub-featured-unit">${featured.unit || 'Maritime Affairs'}</div>
               <h2>${featured.title || 'Untitled'}</h2>
-              <p>${featured.summary || '—'}</p>
+              <p>${featured.summary || 'N/A'}</p>
               <div class="pub-featured-meta">
                 ${date ? new Date(date).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : 'Undated'}
                 ${featured.read_min ? ' &nbsp;·&nbsp; ' + featured.read_min + ' min' : ''}
@@ -304,7 +304,7 @@ function renderGrid() {
             <div class="pub-card-body">
                 <div style="color:var(--gold); font-family:var(--ff-c); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.18em; margin-bottom:1rem;">${a.unit || 'Maritime Affairs'}</div>
                 <h3>${a.title || 'Untitled'}</h3>
-                <p>${a.summary || '—'}</p>
+                <p>${a.summary || 'N/A'}</p>
                 <div style="margin-top:2rem; font-size:0.7rem; opacity:0.4; font-family:var(--ff-c); letter-spacing:0.12em; text-transform:uppercase">
                     ${date ? new Date(date).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : 'Undated'}${a.read_min ? ' &nbsp;·&nbsp; ' + a.read_min + ' min' : ''}${a.author ? ' &nbsp;·&nbsp; ' + a.author : ''}
                 </div>
@@ -399,7 +399,7 @@ loadArticles();
 
 <footer style="padding:3rem 5vw;background:var(--ink);border-top:1px solid rgba(255,255,255,.06)">
   <div class="ft-bottom" style="max-width:1200px;margin:0 auto">
-    <span>© 2026 Maritime Affairs — European NGO</span>
+    <span>© 2026 Maritime Affairs, European NGO</span>
     <div class="ft-links">
       <a href="index.html">Home</a>
       <a href="publications.html">Publications</a>
